@@ -1,0 +1,95 @@
+{#- Fragment: loaded into the drawer by htmx, or included in the standalone page. Read from Valkey. -#}
+{% if missing %}
+<div class="detail"><p class="warn">{{ missing }} is not in the index. Search for it first.</p></div>
+{% else %}
+<article class="detail">
+  <h2>{{ d.name }}</h2>
+  <div class="links">
+    <a href="{{ d.url }}" target="_blank" rel="noopener noreferrer">GitHub &#8599;</a>
+    <a href="{{ d.fork_url }}" target="_blank" rel="noopener noreferrer">Fork &#8599;</a>
+    <a href="/chat?q={{ ('Is ' ~ d.name ~ ' ready for Aiven Runtime? What would need to change?') | urlencode }}">Ask in chat</a>
+  </div>
+
+  {% if errors %}
+  <div class="note warn">Could not load everything from GitHub:
+    <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>
+  {% endif %}
+
+  <p class="facts">
+    &#9733; {{ "{:,}".format(d.stars) }}
+    {% if d.language %} &middot; {{ d.language }}{% endif %}
+    {% if d.license %} &middot; {{ d.license }}{% endif %}
+    {% if d.pushed %} &middot; last push {{ d.pushed }}{% endif %}
+  </p>
+  {% if d.description %}<p>{{ d.description }}</p>{% endif %}
+  {% for t in d.topics %}<span class="chip">{{ t }}</span>{% endfor %}
+
+  <h3>Aiven Runtime fit</h3>
+  <div>
+    {% for sv in d.services %}
+      {% if sv in all_services %}<span class="chip svc"><img src="/static/icons/{{ sv }}.svg" alt="" width="16" height="16"> {{ sv }}</span>
+      {% else %}<span class="chip">{{ sv }}</span>{% endif %}
+    {% endfor %}
+    {% if not d.services %}<span class="muted">
+      {% if d.services_unknown %}Services unknown (no Compose file was found){% else %}No Aiven data service detected{% endif %}
+    </span>{% endif %}
+  </div>
+  <p>
+    <strong class="{{ 'ok' if d.compose_status == 'ready' else 'warn' }}">{{ d.compose_label }}</strong>
+    {% if d.compose_path %}<span class="muted"> &middot; <code>{{ d.compose_path }}</code></span>{% endif %}
+  </p>
+  {% if d.app_services %}<p class="muted">Builds from source: {{ d.app_services | join(", ") }}</p>{% endif %}
+  {% if d.image_apps %}<p class="muted">Pulls an image only (needs a Dockerfile): {{ d.image_apps | join(", ") }}</p>{% endif %}
+  <p class="muted">Novelty {{ "%.2f"|format(d.novelty) }}{% if d.closest %} &middot; closest existing template: {{ d.closest }}{% endif %}.
+    Scores within about 0.05 of each other are noise.</p>
+
+  {% if d.similar_templates %}
+  <h3>Most similar existing templates</h3>
+  <ul>{% for t in d.similar_templates %}
+    <li>{{ t.name }} <span class="muted">(match {{ "%.2f"|format(1 - t.distance) }})</span></li>
+  {% endfor %}</ul>
+  {% endif %}
+
+  <h3>Manifest entry</h3>
+  <pre>{{ d.manifest_text }}</pre>
+  <div class="row">
+    <button type="button" class="mini" data-repo="{{ d.name }}">Copy manifest entry</button>
+    <a class="mini" href="{{ d.edit_manifest_url }}" target="_blank" rel="noopener noreferrer">Edit manifest.json &#8599;</a>
+    <span class="copied"></span>
+  </div>
+  <p class="muted">{{ d.manifest_warnings | join(" ") }}</p>
+
+  <h3>From the cache</h3>
+  <p class="cache-status">
+    <span class="{{ 'ok' if d.cache.has_info else 'no' }}">{{ '✓' if d.cache.has_info else '–' }} repo info</span>
+    <span class="{{ 'ok' if d.cache.has_root else 'no' }}">{{ '✓' if d.cache.has_root else '–' }} root folder</span>
+    {% if d.cache.compose_expected %}<span class="{{ 'ok' if d.cache.has_compose else 'no' }}">{{ '✓' if d.cache.has_compose else '–' }} Compose file</span>{% endif %}
+  </p>
+  {% if d.cache.info %}
+    <p class="muted">GitHub primary language: {{ d.cache.info.language }} &middot; archived: {{ 'yes' if d.cache.info.archived else 'no' }}</p>
+  {% endif %}
+  {% if d.cache.root %}
+  <details open><summary>Root folder ({{ d.cache.root | length }} shown)</summary>
+    <ul>{% for r in d.cache.root %}<li>{{ r.name }}{{ '/' if r.type == 'dir' else '' }}</li>{% endfor %}</ul>
+  </details>
+  {% endif %}
+  {% if d.cache.compose_text %}
+  <details><summary>{{ d.compose_path }}</summary><pre>{{ d.cache.compose_text }}</pre></details>
+  {% endif %}
+  {% if not d.complete %}
+  <p>
+    <button type="button" class="mini" hx-post="/repo/{{ d.name }}/load" hx-target="#drawer-body, #page-detail" hx-swap="innerHTML"
+            hx-disabled-elt="this" title="Try again now; failures are otherwise remembered for a couple of minutes">Retry loading from GitHub</button>
+    <span class="muted">Anything missing is fetched the first time a repo is opened, then cached.</span>
+  </p>
+  {% endif %}
+
+  {% if d.similar %}
+  <h3>Similar indexed projects</h3>
+  <ul>{% for r in d.similar %}
+    <li><a href="/repo/{{ r.name }}" hx-get="/repo/{{ r.name }}" hx-target="#drawer-body, #page-detail" hx-swap="innerHTML">{{ r.name }}</a>
+      <span class="muted">&#9733; {{ "{:,}".format(r.stars) }} &middot; match {{ "%.2f"|format(1 - r.distance) }}</span></li>
+  {% endfor %}</ul>
+  {% endif %}
+</article>
+{% endif %}

@@ -1,0 +1,38 @@
+# Local development. valkey-bundle ships the search module (FT.*).
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Edit settings.toml and restart the app; no rebuild needed.
+      - ./settings.toml:/app/settings.toml:ro
+    environment:
+      VALKEY_URL: valkey://valkey:6379
+      # Embeddings still run on OMLX on the host (the gateway has no embeddings endpoint);
+      # reach it from the container via host.docker.internal.
+      SEMCACHE_EMBED_BASE_URL: http://host.docker.internal:8001/v1
+      SEMCACHE_EMBED_API_KEY: ${SEMCACHE_EMBED_API_KEY:?set in fnox}
+      SEMCACHE_EMBED_MODEL: ${SEMCACHE_EMBED_MODEL:?set in fnox}
+      SEMCACHE_EMBED_DIM: ${SEMCACHE_EMBED_DIM:?set in fnox}
+      # Every chat model (hit, classifier, miss) lives on the Aiven gateway; values come from fnox.
+      SEMCACHE_LLM_BASE_URL: ${SEMCACHE_LLM_BASE_URL:?set in fnox}
+      SEMCACHE_LLM_API_KEY: ${SEMCACHE_LLM_API_KEY:?set in fnox}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    depends_on:
+      - valkey
+  valkey:
+    image: valkey/valkey-bundle:latest
+    ports:
+      - "6379:6379"
+  # Web UI for browsing keys and the vector index. Open http://localhost:8080.
+  valkey-admin:
+    image: valkey/valkey-admin:latest
+    ports:
+      - "8080:8080"
+    environment:
+      DEPLOYMENT_MODE: Web
+      VALKEY_HOST: valkey
+      VALKEY_PORT: 6379
+    depends_on:
+      - valkey

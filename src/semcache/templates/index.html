@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Template Scout</title>
+<link rel="stylesheet" href="/static/detail.css">
+<style>
+  :root { --bg:#fff; --fg:#1a1a1a; --muted:#666; --line:#e2e2e2; --accent:#ff3554; --chip:#f3f3f3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14141a; --fg:#eee; --muted:#9a9aa5; --line:#2c2c36; --chip:#23232d; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 system-ui, sans-serif; }
+  main { max-width:860px; margin:0 auto; padding:32px 16px; }
+  h1 { margin:0 0 4px; font-size:1.6rem; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  a { color:var(--accent); text-decoration:none; }
+  .stats { display:flex; flex-wrap:wrap; gap:12px; margin-bottom:20px; }
+  .stat { border:1px solid var(--line); border-radius:10px; padding:8px 14px; }
+  .stat b { display:block; font-size:1.3rem; }
+  .stat span { color:var(--muted); font-size:.85rem; }
+  form { display:grid; gap:12px; margin-bottom:16px; }
+  input[type=search] { padding:12px; font-size:1rem; border:1px solid var(--line);
+    border-radius:8px; background:var(--bg); color:var(--fg); width:100%; box-sizing:border-box; }
+  select { background:var(--bg); color:var(--fg); border:1px solid var(--line); border-radius:6px; }
+  .row { display:flex; flex-wrap:wrap; gap:16px; align-items:center; color:var(--muted); }
+  button { background:var(--accent); color:#fff; border:0; border-radius:8px;
+    padding:10px 18px; font-size:1rem; cursor:pointer; width:fit-content; }
+  button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  .card { border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+  .card h3 { margin:0; font-size:1.05rem; }
+  .chip { display:inline-block; background:var(--chip); border-radius:99px;
+    padding:1px 10px; font-size:.8rem; margin:6px 6px 0 0; }
+  .warn { color:#c47a00; }
+  .note { padding:10px 14px; border-radius:8px; background:var(--chip); margin-bottom:16px; }
+  .more { border:1px dashed var(--line); border-radius:10px; padding:14px 16px; margin-top:20px; }
+  small { color:var(--muted); }
+  a.mini, button.mini { background:transparent; color:var(--accent); border:1px solid var(--accent);
+    border-radius:6px; padding:2px 9px; font-size:.78rem; cursor:pointer; margin-top:8px;
+    display:inline-block; text-decoration:none; font-family:inherit; }
+  .adding { font-size:.85rem; color:var(--muted); display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+    margin:0 0 12px; }
+  .adding input { padding:3px 8px; border:1px solid var(--line); border-radius:6px; background:var(--bg);
+    color:var(--fg); width:12em; }
+  .copied { font-size:.78rem; color:var(--muted); margin-left:8px; }
+  nav { display:flex; gap:16px; margin-bottom:16px; }
+  .svc { display:inline-flex; align-items:center; gap:6px; }
+  h2 { font-size:1.1rem; margin:24px 0 8px; }
+  form.inline { margin:10px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Template Scout</h1>
+  <p class="sub">Search popular GitHub projects and see how they compare to what's already on
+    <a href="https://templates.aiven.io">templates.aiven.io</a>.</p>
+
+  <nav><strong>Search</strong> <a href="/repos">Repos</a> <a href="/chat">Chat</a></nav>
+
+  <form method="get" action="/">
+    <input type="search" name="q" value="{{ q }}" autofocus
+           placeholder="Search popular projects, e.g. feature flags, headless CMS, job queue">
+    <div class="row">
+      <span>Uses:</span>
+      {% for sv in all_services %}
+        <label class="svc"><input type="checkbox" name="services" value="{{ sv }}"
+          {{ "checked" if sv in services }}>
+          <img src="/static/icons/{{ sv }}.svg" alt="" width="20" height="20"> {{ sv }}</label>
+      {% endfor %}
+    </div>
+    <div class="row">
+      <label>Sort
+        <select name="sort">
+          <option value="relevance" {{ "selected" if sort == "relevance" }}>Best match</option>
+          <option value="stars" {{ "selected" if sort == "stars" }}>Most stars</option>
+          <option value="novelty" {{ "selected" if sort == "novelty" }}>Most different from existing templates</option>
+        </select>
+      </label>
+      <label><input type="checkbox" name="refresh" value="true"> Bypass cache</label>
+      <button type="submit">Search</button>
+    </div>
+  </form>
+
+  {% if notice %}<div class="note warn">{{ notice }}</div>{% endif %}
+  {% if cache_hit %}
+    <div class="note">Cached: skipped GitHub because "{{ cache_hit.original_prompt }}" was
+      already searched (distance {{ "%.3f"|format(cache_hit.distance) }}).</div>
+  {% endif %}
+  {% if crawled is not none %}
+    <div class="note">Searched GitHub: {{ crawled }} projects added to the index.</div>
+  {% endif %}
+
+  {% if results is not none %}
+    {% if not results %}<p>Nothing found. Try different words.</p>{% endif %}
+    {% if results %}
+    <div class="adding">
+      <label>Your GitHub username <input id="ghuser" placeholder="optional, for entries that point at your fork"></label>
+      <a href="{{ edit_manifest_url }}" target="_blank" rel="noopener noreferrer">Edit manifest.json on GitHub &#8599;</a>
+      <small>(forks the directory repo and opens the pull request form)</small>
+    </div>
+    {% endif %}
+    {% for r in results %}
+    <div class="card">
+      <h3><a class="js-detail" href="/repo/{{ r.name }}" hx-get="/repo/{{ r.name }}" hx-target="#drawer-body"
+           hx-swap="innerHTML" title="Show details">{{ r.name }}</a>
+        <a href="{{ r.url }}" target="_blank" rel="noopener noreferrer" title="Open on GitHub" aria-label="Open {{ r.name }} on GitHub">&#8599;</a>
+        <small>&#9733; {{ "{:,}".format(r.stars) }}</small></h3>
+      <div>{{ r.description }}</div>
+      {% for sv in r.services.split(",") %}
+        {% if sv in all_services %}
+          <span class="chip svc"><img src="/static/icons/{{ sv }}.svg" alt="" width="16" height="16"> {{ sv }}</span>
+        {% elif sv != "unknown" %}<span class="chip">{{ sv }}</span>{% endif %}
+      {% endfor %}
+      <span class="chip">match {{ "%.2f"|format(1 - r.distance) }}</span>
+      <span class="chip">novelty {{ "%.2f"|format(r.novelty) }}</span>
+      {% if r.compose == "ready" %}<span class="chip">Compose + build:</span>{% endif %}
+      {% if r.compose == "image-only" %}<span class="chip warn">Compose uses image: only, needs a Dockerfile</span>{% endif %}
+      {% if r.compose == "none" %}<span class="chip warn">no Compose file found</span>{% endif %}
+      {% if r.language %}<span class="chip">{{ r.language }}</span>{% endif %}
+      {% if r.license %}<span class="chip">{{ r.license }}</span>{% endif %}
+      <div><small>Closest existing template: {{ r.closest or "none" }}</small></div>
+      <a class="mini" href="https://github.com/{{ r.name }}/fork" target="_blank" rel="noopener noreferrer"
+         title="Fork this repo on GitHub so you can make the changes">Fork</a>
+      <button type="button" class="mini" data-repo="{{ r.name }}"
+              title="Copy the JSON entry to paste into the directory's data/manifest.json">Copy manifest entry</button><span class="copied"></span>
+    </div>
+    {% endfor %}
+    {% if results %}<p><small>Found one? <a href="https://templates.aiven.io/contribute.html">Add a project</a>.</small></p>{% endif %}
+  {% endif %}
+</main>
+{% include "_drawer.html" %}
+<script src="/static/manifest.js"></script>
+</body>
+</html>

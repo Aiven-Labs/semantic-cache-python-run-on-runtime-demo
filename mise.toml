@@ -1,0 +1,16 @@
+[tasks.up]
+run = "fnox exec -- docker compose up --build"
+
+[tasks.dev]
+run = "fnox exec -- uv run uvicorn semcache.app:app --app-dir src --reload"
+
+[tasks.test]
+run = "uv run pytest"
+
+[tasks.lint]
+run = "uv run ruff check . && uv run ruff format --check ."
+
+# Terminal UI. Needs the web app running (mise run up). Point it elsewhere with SCOUT_URL, and set
+# SCOUT_GH_USER so copied manifest entries point at your fork.
+[tasks.tui]
+run = "PYTHONPATH=src uv run --extra tui python -m semcache.tui"

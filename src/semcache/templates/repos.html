@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cached repos - Template Scout</title>
+<link rel="stylesheet" href="/static/detail.css">
+<style>
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, sans-serif; }
+  main { max-width:900px; margin:0 auto; padding:18px 16px 60px; }
+  h1 { margin:0 0 4px; font-size:1.3rem; }
+  nav { display:flex; gap:14px; margin:0 0 12px; font-size:.9rem; }
+  a { color:var(--accent); text-decoration:none; }
+  .sub { color:var(--muted); margin:0 0 12px; }
+  .tools { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:10px; }
+  .tools input { padding:6px 10px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--fg); }
+  #filter { flex:1; min-width:14em; }
+  .letters { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 14px; font-size:.82rem; }
+  .letters a { border:1px solid var(--line); border-radius:5px; padding:0 7px; }
+  h2.letter { margin:18px 0 4px; font-size:.95rem; color:var(--muted); border-bottom:1px solid var(--line); scroll-margin-top:8px; }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:5px 8px 5px 0; vertical-align:middle; border-bottom:1px solid var(--line); }
+  td.num { text-align:right; color:var(--muted); white-space:nowrap; }
+  td.name { font-weight:600; overflow-wrap:anywhere; }
+  .chip { display:inline-flex; align-items:center; gap:4px; background:var(--chip); border-radius:99px; padding:0 8px;
+    font-size:.74rem; margin-right:4px; }
+  .muted { color:var(--muted); font-size:.8rem; }
+  .ok { color:#1a8f4c; } .no { color:var(--muted); }
+  .hide { display:none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Template Scout</h1>
+  <nav><a href="/">Search</a> <strong>Repos</strong> <a href="/chat">Chat</a></nav>
+  <p class="sub"><strong id="count">{{ total }}</strong> repos cached, A to Z &middot;
+    {{ with_basics }} with their basic info and root folder cached. Click a name for details.</p>
+  <div class="tools">
+    <input id="filter" type="search" placeholder="Filter by name, language or service" aria-label="Filter repos">
+    <label class="muted">Your GitHub username
+      <input id="ghuser" placeholder="optional, for manifest entries" style="width:12em"></label>
+  </div>
+  <div class="letters">{% for letter, rows in groups %}<a href="#L-{{ 'sym' if letter == '#' else letter }}">{{ letter }}<span class="muted"> {{ rows | length }}</span></a>{% endfor %}</div>
+
+  {% if not groups %}<p>Nothing is cached yet. Run a search first.</p>{% endif %}
+  {% for letter, rows in groups %}
+  <section class="grp">
+    <h2 class="letter" id="L-{{ 'sym' if letter == '#' else letter }}">{{ letter }}</h2>
+    <table>
+      {% for r in rows %}
+      <tr class="repo" data-q="{{ (r.name ~ ' ' ~ (r.language or '') ~ ' ' ~ r.services) | lower }}">
+        <td class="name"><a class="js-detail" href="/repo/{{ r.name }}" hx-get="/repo/{{ r.name }}" hx-target="#drawer-body"
+              hx-swap="innerHTML">{{ r.name }}</a></td>
+        <td class="num">&#9733; {{ "{:,}".format(r.stars) }}</td>
+        <td class="muted">{{ r.language or '' }}</td>
+        <td>{% for sv in r.services.split(",") %}{% if sv in all_services %}<span class="chip"><img src="/static/icons/{{ sv }}.svg" alt="" width="13" height="13">{{ sv }}</span>{% endif %}{% endfor %}</td>
+        <td class="muted">{{ {'ready': 'Compose + build', 'image-only': 'image only', 'none': 'no Compose'}[r.compose] }}</td>
+        <td class="muted" title="repo info / root folder in the cache">
+          <span class="{{ 'ok' if r.has_info else 'no' }}">{{ '✓' if r.has_info else '–' }}</span>
+          <span class="{{ 'ok' if r.has_root else 'no' }}">{{ '✓' if r.has_root else '–' }}</span></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </section>
+  {% endfor %}
+</main>
+{% include "_drawer.html" %}
+<script src="/static/manifest.js"></script>
+<script>
+(function () {
+  const input = document.getElementById("filter"), count = document.getElementById("count");
+  input.addEventListener("input", () => {
+    const q = input.value.trim().toLowerCase(); let shown = 0;
+    document.querySelectorAll("tr.repo").forEach(tr => {
+      const hit = !q || tr.dataset.q.includes(q); tr.classList.toggle("hide", !hit); if (hit) shown++;
+    });
+    document.querySelectorAll("section.grp").forEach(s => s.classList.toggle("hide", !s.querySelector("tr.repo:not(.hide)")));
+    count.textContent = shown;
+  });
+})();
+</script>
+</body>
+</html>

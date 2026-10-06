@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Template Scout Chat</title>
+<style>
+  :root { --bg:#fff; --fg:#1a1a1a; --muted:#6b6b6b; --line:#e2e2e2; --accent:#ff3554; --chip:#f3f3f3; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14141a; --fg:#eee; --muted:#9a9aa5; --line:#2c2c36; --chip:#23232d; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:13px/1.45 system-ui, sans-serif; }
+  main { max-width:780px; margin:0 auto; padding:14px 12px 84px; }
+  h1 { margin:0; font-size:1rem; }
+  .top { display:flex; align-items:baseline; gap:12px; margin-bottom:6px; }
+  a { color:var(--accent); text-decoration:none; }
+  nav { display:flex; gap:10px; font-size:.85rem; }
+  .msg { border:1px solid var(--line); border-radius:8px; padding:6px 10px; margin-bottom:8px;
+    white-space:pre-wrap; overflow-wrap:anywhere; }
+  .msg.user { background:var(--chip); margin-left:36px; }
+  .msg.assistant { margin-right:36px; white-space:normal; }
+  .md > :first-child { margin-top:0; } .md > :last-child { margin-bottom:0; }
+  .md p, .md ul, .md ol { margin:.4em 0; }
+  .md h1, .md h2, .md h3, .md h4 { margin:.7em 0 .25em; line-height:1.25; font-size:1em; }
+  .md code { background:var(--chip); border-radius:3px; padding:0 4px; font-size:.92em; }
+  .md pre { background:var(--chip); border-radius:6px; padding:7px 9px; overflow-x:auto; }
+  .md pre code { background:none; padding:0; }
+  .md table { border-collapse:collapse; display:block; overflow-x:auto; margin:.5em 0; font-size:.92em; }
+  .md th, .md td { border:1px solid var(--line); padding:3px 7px; text-align:left; vertical-align:top; }
+  .md th { background:var(--chip); }
+  .md blockquote { margin:.5em 0; padding-left:9px; border-left:2px solid var(--line); color:var(--muted); }
+  .chips { display:flex; flex-wrap:wrap; gap:5px; margin:2px 0 8px 0; }
+  .chip { background:transparent; color:var(--accent); border:1px solid var(--accent); border-radius:99px;
+    padding:2px 9px; font:inherit; font-size:.78rem; cursor:pointer; text-align:left; }
+  .chip:hover { background:var(--accent); color:#fff; }
+  .foot { display:flex; align-items:center; gap:6px; margin-top:3px; }
+  .meta { color:var(--muted); font-size:.72rem; flex:1; }
+  button.copy { background:transparent; color:var(--muted); border:0; padding:0; width:20px; height:20px;
+    display:inline-flex; align-items:center; justify-content:center; border-radius:4px; opacity:.7; }
+  button.copy:hover { opacity:1; color:var(--accent); background:var(--chip); }
+  button.copy svg { width:13px; height:13px; fill:none; stroke:currentColor; stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round; }
+  .md pre { position:relative; }
+  .md pre button.copy.code { position:absolute; top:4px; right:4px; background:var(--bg);
+    border:1px solid var(--line); }
+  .err { color:#c47a00; }
+  details.plan { font-size:.78rem; color:var(--muted); margin:0 0 4px; }
+  details.plan summary { cursor:pointer; }
+  details.plan pre { margin:3px 0 0; white-space:pre-wrap; background:var(--chip); border-radius:6px; padding:5px 8px; }
+  form { position:fixed; left:0; right:0; bottom:0; background:var(--bg); border-top:1px solid var(--line);
+    padding:7px 12px; }
+  .bar { max-width:780px; margin:0 auto; display:flex; gap:6px; align-items:flex-end; }
+  textarea { flex:1; padding:5px 8px; font:inherit; border:1px solid var(--line); border-radius:6px;
+    background:var(--bg); color:var(--fg); resize:none; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:6px; padding:5px 11px;
+    font:inherit; font-size:.82rem; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:wait; }
+  button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+  button.icon { width:28px; height:28px; padding:0; display:inline-flex; align-items:center;
+    justify-content:center; }
+  button.icon svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2;
+    stroke-linecap:round; stroke-linejoin:round; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>Template Scout</h1>
+    <nav><a href="/">Search</a> <a href="/repos">Repos</a> <strong>Chat</strong></nav>
+    <span class="meta" id="totals" style="margin:0 0 0 auto"></span>
+  </div>
+  <div id="log"></div>
+  <div id="chips" class="chips"></div>
+</main>
+<form id="f">
+  <div class="bar">
+    <textarea id="m" rows="1" placeholder="Ask about templates, or find new projects"></textarea>
+    <button id="send" type="submit">Send</button>
+    <button id="new" type="button" class="ghost" title="Start a new conversation">New</button>
+    <button id="dbg" type="button" class="ghost icon" aria-label="Copy debug report"
+            title="Copy debug report: conversation, tool calls, costs and settings (Markdown)"></button>
+  </div>
+</form>
+<script src="/static/vendor/marked.min.js"></script>
+<script src="/static/vendor/purify.min.js"></script>
+<script>
+const log = document.getElementById("log"), box = document.getElementById("m");
+const send = document.getElementById("send");
+let cid = null;
+{ const pre = new URLSearchParams(location.search).get("q"); if (pre) box.value = pre; }
+try { cid = localStorage.getItem("scout_cid"); } catch (e) {}
+function newId() {
+  const id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+  try { localStorage.setItem("scout_cid", id); } catch (e) {}
+  return id;
+}
+if (!cid) cid = newId();
+
+const usd = v => v === 0 ? "$0" : v < 0.01 ? "$" + v.toFixed(5) : "$" + v.toFixed(3);
+function costText(c) {
+  if (!c || c.usd === undefined) return "";
+  let s = " · " + (c.priced ? "cost " + usd(c.usd) : "no price set");
+  if (c.estimated) s += " (est. tokens)";
+  if (c.saved_usd > 0) s += ` · saved ${usd(c.saved_usd)} by ${c.saved_by}`;
+  return s;
+}
+function metaText(m) {
+  if (!m || !m.route) return "";
+  return `${m.tier} · ${m.model} · route ${m.route}` + (m.reason ? ` (${m.reason})` : "") + (m.cached ? " · cached answer" : "") + costText(m);
+}
+async function totals() {
+  try {
+    const s = await (await fetch("/stats")).json();
+    document.getElementById("totals").textContent =
+      `Spent ${usd(s.spent_usd)} · saved ${usd(s.saved_cache_usd)} by cache + ${usd(s.saved_routing_usd)} by routing · ${s.cache_hits}/${s.requests} cached`;
+  } catch (e) {}
+}
+totals();
+// Model output is untrusted: parse as Markdown, then sanitize before it touches the DOM.
+function renderMd(el, text) {
+  if (!window.marked || !window.DOMPurify) { el.textContent = text; return; }
+  el.innerHTML = DOMPurify.sanitize(marked.parse(text, {gfm: true, breaks: true}));
+  el.querySelectorAll("a").forEach(a => { a.target = "_blank"; a.rel = "noopener noreferrer"; });
+  el.querySelectorAll("pre").forEach(pre => pre.appendChild(copyBtn("Copy code", "code")));
+}
+function copyBtn(label, kind) {
+  const b = document.createElement("button"); b.type = "button"; b.className = "copy " + kind;
+  b.title = label; b.setAttribute("aria-label", label); b.innerHTML = ICON_CLIP; return b;
+}
+function planEl(text, model) {
+  const el = document.createElement("details"); el.className = "plan";
+  const sm = document.createElement("summary"); sm.textContent = "Plan" + (model ? " by " + model + " (free)" : "");
+  const pre = document.createElement("pre"); pre.textContent = text;
+  el.appendChild(sm); el.appendChild(pre); return el;
+}
+function add(role, text, meta) {
+  const d = document.createElement("div"); d.className = "msg " + (role === "error" ? "assistant" : role);
+  const body = document.createElement("div");
+  if (role === "assistant") { body.className = "md"; renderMd(body, text); }
+  else if (role === "error") { body.className = "err"; body.textContent = "Error: " + text; }
+  else { body.textContent = text; }
+  if (meta && meta.plan) d.appendChild(planEl(meta.plan, meta.planner));
+  d.appendChild(body);
+  const foot = document.createElement("div"); foot.className = "foot";
+  const mt = document.createElement("span"); mt.className = "meta"; mt.textContent = metaText(meta);
+  foot.appendChild(mt);
+  if (role === "assistant") { d._raw = text; foot.appendChild(copyBtn("Copy response", "msg")); }
+  d.appendChild(foot); log.appendChild(d); d.scrollIntoView({block: "end"});
+  return {body, mt, d};
+}
+const chips = document.getElementById("chips");
+function showChips(items) {
+  chips.innerHTML = "";
+  (items || []).forEach(text => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = text;
+    b.onclick = () => { box.value = text; document.getElementById("f").requestSubmit(); };
+    chips.appendChild(b);
+  });
+}
+function starters() { fetch("/chat/starters").then(r => r.json()).then(showChips).catch(() => {}); }
+fetch("/chat/history/" + cid).then(r => r.ok ? r.json() : []).then(h => {
+  h.forEach(m => add(m.role, m.content, m));
+  const last = h.filter(m => m.role === "assistant").pop();
+  if (last && last.suggestions) showChips(last.suggestions); else if (!h.length) starters();
+}).catch(() => {});
+
+// Copy a Markdown report (settings, routes, models, costs, every tool call and error) for debugging.
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+  const ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove(); return ok;
+}
+const ICON_CLIP = '<svg viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>';
+const ICON_OK = '<svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
+const ICON_BAD = '<svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+log.addEventListener("click", async e => {
+  const b = e.target.closest("button.copy"); if (!b) return;
+  let text;
+  if (b.classList.contains("code")) { const pre = b.closest("pre"); text = (pre.querySelector("code") || pre).textContent.replace(/\n$/, ""); }
+  else text = b.closest(".msg")._raw || "";
+  const ok = await copyText(text);
+  b.innerHTML = ok ? ICON_OK : ICON_BAD; b.title = ok ? "Copied" : "Copy failed";
+  setTimeout(() => { b.innerHTML = ICON_CLIP; b.title = b.classList.contains("code") ? "Copy code" : "Copy response"; }, 1500);
+});
+const dbg = document.getElementById("dbg"), dbgTitle = dbg.title;
+dbg.innerHTML = ICON_CLIP;
+dbg.onclick = async () => {
+  try {
+    const r = await fetch("/chat/debug/" + cid);
+    if (!r.ok) throw new Error(r.status === 404 ? "Nothing to report yet" : "HTTP " + r.status);
+    const ok = await copyText(await r.text());
+    dbg.innerHTML = ok ? ICON_OK : ICON_BAD; dbg.title = ok ? "Copied to clipboard" : "Copy failed";
+  } catch (e) { dbg.innerHTML = ICON_BAD; dbg.title = e.message; }
+  setTimeout(() => { dbg.innerHTML = ICON_CLIP; dbg.title = dbgTitle; }, 2000);
+};
+document.getElementById("new").onclick = () => { cid = newId(); log.innerHTML = ""; starters(); box.focus(); };
+box.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); document.getElementById("f").requestSubmit(); }
+});
+document.getElementById("f").onsubmit = async e => {
+  e.preventDefault();
+  const message = box.value.trim(); if (!message) return;
+  box.value = ""; send.disabled = true; chips.innerHTML = "";
+  add("user", message);
+  const out = add("assistant", "");
+  out.body.textContent = "…";
+  let started = false, raw = "", queued = false;
+  const t0 = Date.now();
+  const paint = () => { queued = false; out.d._raw = raw; renderMd(out.body, raw); out.body.scrollIntoView({block: "end"}); };
+  const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+  try {
+    const res = await fetch("/chat/send", {method: "POST", headers: {"content-type": "application/json"},
+      body: JSON.stringify({conversation_id: cid, message})});
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const reader = res.body.getReader(), dec = new TextDecoder(); let buf = "";
+    for (;;) {
+      const {value, done} = await reader.read(); if (done) break;
+      buf += dec.decode(value, {stream: true});
+      let i;
+      while ((i = buf.indexOf("\n")) >= 0) {
+        const line = buf.slice(0, i); buf = buf.slice(i + 1); if (!line) continue;
+        const ev = JSON.parse(line);
+        if (ev.type === "meta") out.mt.textContent = metaText(ev);
+        else if (ev.type === "cost") { out.mt.textContent += costText(ev); totals(); }
+        else if (ev.type === "plan") { out.d.insertBefore(planEl(ev.text, ev.model), out.body); }
+        else if (ev.type === "suggestions") showChips(ev.items);
+        else if (ev.type === "note") out.mt.textContent += " · " + ev.t;
+        else if (ev.type === "tool_result") { out.mt.textContent += ev.ok ? " ✓" : " ✗ " + ev.preview; }
+        else if (ev.type === "reset") { raw = ""; out.body.textContent = ""; started = false; }
+        else if (ev.type === "tool") { out.mt.textContent += ` · tool: ${ev.name}(${Object.values(ev.args).join(", ")})`; if (!started) out.body.textContent = "using " + ev.name + "…"; }
+        else if (ev.type === "thinking") { if (!started) out.body.textContent = "thinking… " + Math.round((Date.now() - t0) / 1000) + "s"; }
+        else if (ev.type === "token") { started = true; raw += ev.t; schedule(); }
+        else if (ev.type === "error") { out.body.textContent = ev.message; out.body.className = "err"; }
+      }
+    }
+    if (started) paint();
+  } catch (err) {
+    out.body.textContent = "Request failed: " + err.message; out.body.className = "err";
+  }
+  send.disabled = false; box.focus();
+};
+</script>
+</body>
+</html>

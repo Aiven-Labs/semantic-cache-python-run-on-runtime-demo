@@ -1,0 +1,91 @@
+# Tunable settings, read at startup (path: SEMCACHE_SETTINGS_FILE, default ./settings.toml).
+# Every key is required; there are no hidden defaults in code. Secrets and endpoints stay in
+# the environment (fnox). Restart the app after editing.
+
+[cache]
+# Cosine distance (0 = identical, 2 = opposite). Lower = stricter, fewer cache hits.
+crawl_max_distance = 0.10        # a new GitHub search this close to an earlier one skips GitHub
+crawl_ttl_seconds = 86400        # 1 day
+answer_max_distance = 0.08       # a first chat question this close to an earlier one reuses its answer
+answer_ttl_seconds = 86400
+
+[routing]
+max_distance = 0.25              # the router "matches" a message when its nearest example is this close
+smalltalk_max_distance = 0.28    # small talk gets a little more room (it is short and varied)
+# Short follow-ups ("so Dify uses vite?") match no router example because they only make sense in
+# context. If nothing matches and the message has at most this many words, it keeps the previous
+# tool route and answers with followup_model, without calling the classifier.
+followup_max_words = 8
+followup_model = "claude-haiku-4-5"
+# Planning: for fresh questions on tool routes (agent, analysis, inspect), a FREE model drafts a
+# short numbered plan (which tools to call, in what order) with no tools of its own. The model
+# chosen by hit/miss below then executes the plan with the tools, up to chat.max_tool_steps
+# rounds. Skipped when the chosen model is itself free, for short follow-ups, and when the
+# planner is not cheaper than the executor. A planner that is down just means no plan.
+planner_model = "qwen3-32b"   # must exist on the gateway
+plan_max_tokens = 600            # reasoning models spend tokens thinking before the plan appears
+# Planning is OFF by default. Measured earlier with LOCAL models (not re-measured on the hosted
+# ones): 26-44 s per plan on this
+# machine (longer than the answer itself), valid plans only 3 of 4 tries for gpt-oss-20b and 1 of
+# 4 for Ornith (a reasoning model that thinks out loud), and on one question a junk plan made the
+# executor do extra tool calls (cost 3x). Turn it on per route when you have a fast, non-reasoning
+# local model, e.g. plan_routes = ["inspect"].
+plan_routes = []
+
+# Routes that need reasoning rather than retrieval. They always get the expensive model.
+always_expensive = ["analysis"]
+
+# WHICH MODEL ANSWERS: a hit gets the cheapest model, a miss gets the expensive one.
+#   HIT  = we already have what we need: the router matched the message confidently (a greeting,
+#          a lookup, a search request...) OR the cache covers it (see [routing.coverage]).
+#   MISS = live GitHub data or real reasoning is needed, and neither check covered it.
+# When the router matches nothing, the mid-tier `classifier` reads the message and the last few
+# turns (a few hundred tokens in, a few dozen out) and says what the user wants: chit-chat, a
+# search, a question about one repo, an analysis, or something else. Code then checks the cache.
+# Every model name here must exist on the gateway (SEMCACHE_LLM_BASE_URL); the app checks at
+# startup and warns about any that do not. `miss` is also the baseline
+# for "saved by routing" in the cost readout.
+[routing.models]
+hit = "qwen3-32b"                  # cheapest: answers from what is already cached (hosted on the gateway)
+classifier = "claude-haiku-4-5"     # mid tier: decides what an unmatched message is asking for
+miss = "claude-sonnet-5-5"          # expensive: live GitHub data or real reasoning
+
+# A search topic counts as already covered by the index when at least `index_hit_min` indexed
+# repos sit within `index_hit_distance` of it (a similar cached GitHub search also counts).
+[routing.coverage]
+index_hit_distance = 0.30
+index_hit_min = 3
+
+# Optional: force a route to one model regardless of hit or miss.
+# repo_facts must resolve a loose name ("Dify") to the exact owner/name before calling a tool;
+# small models invent an owner ("difyorg/dify", "dify-ai/dify") and then guess. Haiku gets it right.
+[routing.pin]
+repo_facts = "claude-haiku-4-5"
+
+[chat]
+history_turns = 8                # past user+assistant pairs sent to the model
+conversation_ttl_seconds = 604800  # 7 days idle
+max_tool_steps = 4               # tool-call rounds before the agent must answer
+
+[search]
+results_per_query = 30           # GitHub repos fetched per new search
+
+[github]
+repo_cache_ttl_seconds = 3600    # repo file listings and file reads are reused for this long
+detail_ttl_seconds = 604800      # the Compose file saved when a repo is found (7 days), for details pages
+
+# Cost: USD per 1 million tokens. These are ESTIMATES used for the cost and savings shown in chat.
+# Edit to match what your gateway actually bills. A model with no entry here is shown as
+# "no price set". Only the models this file uses need an entry.
+[cost.models."claude-haiku-4-5"]
+input_per_mtok = 1.00
+output_per_mtok = 5.00
+
+[cost.models."claude-sonnet-5-5"]   # placeholder: check your gateway's price
+input_per_mtok = 3.00
+output_per_mtok = 15.00
+
+# Estimates, not published by the gateway (it has no /model/info). Edit to match your billing.
+[cost.models."qwen3-32b"]
+input_per_mtok = 0.15
+output_per_mtok = 0.60
