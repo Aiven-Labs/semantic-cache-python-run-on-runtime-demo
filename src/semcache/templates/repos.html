@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cached repos - Template Scout</title>
 <link rel="stylesheet" href="/static/detail.css">
+<link rel="stylesheet" href="/static/spinner.css">
 <style>
   body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, sans-serif; }
   main { max-width:900px; margin:0 auto; padding:18px 16px 60px; }
@@ -65,6 +66,7 @@
   {% endfor %}
 </main>
 {% include "_drawer.html" %}
+<script src="/static/spinner.js"></script>
 <script src="/static/manifest.js"></script>
 <script>
 (function () {

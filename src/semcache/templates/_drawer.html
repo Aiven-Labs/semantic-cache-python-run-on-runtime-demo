@@ -3,6 +3,7 @@
   <div class="drawer-bar"><button type="button" id="drawer-close" aria-label="Close details">Close &times;</button></div>
   <div id="drawer-body" aria-live="polite"></div>
 </aside>
+<script src="/static/spinner.js"></script>
 <script src="/static/vendor/htmx.min.js"></script>
 <script>
 (function () {
@@ -19,7 +20,7 @@
   // Open as soon as a details request starts, so the panel slides in while it loads.
   document.body.addEventListener("htmx:beforeRequest", e => {
     if (e.detail.target !== body) return;
-    if (e.detail.requestConfig.verb === "get") body.innerHTML = '<p class="muted" style="padding:8px 0">Loading&hellip;</p>';
+    if (e.detail.requestConfig.verb === "get") body.innerHTML = spinnerHTML('Loading details&hellip;');
     if (e.detail.elt.classList.contains("js-detail")) opener = e.detail.elt;
     open();
   });

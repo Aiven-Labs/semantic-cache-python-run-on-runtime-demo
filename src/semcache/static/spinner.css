@@ -1,0 +1,11 @@
+/* Shared busy indicators: .spinner (inline), button.busy (in-button), .loading (block with label). */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { display:inline-block; width:1em; height:1em; vertical-align:-.15em; border:2px solid currentColor;
+  border-right-color:transparent; border-radius:50%; animation:spin .7s linear infinite; }
+.loading { display:flex; align-items:center; gap:8px; padding:8px 0; color:var(--muted); }
+button.busy, .htmx-request.mini { cursor:wait; }
+button.busy::before, .htmx-request.mini::before { content:""; display:inline-block; width:.9em; height:.9em;
+  margin-right:6px; vertical-align:-.12em; border:2px solid currentColor; border-right-color:transparent;
+  border-radius:50%; animation:spin .7s linear infinite; }
+button.icon.busy::before { margin:0; width:13px; height:13px; }
+@media (prefers-reduced-motion: reduce) { .spinner, button.busy::before, .htmx-request.mini::before { animation-duration:2.4s; } }

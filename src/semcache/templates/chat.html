@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Template Scout Chat</title>
+<link rel="stylesheet" href="/static/spinner.css">
 <style>
   :root { --bg:#fff; --fg:#1a1a1a; --muted:#6b6b6b; --line:#e2e2e2; --accent:#ff3554; --chip:#f3f3f3; }
   @media (prefers-color-scheme: dark) {
@@ -44,9 +45,6 @@
   .md pre button.copy.code { position:absolute; top:4px; right:4px; background:var(--bg);
     border:1px solid var(--line); }
   .err { color:#c47a00; }
-  details.plan { font-size:.78rem; color:var(--muted); margin:0 0 4px; }
-  details.plan summary { cursor:pointer; }
-  details.plan pre { margin:3px 0 0; white-space:pre-wrap; background:var(--chip); border-radius:6px; padding:5px 8px; }
   form { position:fixed; left:0; right:0; bottom:0; background:var(--bg); border-top:1px solid var(--line);
     padding:7px 12px; }
   .bar { max-width:780px; margin:0 auto; display:flex; gap:6px; align-items:flex-end; }
@@ -55,6 +53,8 @@
   button { background:var(--accent); color:#fff; border:0; border-radius:6px; padding:5px 11px;
     font:inherit; font-size:.82rem; cursor:pointer; }
   button:disabled { opacity:.5; cursor:wait; }
+  button.busy:disabled { opacity:.8; }
+  .msg .loading { padding:0; }
   button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
   button.icon { width:28px; height:28px; padding:0; display:inline-flex; align-items:center;
     justify-content:center; }
@@ -81,6 +81,7 @@
             title="Copy debug report: conversation, tool calls, costs and settings (Markdown)"></button>
   </div>
 </form>
+<script src="/static/spinner.js"></script>
 <script src="/static/vendor/marked.min.js"></script>
 <script src="/static/vendor/purify.min.js"></script>
 <script>
@@ -127,19 +128,12 @@ function copyBtn(label, kind) {
   const b = document.createElement("button"); b.type = "button"; b.className = "copy " + kind;
   b.title = label; b.setAttribute("aria-label", label); b.innerHTML = ICON_CLIP; return b;
 }
-function planEl(text, model) {
-  const el = document.createElement("details"); el.className = "plan";
-  const sm = document.createElement("summary"); sm.textContent = "Plan" + (model ? " by " + model + " (free)" : "");
-  const pre = document.createElement("pre"); pre.textContent = text;
-  el.appendChild(sm); el.appendChild(pre); return el;
-}
 function add(role, text, meta) {
   const d = document.createElement("div"); d.className = "msg " + (role === "error" ? "assistant" : role);
   const body = document.createElement("div");
   if (role === "assistant") { body.className = "md"; renderMd(body, text); }
   else if (role === "error") { body.className = "err"; body.textContent = "Error: " + text; }
   else { body.textContent = text; }
-  if (meta && meta.plan) d.appendChild(planEl(meta.plan, meta.planner));
   d.appendChild(body);
   const foot = document.createElement("div"); foot.className = "foot";
   const mt = document.createElement("span"); mt.className = "meta"; mt.textContent = metaText(meta);
@@ -187,12 +181,14 @@ log.addEventListener("click", async e => {
 const dbg = document.getElementById("dbg"), dbgTitle = dbg.title;
 dbg.innerHTML = ICON_CLIP;
 dbg.onclick = async () => {
+  dbg.innerHTML = ""; busy(dbg, true);
   try {
     const r = await fetch("/chat/debug/" + cid);
     if (!r.ok) throw new Error(r.status === 404 ? "Nothing to report yet" : "HTTP " + r.status);
     const ok = await copyText(await r.text());
     dbg.innerHTML = ok ? ICON_OK : ICON_BAD; dbg.title = ok ? "Copied to clipboard" : "Copy failed";
   } catch (e) { dbg.innerHTML = ICON_BAD; dbg.title = e.message; }
+  busy(dbg, false);
   setTimeout(() => { dbg.innerHTML = ICON_CLIP; dbg.title = dbgTitle; }, 2000);
 };
 document.getElementById("new").onclick = () => { cid = newId(); log.innerHTML = ""; starters(); box.focus(); };
@@ -202,10 +198,11 @@ box.addEventListener("keydown", e => {
 document.getElementById("f").onsubmit = async e => {
   e.preventDefault();
   const message = box.value.trim(); if (!message) return;
-  box.value = ""; send.disabled = true; chips.innerHTML = "";
+  box.value = ""; chips.innerHTML = "";
   add("user", message);
   const out = add("assistant", "");
-  out.body.textContent = "…";
+  const wait = txt => { out.body.innerHTML = spinnerHTML(txt); };
+  wait("Sending…"); busy(send, true);
   let started = false, raw = "", queued = false;
   const t0 = Date.now();
   const paint = () => { queued = false; out.d._raw = raw; renderMd(out.body, raw); out.body.scrollIntoView({block: "end"}); };
@@ -224,13 +221,12 @@ document.getElementById("f").onsubmit = async e => {
         const ev = JSON.parse(line);
         if (ev.type === "meta") out.mt.textContent = metaText(ev);
         else if (ev.type === "cost") { out.mt.textContent += costText(ev); totals(); }
-        else if (ev.type === "plan") { out.d.insertBefore(planEl(ev.text, ev.model), out.body); }
         else if (ev.type === "suggestions") showChips(ev.items);
         else if (ev.type === "note") out.mt.textContent += " · " + ev.t;
         else if (ev.type === "tool_result") { out.mt.textContent += ev.ok ? " ✓" : " ✗ " + ev.preview; }
-        else if (ev.type === "reset") { raw = ""; out.body.textContent = ""; started = false; }
-        else if (ev.type === "tool") { out.mt.textContent += ` · tool: ${ev.name}(${Object.values(ev.args).join(", ")})`; if (!started) out.body.textContent = "using " + ev.name + "…"; }
-        else if (ev.type === "thinking") { if (!started) out.body.textContent = "thinking… " + Math.round((Date.now() - t0) / 1000) + "s"; }
+        else if (ev.type === "reset") { raw = ""; started = false; wait("Retrying…"); }
+        else if (ev.type === "tool") { out.mt.textContent += ` · tool: ${ev.name}(${Object.values(ev.args).join(", ")})`; if (!started) wait("Using " + ev.name + "…"); }
+        else if (ev.type === "thinking") { if (!started) wait("Thinking… " + Math.round((Date.now() - t0) / 1000) + "s"); }
         else if (ev.type === "token") { started = true; raw += ev.t; schedule(); }
         else if (ev.type === "error") { out.body.textContent = ev.message; out.body.className = "err"; }
       }
@@ -239,7 +235,7 @@ document.getElementById("f").onsubmit = async e => {
   } catch (err) {
     out.body.textContent = "Request failed: " + err.message; out.body.className = "err";
   }
-  send.disabled = false; box.focus();
+  busy(send, false); box.focus();
 };
 </script>
 </body>

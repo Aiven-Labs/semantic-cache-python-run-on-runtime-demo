@@ -13,8 +13,6 @@ def configured_models(t: Tunables) -> set[str]:
     """Every chat model the settings can select."""
     r = t.routing
     names = {r.models.hit, r.models.classifier, r.models.miss, r.followup_model, *r.pin.values()}
-    if r.plan_routes:  # the free-model planner is only used when some route turns it on
-        names.add(r.planner_model)
     return names
 
 

@@ -106,17 +106,16 @@ def build_report(cid: str, history: list[dict], totals: dict, snapshot: dict) ->
             bits.append(f"tokens={m.get('in')} in / {m.get('out')} out")
         if "usd" in m:
             bits.append(f"cost=${m['usd']}" if m.get("priced") else "cost=no price set")
-        if m.get("planner"):
-            bits.append(
-                f"planner={m['planner']} ({m.get('planner_in')} in / {m.get('planner_out')} out)"
-            )
+        cls = m.get("classifier") or m.get("planner")  # older records called it "planner"
+        if cls:
+            tin = m.get("classifier_in", m.get("planner_in"))
+            tout = m.get("classifier_out", m.get("planner_out"))
+            bits.append(f"classifier={cls} ({tin} in / {tout} out)")
         if m.get("saved_usd"):
             bits.append(f"saved=${m['saved_usd']} by {m.get('saved_by')}")
         if m.get("estimated"):
             bits.append("(tokens estimated)")
         out.append(f"**{label}** — " + ", ".join(bits))
-        if m.get("plan"):
-            out += [f"Plan (by {m.get('planner') or 'planner'}, a free model):", _fence(m["plan"])]
         for note in m.get("notes") or []:
             out.append(f"- note: {note}")
         tools = m.get("tools") or []

@@ -13,6 +13,7 @@ async function copyText(text) {
 document.addEventListener("click", async e => {
   const b = e.target.closest("button.mini[data-repo]"); if (!b) return;
   const note = b.parentElement.querySelector(".copied") || b.nextElementSibling;
+  busy(b, true); note.textContent = "";
   try {
     const user = ((document.getElementById("ghuser") || {}).value || "").trim();
     try { localStorage.setItem("scout_ghuser", user); } catch (e2) {}
@@ -22,4 +23,5 @@ document.addEventListener("click", async e => {
     const ok = await copyText(d.text);
     note.textContent = ok ? "Copied. Append it as the last item (add a comma after the previous entry). " + d.warnings.join(" ") : "Copy failed";
   } catch (err) { note.textContent = err.message; }
+  finally { busy(b, false); }
 });

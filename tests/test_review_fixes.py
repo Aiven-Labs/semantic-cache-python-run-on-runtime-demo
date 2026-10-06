@@ -226,7 +226,7 @@ def test_rules_say_list_root_first():
     assert "call repo with no path first" in TOOL_RULES and "packages/" in TOOL_RULES
 
 
-# ---- planner / answerer split and visible cache status -----------------------------------------
+# ---- cost accounting and visible cache status -----------------------------------------
 def _pricing():
     from semcache.cost import Pricing
     from semcache.tunables import ModelPrice
@@ -249,7 +249,7 @@ def test_split_savings_count_both_models():
     from semcache.cost import routing_saving, routing_saving_total
 
     p = _pricing()
-    # planner does 6000 in / 100 out, strong answers with 1500 in / 800 out
+    # a classifier does 6000 in / 100 out, the strong model answers with 1500 in / 800 out
     parts = [("cheap", 6000, 100), ("strong", 1500, 800)]
     spent = p.cost("cheap", 6000, 100) + p.cost("strong", 1500, 800)
     would = p.cost("strong", 7500, 900)
@@ -259,32 +259,32 @@ def test_split_savings_count_both_models():
     assert routing_saving(p, "strong", "strong", 100, 100) == 0.0
 
 
-def test_cost_event_adds_planner_cost_but_savings_only_for_the_executor():
+def test_cost_event_adds_classifier_cost_but_savings_only_for_the_answering_model():
     from semcache.chat import ChatService
 
     svc = ChatService.__new__(ChatService)
     svc.pricing, svc.baseline_model = _pricing(), "strong"
-    # a PAID planner: its cost is added; the strong executor equals the baseline, so no savings
+    # a PAID classifier: its cost is added; the strong model equals the baseline, so no savings
     ev = svc._cost_event(
         "strong", "<= 2", {"in": 1500, "out": 800},
-        planner="cheap", planner_usage={"in": 6000, "out": 100},
+        classifier="cheap", classifier_usage={"in": 6000, "out": 100},
     )  # fmt: skip
     expect = svc.pricing.cost("strong", 1500, 800) + svc.pricing.cost("cheap", 6000, 100)
     assert ev["usd"] == pytest.approx(expect, abs=1e-6)
-    assert ev["in"] == 7500 and ev["out"] == 900 and ev["planner"] == "cheap"
+    assert ev["in"] == 7500 and ev["out"] == 900 and ev["classifier"] == "cheap"
     assert ev["saved_by"] is None and ev["saved_usd"] == 0
-    # a FREE planner adds nothing to the bill, and the mid-tier executor still saves vs baseline
+    # a FREE classifier adds nothing to the bill, and the mid-tier model still saves vs baseline
     free = svc._cost_event(
         "cheap", "<= 0.25", {"in": 1500, "out": 800},
-        planner="free", planner_usage={"in": 3000, "out": 300},
+        classifier="free", classifier_usage={"in": 3000, "out": 300},
     )  # fmt: skip
     assert free["usd"] == pytest.approx(svc.pricing.cost("cheap", 1500, 800), abs=1e-6)
     assert free["saved_by"] == "routing"
     assert free["saved_usd"] == pytest.approx(
         svc.pricing.cost("strong", 1500, 800) - svc.pricing.cost("cheap", 1500, 800), abs=1e-6
-    )  # planner tokens are not counted as work the baseline would have done
+    )  # classifier tokens are not counted as work the baseline would have done
     solo = svc._cost_event("strong", "<= 2", {"in": 1500, "out": 800})
-    assert "planner" not in solo
+    assert "classifier" not in solo
 
 
 class _Hit:
@@ -341,85 +341,18 @@ def test_answers_are_told_to_stay_short():
     )
 
 
-# ---- plan with a free model, execute with a larger one ------------------------------------------
-def test_should_plan_matrix():
-    from semcache.planning import should_plan
-
-    p = _pricing()
-    on = {"agent", "analysis", "inspect"}
-
-    def plan(route="agent", inh=False, model="strong", planner="free", steps=4, routes=on):
-        return should_plan(route, inh, p, model, planner, steps, routes)
-
-    assert plan()  # fresh question, paid executor, free planner
-    assert plan(route="analysis") and plan(route="inspect")
-    assert not plan(route="smalltalk") and not plan(route="lookup") and not plan(route="find")
-    assert not plan(inh=True)  # short follow-ups skip planning
-    assert not plan(model="free")  # a free executor gains nothing from a free planner
-    assert not plan(model="cheap", planner="strong")  # planner must be cheaper than the executor
-    assert not plan(
-        model="strong", planner="unknown"
-    )  # unpriced planner: cannot prove it is cheaper
-    assert not plan(planner="")  # not configured
-    assert not plan(steps=0)  # no tool steps to plan for
-    assert not plan(routes=set()) and not plan(route="inspect", routes={"agent"})  # settings decide
-
-
-def test_clean_plan():
-    from semcache.planning import MAX_PLAN_CHARS, clean_plan
-
-    assert clean_plan('<think>hmm</think>\n1. search("x")\n2. Answer') == (
-        '1. search("x")\n2. Answer'
-    )
-    assert clean_plan("</think>1. Answer") == "1. Answer"  # stray close tag
-    assert clean_plan("<think>only thinking</think>") == "" and clean_plan(None) == ""
-    long = "\n".join(f"{i}. step number {i} with some words" for i in range(200))
-    out = clean_plan(long)
-    assert len(out) <= MAX_PLAN_CHARS + 4 and out.endswith("...")
-
-
-def test_plan_prompt_and_block():
-    from semcache.planning import PLAN_PROMPT, plan_block
-
-    for tool in ("search(", "repo(", "templates("):
-        assert tool in PLAN_PROMPT  # the planner is told every tool the executor has
-    assert "Never invent an owner" in PLAN_PROMPT and "{max_steps}" in PLAN_PROMPT
-    assert PLAN_PROMPT.format(max_steps=4)  # formats cleanly
-    block = plan_block("1. Answer", "Ornith")
-    assert "Ornith" in block and "1. Answer" in block and "Follow it unless" in block
-
-
-def test_report_shows_the_plan_and_planner_cost():
+def test_report_shows_the_classifier_and_still_reads_older_planner_records():
     from semcache.debug import build_report
 
-    h = [{"role": "user", "content": "q"},
-         {"role": "assistant", "content": "a", "route": "agent", "model": "m", "plan": "1. Answer",
-          "planner": "Ornith", "planner_in": 900, "planner_out": 80}]  # fmt: skip
-    r = build_report("c", h, {}, {})
-    assert "Plan (by Ornith" in r and "1. Answer" in r and "planner=Ornith (900 in / 80 out)" in r
-
-
-def test_parse_plan_accepts_real_plans_and_rejects_reasoning():
-    from semcache.planning import parse_plan
-
-    good = (
-        '1. repo("langgenius/dify", "")\n'
-        '2. repo("langgenius/dify", "docker/docker-compose.yaml")\n'
-        "3. Answer\nAnswer should: list the Aiven services it needs."
-    )
-    assert parse_plan(good, 4) == good
-    assert parse_plan("<think>x</think>\n1. Answer", 4) == "1. Answer"
-    assert parse_plan('1. `search`("x")\n2. Answer', 4).startswith("1. `search`")
-    # what Ornith actually produced: thinking out loud, then maybe numbered thoughts
-    rambling = (
-        "The user is asking about Dify. Let me think.\n1. First, what is Dify?\n2. Then check."
-    )
-    assert parse_plan(rambling, 4) == ""
-    assert parse_plan("1. Fetch the compose file\n2. Answer", 4) == ""  # not a real tool
-    assert parse_plan("", 4) == "" and parse_plan("no numbered steps", 4) == ""
-    too_many = "\n".join(f'{i}. search("x")' for i in range(1, 9))
-    assert parse_plan(too_many, 4) == ""  # more steps than the executor is allowed
-    assert parse_plan("1. Answer\nAlso, remember to be nice.", 4) == ""  # prose after the plan
+    new = [{"role": "user", "content": "q"},
+           {"role": "assistant", "content": "a", "route": "smalltalk", "model": "m",
+            "classifier": "haiku", "classifier_in": 300, "classifier_out": 25}]  # fmt: skip
+    assert "classifier=haiku (300 in / 25 out)" in build_report("c", new, {}, {})
+    old = [{"role": "user", "content": "q"},
+           {"role": "assistant", "content": "a", "route": "smalltalk", "model": "m",
+            "planner": "haiku", "planner_in": 900, "planner_out": 80}]  # fmt: skip
+    assert "classifier=haiku (900 in / 80 out)" in build_report("c", old, {}, {})
+    assert "Plan (by" not in build_report("c", new, {}, {})
 
 
 # ---- three tools instead of six ------------------------------------------------------------------

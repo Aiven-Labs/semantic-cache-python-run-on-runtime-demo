@@ -246,7 +246,6 @@ Search can be tuned in `settings.toml`: every distance, TTL, price and model nam
 | `claude-haiku-4-5` | follow-up and pinned `repo_facts` | short follow-ups; router-matched repo-fact questions | gateway |
 | `claude-sonnet-5-5` | **miss** | live GitHub data or reasoning is needed: `analysis` always, uncached searches, uncached repo questions, open-ended | gateway |
 | *(none)* | answer cache | the first message repeats an earlier `lookup` or `analysis` question | Valkey |
-| `qwen3-32b` (planner) | free-model planning | **off**: `plan_routes = []` | gateway |
 
 Prices in the cost readout are estimates in `settings.toml` (the gateway publishes none), and
 "saved by routing" is a counterfactual against the miss model, not a bill.

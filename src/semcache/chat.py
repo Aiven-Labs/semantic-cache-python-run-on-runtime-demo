@@ -24,7 +24,6 @@ from .decide import (
 from .embed import Embedder
 from .followups import build_suggestions, follow_the_answer
 from .github import list_dir, read_file, repo_info
-from .planning import PLAN_PROMPT, parse_plan, plan_block, should_plan
 from .repocache import RepoCache
 from .routes import FALLBACK, route_match
 from .seed import TEMPLATES
@@ -270,9 +269,9 @@ def _costmeta(cost: dict) -> dict:
             "estimated",
             "in",
             "out",
-            "planner",
-            "planner_in",
-            "planner_out",
+            "classifier",
+            "classifier_in",
+            "classifier_out",
         )
         if k in cost
     }
@@ -329,9 +328,6 @@ class ChatService:
         repo_cache: RepoCache | None = None,
         followup_max_words: int = 0,
         followup_model: str = "",
-        planner_model: str = "",
-        plan_max_tokens: int = 350,
-        plan_routes: list[str] | None = None,
     ):
         self.store, self.catalog, self.embedder = store, catalog, embedder
         self.llm_for, self.models, self.coverage = llm_for, models, coverage
@@ -344,8 +340,6 @@ class ChatService:
         self.pricing, self.stats, self.github_token = pricing, stats, github_token
         self.repo_cache = repo_cache
         self.followup_max_words, self.followup_model = followup_max_words, followup_model
-        self.planner_model, self.plan_max_tokens = planner_model, plan_max_tokens
-        self.plan_routes = set(plan_routes or [])
 
     def _search(self, query: str) -> tuple[list[dict], str]:
         """Run the (semantically cached) GitHub search; say whether GitHub was really queried."""
@@ -471,14 +465,6 @@ class ChatService:
             msgs.append(agg)
             yield from self._exec_tools(calls, tools, msgs)
 
-    def _make_plan(self, msgs: list, planner_usage: dict) -> str:
-        """Ask the free planner for a plan. Never raises: no plan is better than a failed turn."""
-        system = PLAN_PROMPT.format(max_steps=self.max_tool_steps) + "\n\nContext:\n" + msgs[0][1]
-        planner = self.llm_for(self.planner_model).bind(max_tokens=self.plan_max_tokens)
-        agg = planner.invoke([("system", system), *msgs[1:]])
-        self._add_usage(planner_usage, agg, msgs)
-        return parse_plan(agg.content if isinstance(agg.content, str) else "", self.max_tool_steps)
-
     @staticmethod
     def _add_usage(usage: dict, agg, msgs: list) -> None:
         """Add one model call's tokens. Falls back to ~4 chars/token if the server sent none."""
@@ -502,17 +488,18 @@ class ChatService:
         *,
         cache_hit: bool = False,
         avoided: float = 0.0,
-        planner: str = "",
-        planner_usage: dict | None = None,
+        classifier: str = "",
+        classifier_usage: dict | None = None,
     ) -> dict:
-        pu = planner_usage if planner and planner_usage else None
+        cu = classifier_usage if classifier and classifier_usage else None
         parts = [(model, usage["in"], usage["out"])]
-        if pu:
-            parts.append((planner, pu["in"], pu["out"]))
+        if cu:
+            parts.append((classifier, cu["in"], cu["out"]))
         exec_cost = 0.0 if cache_hit else self.pricing.cost(model, usage["in"], usage["out"])
-        plan_cost = self.pricing.cost(planner, pu["in"], pu["out"]) if pu else 0.0
-        spent = exec_cost + plan_cost  # a cache hit still paid for the classifier that ran first
-        # Savings are for the executor's tokens only: the planner added work, it replaced none.
+        cls_cost = self.pricing.cost(classifier, cu["in"], cu["out"]) if cu else 0.0
+        spent = exec_cost + cls_cost  # a cache hit still paid for the classifier that ran first
+        # Savings are for the answering model's tokens only: the classifier added work, it
+        # replaced none.
         route_saved = (
             0.0 if cache_hit else routing_saving_total(self.pricing, self.baseline_model, parts[:1])
         )
@@ -522,13 +509,13 @@ class ChatService:
             "usd": round(spent, 6),
             "saved_usd": round(saved, 6),
             "saved_by": "cache" if cache_hit else ("routing" if route_saved else None),
-            "in": usage["in"] + (pu["in"] if pu else 0),
-            "out": usage["out"] + (pu["out"] if pu else 0),
+            "in": usage["in"] + (cu["in"] if cu else 0),
+            "out": usage["out"] + (cu["out"] if cu else 0),
             "priced": all(self.pricing.known(m) for m, _, _ in parts),
-            "estimated": usage.get("estimated", False) or bool(pu and pu.get("estimated")),
+            "estimated": usage.get("estimated", False) or bool(cu and cu.get("estimated")),
         }
-        if pu:
-            ev.update(planner=planner, planner_in=pu["in"], planner_out=pu["out"])
+        if cu:
+            ev.update(classifier=classifier, classifier_in=cu["in"], classifier_out=cu["out"])
         return ev
 
     def _context(
@@ -685,8 +672,8 @@ class ChatService:
                     avoided = 0.0
                 cost = self._cost_event(
                     model, tier, {"in": 0, "out": 0}, cache_hit=True, avoided=avoided,
-                    planner=self.models.classifier if decision.classifier_used else "",
-                    planner_usage=classify_usage,
+                    classifier=self.models.classifier if decision.classifier_used else "",
+                    classifier_usage=classify_usage,
                 )  # fmt: skip
                 yield cost
                 self.stats.record(cost["usd"], avoided, 0.0, cache_hit=True)
@@ -711,14 +698,6 @@ class ChatService:
         tools_log: list[dict] = []
         notes: list[str] = []
         usage = {"in": 0, "out": 0}
-        planner_usage = {"in": 0, "out": 0}
-        if decision.classifier_used:  # the mid-tier call is priced with the turn
-            planner_usage = classify_usage
-        plan_text = ""
-        planned = should_plan(
-            route, bool(inherited), self.pricing, model, self.planner_model,
-            self.max_tool_steps, self.plan_routes,
-        )  # fmt: skip
         try:
             context, note = self._context(
                 route, message, seen, fresh=not inherited, query=decision.query, repo=decision.repo
@@ -736,19 +715,6 @@ class ChatService:
             )
             if tools:
                 msgs[0] = ("system", msgs[0][1] + "\n\n" + TOOL_RULES)
-            if planned:
-                try:
-                    plan_text = self._make_plan(msgs, planner_usage)
-                except Exception as e:  # planner down or slow: carry on without a plan
-                    notes.append(f"planner failed ({type(e).__name__}); no plan")
-                if not plan_text:
-                    notes.append("planner gave no usable plan; executing without one")
-                if plan_text:
-                    msgs[0] = (
-                        "system",
-                        msgs[0][1] + "\n\n" + plan_block(plan_text, self.planner_model),
-                    )
-                    yield {"type": "plan", "model": self.planner_model, "text": plan_text}
             parts: list[str] = []
             for ev in self._run_model(llm, msgs, tools, parts, usage):
                 if ev["type"] == "tool":
@@ -761,7 +727,7 @@ class ChatService:
             self.store.append(cid, "user", message)
             self.store.append(
                 cid, "error", err,
-                **meta, cached=False, tools=tools_log, notes=notes, plan=plan_text,
+                **meta, cached=False, tools=tools_log, notes=notes,
                 latency_s=round(time.monotonic() - started, 2),
             )  # fmt: skip
             self._record_unanswered(model, usage, decision, classify_usage)
@@ -772,11 +738,8 @@ class ChatService:
         if answer:
             cost = self._cost_event(
                 model, tier, usage,
-                planner=(
-                    self.models.classifier if decision.classifier_used
-                    else self.planner_model if plan_text else ""
-                ),
-                planner_usage=planner_usage,
+                classifier=self.models.classifier if decision.classifier_used else "",
+                classifier_usage=classify_usage,
             )  # fmt: skip
             yield cost
             saved_routing = cost["saved_usd"] if cost["saved_by"] == "routing" else 0.0
@@ -787,7 +750,7 @@ class ChatService:
                 cid, message, answer,
                 {
                     **meta, "cached": False, **_costmeta(cost), "suggestions": chips,
-                    "tools": tools_log, "notes": notes, "plan": plan_text,
+                    "tools": tools_log, "notes": notes,
                     "latency_s": round(time.monotonic() - started, 2),
                 },
             )  # fmt: skip

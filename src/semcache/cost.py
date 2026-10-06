@@ -31,7 +31,7 @@ class Pricing:
 
 def routing_saving_total(pricing: Pricing, baseline: str, parts: list[tuple[str, int, int]]):
     """Saved versus running every token on `baseline`. `parts` is (model, tokens_in, tokens_out)
-    for each model that did work (e.g. a cheap planner plus the answering model)."""
+    for each model that did work (e.g. a classifier plus the answering model)."""
     if not pricing.known(baseline) or not all(pricing.known(m) for m, _, _ in parts):
         return 0.0
     spent = sum(pricing.cost(m, tin, tout) for m, tin, tout in parts)

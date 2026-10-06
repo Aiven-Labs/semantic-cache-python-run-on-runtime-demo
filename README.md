@@ -114,11 +114,6 @@ projects already in its prompt (from Valkey), so it doesn't pay model rounds to 
 follow-ups skip that prefetch. Search calls report whether GitHub was queried or the semantic cache
 answered.
 
-**Planning (off by default).** A cheap model can draft a short plan for the executor, set with
-`planner_model` and `plan_routes` in `settings.toml`. Plans are validated strictly and discarded if
-they are not numbered steps using real tools. It is off because, measured earlier on local models,
-plans took 26-44 s and were only sometimes valid (not re-measured on the hosted models).
-
 **Follow-up suggestions.** After each reply, chips below the chat offer next steps built from the
 repos that reply found or opened (look at its files, compare the top two, is it Runtime-ready,
 find similar). They cost nothing, since no model call is involved, and are saved with the
@@ -170,7 +165,7 @@ fails loudly. It is mounted into the app container: edit it and restart, no rebu
 | Section | Controls |
 |---|---|
 | `[cache]` | cosine distance and TTL for the GitHub-search cache and the chat-answer cache |
-| `[routing]` | router cutoffs, the hit/miss models and coverage test, always-expensive routes, per-route pins, follow-up model, optional free-model planning |
+| `[routing]` | router cutoffs, the hit/miss models and coverage test, always-expensive routes, per-route pins, follow-up model |
 | `[chat]` | history turns, conversation TTL, tool rounds |
 | `[search]` | GitHub results per new search |
 | `[cost.models."<name>"]` | USD per 1M input / output tokens for each model |

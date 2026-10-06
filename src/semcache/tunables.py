@@ -41,10 +41,6 @@ class RoutingCfg(_Strict):
     # When nothing matches, they inherit the previous tool route and use this model instead.
     followup_max_words: int = Field(ge=0)
     followup_model: str = Field(min_length=1)
-    # A free model drafts a short plan; the model picked by distance then executes it with tools.
-    planner_model: str = Field(min_length=1)
-    plan_max_tokens: int = Field(ge=50, le=2000)
-    plan_routes: list[str]  # routes that get a plan; [] turns planning off
 
 
 class ChatCfg(_Strict):

@@ -125,9 +125,6 @@ async def lifespan(app: FastAPI):
         repo_cache=repo_cache,
         followup_max_words=tunables.routing.followup_max_words,
         followup_model=tunables.routing.followup_model,
-        planner_model=tunables.routing.planner_model,
-        plan_max_tokens=tunables.routing.plan_max_tokens,
-        plan_routes=tunables.routing.plan_routes,
     )  # fmt: skip
     yield
 

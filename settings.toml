@@ -17,20 +17,6 @@ smalltalk_max_distance = 0.28    # small talk gets a little more room (it is sho
 # tool route and answers with followup_model, without calling the classifier.
 followup_max_words = 8
 followup_model = "claude-haiku-4-5"
-# Planning: for fresh questions on tool routes (agent, analysis, inspect), a FREE model drafts a
-# short numbered plan (which tools to call, in what order) with no tools of its own. The model
-# chosen by hit/miss below then executes the plan with the tools, up to chat.max_tool_steps
-# rounds. Skipped when the chosen model is itself free, for short follow-ups, and when the
-# planner is not cheaper than the executor. A planner that is down just means no plan.
-planner_model = "qwen3-32b"   # must exist on the gateway
-plan_max_tokens = 600            # reasoning models spend tokens thinking before the plan appears
-# Planning is OFF by default. Measured earlier with LOCAL models (not re-measured on the hosted
-# ones): 26-44 s per plan on this
-# machine (longer than the answer itself), valid plans only 3 of 4 tries for gpt-oss-20b and 1 of
-# 4 for Ornith (a reasoning model that thinks out loud), and on one question a junk plan made the
-# executor do extra tool calls (cost 3x). Turn it on per route when you have a fast, non-reasoning
-# local model, e.g. plan_routes = ["inspect"].
-plan_routes = []
 
 # Routes that need reasoning rather than retrieval. They always get the expensive model.
 always_expensive = ["analysis"]
@@ -85,7 +71,7 @@ output_per_mtok = 5.00
 input_per_mtok = 3.00
 output_per_mtok = 15.00
 
-# Estimates, not published by the gateway (it has no /model/info). Edit to match your billing.
+# Aiven gateway list price for qwen3-32b (the gateway has no /model/info, so this is copied by hand).
 [cost.models."qwen3-32b"]
-input_per_mtok = 0.15
-output_per_mtok = 0.60
+input_per_mtok = 0.189
+output_per_mtok = 0.735

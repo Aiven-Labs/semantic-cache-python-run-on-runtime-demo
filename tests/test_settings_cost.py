@@ -14,9 +14,6 @@ max_distance = 0.25
 smalltalk_max_distance = 0.28
 followup_max_words = 8
 followup_model = "mid"
-planner_model = "near"
-plan_max_tokens = 350
-plan_routes = ["agent"]
 always_expensive = ["analysis"]
 [routing.models]
 hit = "near"

@@ -30,10 +30,7 @@ def test_configured_models_covers_every_selectable_model():
     assert {r.models.hit, r.models.classifier, r.models.miss, r.followup_model} <= names
     assert set(r.pin.values()) <= names
     expected = {r.models.hit, r.models.classifier, r.models.miss, r.followup_model, *r.pin.values()}
-    assert r.plan_routes == [] and names == expected  # planning is off: its model is not required
-    on = t.model_copy(update={"routing": r.model_copy(update={"plan_routes": ["inspect"],
-                                                           "planner_model": "some-planner"})})  # fmt: skip
-    assert "some-planner" in configured_models(on)  # ...but is required as soon as a route plans
+    assert names == expected  # exactly the models the settings can select, nothing else
 
 
 def test_every_model_in_the_real_settings_is_on_the_gateway_list():
@@ -125,7 +122,7 @@ def test_an_answer_cache_hit_still_pays_for_the_classifier_that_ran_first():
     classify = {"in": 1_000_000, "out": 100_000}  # 1M in + 0.1M out on haiku = $1.50
     ev = svc._cost_event(
         "sonnet", "miss", {"in": 0, "out": 0}, cache_hit=True, avoided=0.04,
-        planner="haiku", planner_usage=classify,
+        classifier="haiku", classifier_usage=classify,
     )  # fmt: skip
     assert ev["usd"] == pytest.approx(1.5) and ev["saved_usd"] == 0.04 and ev["saved_by"] == "cache"
     plain = svc._cost_event("sonnet", "miss", {"in": 0, "out": 0}, cache_hit=True, avoided=0.04)
