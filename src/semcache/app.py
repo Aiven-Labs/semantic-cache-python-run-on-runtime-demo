@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
+from typesafe_sdk import TypeSafeClient
 
 from .cache import SemanticCache
 from .catalog import Catalog, embed_text
@@ -30,6 +31,7 @@ from .details import (
 from .embed import LangChainEmbedder
 from .followups import STARTERS
 from .github import discover, list_dir, read_file, repo_info
+from .jev import JevClassifier
 from .manifest import EDIT_MANIFEST_URL, build_entry, fork_url, format_entry
 from .modelcheck import check as check_models
 from .repocache import RepoCache
@@ -103,6 +105,16 @@ async def lifespan(app: FastAPI):
             llms[model] = _llm(model)
         return llms[model]
 
+    jev = None
+    if settings.typesafe_api_key:
+        jcfg = tunables.routing.jev
+        jev = JevClassifier(
+            model=jcfg.model, min_confidence=jcfg.min_confidence,
+            client=TypeSafeClient(api_key=settings.typesafe_api_key),
+        )  # fmt: skip
+    else:
+        log.warning("TYPESAFE_API_KEY is not set: the gateway classifier runs instead of Jev")
+
     repo_cache = RepoCache(client, tunables.github.repo_cache_ttl_seconds)
     app.state.repo_cache = repo_cache
     pricing = Pricing(tunables.cost.models)
@@ -125,6 +137,7 @@ async def lifespan(app: FastAPI):
         repo_cache=repo_cache,
         followup_max_words=tunables.routing.followup_max_words,
         followup_model=tunables.routing.followup_model,
+        jev=jev,
     )  # fmt: skip
     yield
 

@@ -97,9 +97,9 @@ flowchart TD
   MT -- no --> FU{"Short follow-up of the previous turn?<br/>≤ 8 words, or ≤ 20 with 'that / it / the repo'<br/>and the previous route used tools"}
 
   FU -- yes --> FOLLOW["Route = previous route<br/>Model = followup_model (Haiku)<br/>tier: follow-up<br/>no classifier call"]
-  FU -- no --> CLS["Classifier call<br/>(Haiku, about 300 tokens in, 30 out)<br/>chat · search · repo · analysis · other"]
+  FU -- no --> CLS["Classifier call<br/>(Jev, about 300 tokens in; Haiku if no TYPESAFE_API_KEY)<br/>chat · search · repo · analysis · other"]
 
-  CLS -- "call failed" --> FALLBACK["Route = agent<br/>Model = classifier model (Haiku)<br/>tier: miss"]
+  CLS -- "call failed or confidence below min" --> FALLBACK["Route = agent<br/>Model = classifier model (Haiku)<br/>tier: miss"]
   CLS --> KIND["kind → route<br/>chat→smalltalk · search→find · repo→inspect<br/>analysis→analysis · other→agent"]
 
   KIND --> COV{"Does the cache cover it?"}
@@ -142,8 +142,8 @@ sequenceDiagram
   A->>E: embed(message)
   A->>V: KNN over router examples
   opt nothing matched and not a follow-up
-    A->>G: classifier call (Haiku)
-    G-->>A: {"kind", "query", "repo"}
+    A->>G: classifier call (Jev; Haiku without a key)
+    G-->>A: kind (Jev) or {"kind", "query", "repo"} (Haiku)
   end
   A->>V: cache checks (crawl cache, index coverage, repo cache)
   A-->>U: event meta: tier, model, reason
@@ -242,7 +242,8 @@ Search can be tuned in `settings.toml`: every distance, TTL, price and model nam
 |---|---|---|---|
 | Qwen3-Embedding-0.6B | embeddings (1024-d) | every message (route lookup, answer-cache lookup, search coverage), every repo ingested | OMLX on the host, **not** the gateway |
 | `qwen3-32b` | **hit** | the router matched, or the cache covers the message (and the route is not pinned or always-expensive) | gateway |
-| `claude-haiku-4-5` | **classifier** | the router matched nothing and it is not a short follow-up | gateway |
+| `jev-latest` | **classifier** | the router matched nothing and it is not a short follow-up | TypeSafe API (`TYPESAFE_API_KEY`) |
+| `claude-haiku-4-5` | classifier fallback | no TYPESAFE_API_KEY, or the agent answer when Jev fails or is unsure | gateway |
 | `claude-haiku-4-5` | follow-up and pinned `repo_facts` | short follow-ups; router-matched repo-fact questions | gateway |
 | `claude-sonnet-5-5` | **miss** | live GitHub data or reasoning is needed: `analysis` always, uncached searches, uncached repo questions, open-ended | gateway |
 | *(none)* | answer cache | the first message repeats an earlier `lookup` or `analysis` question | Valkey |

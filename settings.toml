@@ -33,8 +33,15 @@ always_expensive = ["analysis"]
 # for "saved by routing" in the cost readout.
 [routing.models]
 hit = "qwen3-32b"                  # cheapest: answers from what is already cached (hosted on the gateway)
-classifier = "claude-haiku-4-5"     # mid tier: decides what an unmatched message is asking for
+classifier = "claude-haiku-4-5"     # mid tier: answers when Jev is off or unsure (and classifies if TYPESAFE_API_KEY is unset)
 miss = "claude-sonnet-5-5"          # expensive: live GitHub data or real reasoning
+
+# Jev (TypeSafe AI) classifies unmatched messages instead of `classifier` when TYPESAFE_API_KEY is
+# set. It picks the kind only; search words come from the message and the repo name from the catalog.
+# Below min_confidence we act as if the classifier were down: the mid-tier model answers with tools.
+[routing.jev]
+model = "jev-latest"
+min_confidence = 0.6
 
 # A search topic counts as already covered by the index when at least `index_hit_min` indexed
 # repos sit within `index_hit_distance` of it (a similar cached GitHub search also counts).
@@ -66,6 +73,11 @@ detail_ttl_seconds = 604800      # the Compose file saved when a repo is found (
 [cost.models."claude-haiku-4-5"]
 input_per_mtok = 1.00
 output_per_mtok = 5.00
+
+# TypeSafe list price: input $0.042 per million tokens, output not metered.
+[cost.models."jev-latest"]
+input_per_mtok = 0.042
+output_per_mtok = 0.0
 
 [cost.models."claude-sonnet-5-5"]   # placeholder: check your gateway's price
 input_per_mtok = 3.00

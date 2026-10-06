@@ -126,14 +126,18 @@ conversation so a reload shows them again. A new chat starts with starter chips.
     relevant repos, or a repo's details are cached.
   - **Miss:** live GitHub data or real reasoning is needed and neither check covered it. `analysis`
     (compare, rank, recommend) always counts as a miss, since it is reasoning, not retrieval.
-  - **Unmatched messages** ("oh i see", "diary apps?") go to a mid-tier **classifier** first: a call
-    of a few hundred tokens that says whether the message is chit-chat, a search, a question about
-    one repo, an analysis, or something else. Code then checks the cache. Matched messages skip it.
+  - **Unmatched messages** ("oh i see", "diary apps?") go to a **classifier** first: a call of a few
+    hundred tokens that says whether the message is chit-chat, a search, a question about one repo,
+    an analysis, or something else. Code then checks the cache. Matched messages skip it.
+    The classifier is [Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev) (TypeSafe
+    AI) when `TYPESAFE_API_KEY` is set. Jev picks the kind only, so the search words come from the
+    message and the repo name from the catalog. Below `[routing.jev] min_confidence`, or if Jev is
+    down, the mid-tier `classifier` model answers with tools. Without the key, that model classifies.
 
   ```toml
   [routing.models]
   hit = "qwen3-32b"                   # cheapest
-  classifier = "claude-haiku-4-5"     # mid tier
+  classifier = "claude-haiku-4-5"     # mid tier: fallback when Jev is off or unsure
   miss = "claude-sonnet-5-5"          # expensive (also the "saved by routing" baseline)
   [routing.coverage]                  # when does the index "cover" a search topic?
   index_hit_distance = 0.30
@@ -189,6 +193,7 @@ without them:
 | `SEMCACHE_EMBED_DIM` | `1024` |
 | `SEMCACHE_LLM_BASE_URL` | the Aiven AI gateway (OpenAI-compatible LiteLLM router); serves every chat model |
 | `SEMCACHE_LLM_API_KEY` | (secret) key for that gateway |
+| `TYPESAFE_API_KEY` | (secret, optional) TypeSafe AI key; turns on the Jev classifier |
 
 `GITHUB_TOKEN` is optional (raises rate limits). Embeddings are the one thing still local: the
 gateway has no embeddings endpoint, so `SEMCACHE_EMBED_*` points at OMLX, and in `compose.yaml`

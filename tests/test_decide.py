@@ -250,3 +250,53 @@ def test_classifier_search_words_drive_the_search():
     assert "found/journaling apps" in ctx and 'search "journaling apps"' in note
     ctx2, _ = svc._context("find", "find me feature flags", [], query="")
     assert f"found/{extract_query('find me feature flags')}" in ctx2  # no classifier: old behavior
+
+
+# ---- Jev as the classifier ----------------------------------------------------------------------
+class FakeJev:
+    """Stands in for JevClassifier: canned kind, or an exception."""
+
+    model = "jev-latest"
+
+    def __init__(self, kind="other", error=None):
+        self.kind, self.error = kind, error
+
+    def classify(self, history, message, usage):
+        if self.error:
+            raise self.error
+        usage["in"] += 40
+        return {"kind": self.kind, "query": "", "repo": ""}
+
+
+def jev_service(kind="other", error=None, **kw):
+    svc = service(**kw)
+    svc.jev = FakeJev(kind, error)
+    return svc
+
+
+def test_jev_classifies_without_calling_the_gateway_model():
+    svc = jev_service("chat")
+    d, usage = decide(svc)
+    assert (d.route, d.tier, d.classifier_used) == ("smalltalk", "hit", True)
+    assert svc.llm.calls == 0 and usage["in"] == 40
+    assert svc.classifier_name == "jev-latest"
+
+
+def test_a_jev_repo_answer_gets_its_repo_from_the_catalog():
+    svc = jev_service(
+        "repo", candidates=[{"name": "langgenius/dify", "distance": 0.1}], known={"langgenius/dify"}
+    )
+    d, _ = decide(svc, "what language is Dify written in?")
+    assert (d.route, d.repo) == ("inspect", "langgenius/dify")
+
+
+def test_a_repo_name_that_is_not_in_the_message_is_not_guessed():
+    svc = jev_service("repo", candidates=[{"name": "langgenius/dify", "distance": 0.1}])
+    d, _ = decide(svc, "what language is it written in?")
+    assert d.route == "inspect" and d.repo == ""
+
+
+def test_a_jev_failure_falls_back_to_the_mid_tier_model():
+    d, _ = decide(jev_service(error=RuntimeError("boom")))
+    assert (d.route, d.model, d.classifier_used) == ("agent", "haiku", False)
+    assert "classifier unavailable" in d.reason

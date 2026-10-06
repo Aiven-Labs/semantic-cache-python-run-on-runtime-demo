@@ -303,7 +303,12 @@ def inherit_route(history: list[dict], message: str, route: str, max_words: int)
     return prev if prev in TOOL_ROUTES else FALLBACK
 
 
+_OWNER_NAME = re.compile(r"(?<![\w./-])([A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100})(?![\w/-])")
+
+
 class ChatService:
+    jev = None  # a JevClassifier when TYPESAFE_API_KEY is set; otherwise the gateway classifier
+
     def __init__(
         self,
         *,
@@ -328,7 +333,9 @@ class ChatService:
         repo_cache: RepoCache | None = None,
         followup_max_words: int = 0,
         followup_model: str = "",
+        jev=None,
     ):
+        self.jev = jev
         self.store, self.catalog, self.embedder = store, catalog, embedder
         self.llm_for, self.models, self.coverage = llm_for, models, coverage
         self.baseline_model = models.miss  # "saved by routing" compares against the miss model
@@ -558,8 +565,32 @@ class ChatService:
         return templates_block() + "\n\n" + repos_block(repos), None
 
     # ---- hit or miss ----------------------------------------------------------------------------
+    @property
+    def classifier_name(self) -> str:
+        """The model that classified, for pricing and the cost readout."""
+        return self.jev.model if self.jev else self.models.classifier
+
+    def _resolve_repo(self, message: str) -> str:
+        """Jev cannot name the repo, so find it: an owner/name in the message, or a catalog repo
+        whose name appears in it as a whole word. Empty when unsure (the model is then told nothing,
+        rather than something made up)."""
+        for token in _OWNER_NAME.findall(message):
+            if self.catalog.get("candidate", token):
+                return token
+        near = self.catalog.search(self.embedder.embed(message), "candidate", k=8)
+        for c in near:
+            short = c["name"].split("/")[-1]
+            if re.search(rf"(?<![\w-]){re.escape(short)}(?![\w-])", message, re.I):
+                return c["name"]
+        return ""
+
     def _classify(self, history: list[dict], message: str, usage: dict) -> dict:
-        """Mid-tier call: what is this message asking for? Never raises past `_decide`."""
+        """What is this message asking for? Never raises past `_decide`."""
+        if self.jev:
+            out = self.jev.classify(history, message, usage)
+            if out["kind"] == "repo":
+                out["repo"] = self._resolve_repo(message)
+            return out
         recent = "\n".join(
             f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content'][:300]}"
             for m in history[-4:]
@@ -672,7 +703,7 @@ class ChatService:
                     avoided = 0.0
                 cost = self._cost_event(
                     model, tier, {"in": 0, "out": 0}, cache_hit=True, avoided=avoided,
-                    classifier=self.models.classifier if decision.classifier_used else "",
+                    classifier=self.classifier_name if decision.classifier_used else "",
                     classifier_usage=classify_usage,
                 )  # fmt: skip
                 yield cost
@@ -738,7 +769,7 @@ class ChatService:
         if answer:
             cost = self._cost_event(
                 model, tier, usage,
-                classifier=self.models.classifier if decision.classifier_used else "",
+                classifier=self.classifier_name if decision.classifier_used else "",
                 classifier_usage=classify_usage,
             )  # fmt: skip
             yield cost
@@ -768,7 +799,7 @@ class ChatService:
         """A turn that errored or came back empty still spent tokens; keep the totals honest."""
         spent = self.pricing.cost(model, usage["in"], usage["out"])
         if decision.classifier_used:
-            spent += self.pricing.cost(self.models.classifier, classify["in"], classify["out"])
+            spent += self.pricing.cost(self.classifier_name, classify["in"], classify["out"])
         if spent:
             self.stats.record(spent, 0.0, 0.0, cache_hit=False)
 

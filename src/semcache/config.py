@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     llm_base_url: str  # SEMCACHE_LLM_BASE_URL
     llm_api_key: str  # SEMCACHE_LLM_API_KEY
 
+    # Jev classifier (TypeSafe AI). Optional: without it the settings.toml classifier runs.
+    typesafe_api_key: str | None = Field(
+        None, validation_alias=AliasChoices("TYPESAFE_API_KEY", "SEMCACHE_TYPESAFE_API_KEY")
+    )
+
     # Index names. The tunable numbers (distances, TTLs, prices) live in settings.toml.
     cache_index: str = "idx:crawlcache"
     cache_prefix: str = "crawlcache:"

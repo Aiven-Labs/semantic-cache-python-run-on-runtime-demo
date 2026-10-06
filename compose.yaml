@@ -19,6 +19,8 @@ services:
       SEMCACHE_LLM_BASE_URL: ${SEMCACHE_LLM_BASE_URL:?set in fnox}
       SEMCACHE_LLM_API_KEY: ${SEMCACHE_LLM_API_KEY:?set in fnox}
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      # Optional: turns on the Jev classifier (otherwise the gateway classifier runs).
+      TYPESAFE_API_KEY: ${TYPESAFE_API_KEY:-}
     depends_on:
       - valkey
   valkey:

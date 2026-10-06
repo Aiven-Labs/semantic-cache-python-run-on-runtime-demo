@@ -23,6 +23,13 @@ class ModelsCfg(_Strict):
     miss: str = Field(min_length=1)  # expensive: live GitHub data or real reasoning
 
 
+class JevCfg(_Strict):
+    """Jev (TypeSafe AI) classifies unmatched messages when TYPESAFE_API_KEY is set."""
+
+    model: str = Field(min_length=1)
+    min_confidence: float = Field(ge=0, le=1)  # below this, treat the classifier as unavailable
+
+
 class CoverageCfg(_Strict):
     """When does the cache 'cover' a search topic, so a fresh GitHub search would add little?"""
 
@@ -34,6 +41,7 @@ class RoutingCfg(_Strict):
     max_distance: float = Field(ge=0, le=2)
     smalltalk_max_distance: float = Field(ge=0, le=2)
     models: ModelsCfg
+    jev: JevCfg
     coverage: CoverageCfg
     always_expensive: list[str]  # routes that need reasoning, never retrieval (e.g. analysis)
     pin: dict[str, str]  # route name -> model, overriding the distance table (may be empty)

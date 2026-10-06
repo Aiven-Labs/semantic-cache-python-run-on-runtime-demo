@@ -19,6 +19,9 @@ always_expensive = ["analysis"]
 hit = "near"
 classifier = "mid"
 miss = "far"
+[routing.jev]
+model = "jev-test"
+min_confidence = 0.6
 [routing.coverage]
 index_hit_distance = 0.3
 index_hit_min = 3
