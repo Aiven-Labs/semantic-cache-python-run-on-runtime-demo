@@ -280,6 +280,13 @@ def test_jev_classifies_without_calling_the_gateway_model():
     assert (d.route, d.tier, d.classifier_used) == ("smalltalk", "hit", True)
     assert svc.llm.calls == 0 and usage["in"] == 40
     assert svc.classifier_name == "jev-latest"
+    assert "router missed at" in d.reason  # the distance is the router's miss, not Jev's
+
+
+def test_a_jev_search_gets_its_words_so_the_cache_can_cover_it():
+    svc = jev_service("search", cached_search=True)
+    d, _ = decide(svc, "find me popular otel collectors")
+    assert (d.route, d.tier, d.query) == ("find", "hit", "otel collectors")
 
 
 def test_a_jev_repo_answer_gets_its_repo_from_the_catalog():

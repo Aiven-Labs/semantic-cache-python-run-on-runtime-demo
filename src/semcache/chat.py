@@ -590,6 +590,8 @@ class ChatService:
             out = self.jev.classify(history, message, usage)
             if out["kind"] == "repo":
                 out["repo"] = self._resolve_repo(message)
+            elif out["kind"] == "search":  # Jev cannot write the words; the cache check needs them
+                out["query"] = extract_query(message)
             return out
         recent = "\n".join(
             f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content'][:300]}"
@@ -670,6 +672,8 @@ class ChatService:
         )
         if matched:
             reason += f" ({distance:.2f})"
+        elif classified:  # distance is the router's nearest example, and it missed
+            reason += f" (router missed at {distance:.2f})"
         model, tier = choose_model(hit, route, self.models, self.route_pins, self.always_expensive)
         return Decision(route, model, tier, reason, distance, query, classified, target)
 
