@@ -180,6 +180,28 @@ priced at the `miss` model, minus the chosen model's cost; a counterfactual, not
 served at `/stats`. Token counts come from the model server; if it sends none, they are
 estimated at about 4 characters per token and flagged.
 
+## Settings page
+
+`/settings` shows which model makes each decision (hit, fallback classifier, miss, follow-up, and
+any route pinned to one model) and the list of models with their prices. You can change both
+without a restart; the next chat message uses the new choice.
+
+- **Pick a model:** each decision is a dropdown of the models on the list. A decision can only use
+  a model that is on the list.
+- **Add models and prices from CSV:** paste rows or upload a file with the header
+  `model,input_per_mtok,output_per_mtok`. Prices are USD per million tokens and can be written
+  `1.155` or `$1.155/M`. A row with a name already on the list updates its price. If any row is
+  wrong, nothing is imported and the page says which line. "Download the current list" exports the
+  same format. Spreadsheet pastes (tab-separated) work too.
+- **Where it is saved:** in Valkey, over the defaults in `settings.toml`. A restart keeps the
+  changes. Models from `settings.toml` can be repriced but not removed; a model a decision is using
+  can not be removed.
+- **Editing needs a token.** The app has no logins, so changes are off until `SEMCACHE_ADMIN_TOKEN`
+  is set (keep it in fnox: `fnox set SEMCACHE_ADMIN_TOKEN`). Without it the page is read-only. The
+  token is checked on every change and is never logged.
+- Models the gateway does not serve are flagged on the page. Jev's model and confidence gate are
+  read-only here; change them in `settings.toml`.
+
 ## Run locally
 
 All of these must be in the environment (fnox). There are no defaults and the app won't start

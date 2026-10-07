@@ -21,6 +21,8 @@ services:
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
       # Optional: turns on the Jev classifier (otherwise the gateway classifier runs).
       TYPESAFE_API_KEY: ${TYPESAFE_API_KEY:-}
+      # Optional: lets you change models and prices on /settings. Without it the page is read-only.
+      SEMCACHE_ADMIN_TOKEN: ${SEMCACHE_ADMIN_TOKEN:-}
     depends_on:
       - valkey
   valkey:

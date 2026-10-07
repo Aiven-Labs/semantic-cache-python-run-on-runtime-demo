@@ -36,6 +36,12 @@ class Settings(BaseSettings):
         None, validation_alias=AliasChoices("TYPESAFE_API_KEY", "SEMCACHE_TYPESAFE_API_KEY")
     )
 
+    # Editing models and prices on /settings is off unless this is set (the app has no logins).
+    # Keep it in fnox; never log it.
+    admin_token: str | None = Field(
+        None, validation_alias=AliasChoices("SEMCACHE_ADMIN_TOKEN", "ADMIN_TOKEN")
+    )
+
     # Index names. The tunable numbers (distances, TTLs, prices) live in settings.toml.
     cache_index: str = "idx:crawlcache"
     cache_prefix: str = "crawlcache:"

@@ -33,9 +33,12 @@ from .followups import STARTERS
 from .github import discover, list_dir, read_file, repo_info
 from .jev import JevClassifier
 from .manifest import EDIT_MANIFEST_URL, build_entry, fork_url, format_entry
+from .model_settings import ModelSettings
 from .modelcheck import check as check_models
+from .modelcheck import gateway_models
 from .repocache import RepoCache
 from .seed import TEMPLATES
+from .settings_page import router as settings_router
 
 log = logging.getLogger("uvicorn.error")
 HERE = Path(__file__).parent
@@ -136,11 +139,24 @@ async def lifespan(app: FastAPI):
         followup_model=tunables.routing.followup_model,
         jev=jev,
     )  # fmt: skip
+
+    # Models and prices edited on /settings are saved in Valkey and win over settings.toml.
+    app.state.model_settings = ModelSettings(client, tunables)
+    app.state.admin_token = settings.admin_token
+    app.state.gateway_models = gateway_models(settings.llm_base_url, settings.llm_api_key)
+    try:
+        prices, models, followup, pins = app.state.model_settings.effective()
+        app.state.chat.apply_models(models, pins, followup, prices)
+    except Exception:  # bad saved data must not stop the app: it runs on settings.toml instead
+        log.exception("could not apply the models saved on /settings; using settings.toml")
+    if not settings.admin_token:
+        log.info("SEMCACHE_ADMIN_TOKEN is not set: /settings is read-only")
     yield
 
 
 app = FastAPI(title="Template Scout", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
+app.include_router(settings_router)
 
 
 @app.get("/healthz")

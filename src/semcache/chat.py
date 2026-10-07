@@ -563,6 +563,13 @@ class ChatService:
         seen.extend(repos)
         return templates_block() + "\n\n" + repos_block(repos), None
 
+    def apply_models(self, models, pins: dict[str, str], followup_model: str, prices: dict) -> None:
+        """Swap which model makes each decision, and the price table, while the app runs.
+        A turn already in flight keeps the model it started with."""
+        self.models, self.route_pins, self.followup_model = models, dict(pins), followup_model
+        self.baseline_model = models.miss  # "saved by routing" compares against the miss model
+        self.pricing.replace(prices)
+
     # ---- hit or miss ----------------------------------------------------------------------------
     @property
     def classifier_name(self) -> str:
