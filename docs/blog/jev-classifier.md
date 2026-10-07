@@ -60,14 +60,14 @@ def classify(text: str) -> str:
 ```
 
 It is instant, free and deterministic, and on 81 in-scope messages it scored **84.0%** (13 wrong).
-It caught 7 of the 12 off-topic messages. That is better than I expected for forty lines. It is
+It caught 7 of the 12 off-topic messages. That is better than I expected for a few dozen lines. It is
 also optimistic, because I had already read the 93 messages when I wrote it.
 
 The mistakes are all the same kind of mistake:
 
-- **Vocabulary it was never given.** Nine of the 13 misses are small talk: "yo", "morning!",
+- **Vocabulary it was never given.** Ten of the 13 misses are small talk: "yo", "morning!",
   "sweet", "ha, funny", "that makes sense", "appreciate the help". None is in the keyword list, so
-  they fall to the last rule, which treats any short phrase that is not a question as a search
+  nine of them fall to the last rule, which treats any short phrase that is not a question as a search
   topic. A model reads "sweet" as a reaction without being told.
 - **Phrasing without the keyword.** "any open source CRM worth a look?" is a search, but it contains
   none of the search words. "Which categories are we missing templates for?" is an analysis with no
@@ -288,7 +288,7 @@ A few things stand out.
 **Off-topic is a solved problem for a model once there is a place to put it.** All six models caught all 12; the rules caught 7. The
 interesting error runs the other way: calling a real question out of scope. Qwen did it twice
 ("sweet", "forget it") and Jev twice ("what database does Directus need?", "what would it take to
-turn n8n into a template?"). The other four never did, and neither did the rules, which never called an in-scope message off-topic but left 5 off-topic ones unflagged.
+turn n8n into a template?"). The other four never did. The rules never refused an in-scope message either, but they left 5 of the 12 off-topic ones unflagged.
 
 **Bigger did not mean better.** The top four are within two messages out of 81, which is inside what
 relabeling a few judgment calls would change, so I would call them tied. Opus 5, the most expensive
