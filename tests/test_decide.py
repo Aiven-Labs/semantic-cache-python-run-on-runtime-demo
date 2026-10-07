@@ -96,6 +96,9 @@ class Cat:
     def search(self, vec, kind, services=None, k=10):
         return self.route_hits if kind == "turn" else self.candidates
 
+    def route_stats(self, route):  # a route whose questions sit about 0.2 apart, +/- 0.025
+        return 30, 0.2, 0.025
+
     def get(self, kind, name):
         return {"name": name, "compose_path": ""} if name in self.known else None
 
@@ -133,7 +136,7 @@ def service(*, route_hits=None, candidates=None, reply='{"kind": "other"}', cach
     svc.models, svc.coverage, svc.baseline_model = MODELS, COVERAGE, "sonnet"
     svc.always_expensive, svc.route_pins = EXPENSIVE, pins or {}
     svc.search_cached = lambda q: cached_search
-    svc.route_max_distance, svc.route_limits = 0.25, {"smalltalk": 0.28}
+    svc.route_vote = SimpleNamespace(k=5, min_share=0.6, min_samples=5, spread=2.0)
     svc.followup_max_words, svc.followup_model = 8, "haiku"
     svc.repo_cache = RepoCache(FakeR(), 60)
     return svc

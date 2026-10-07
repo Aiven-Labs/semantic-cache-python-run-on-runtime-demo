@@ -23,7 +23,7 @@ HIST = [
 
 
 def test_report_contains_the_debugging_facts():
-    snap = {"routing": {"max_distance": 0.25}}
+    snap = {"routing": {"followup_max_words": 8}}
     r = build_report("conv-12345678", HIST, {"requests": 3}, snap)
     assert "conv-12345678" in r and "failed turns: 1" in r and "turns: 2" in r
     assert "repo(repo='difyorg/dify')` → FAILED" in r
@@ -32,7 +32,7 @@ def test_report_contains_the_debugging_facts():
     assert "route=repo_facts" in r and "tier=pinned" in r and "latency=17.2s" in r
     assert "tokens=5000 in / 400 out" in r and "cost=$0.012" in r
     assert "**Error**" in r and "ReadTimeout: slow" in r and "no result recorded" in r
-    assert "searched GitHub for Dify" in r and "routing.max_distance = 0.25" in r
+    assert "searched GitHub for Dify" in r and "routing.followup_max_words = 8" in r
 
 
 def test_report_fences_survive_backticks_in_answers():

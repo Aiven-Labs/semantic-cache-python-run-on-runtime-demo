@@ -10,11 +10,14 @@ crawl_ttl_seconds = 60
 answer_max_distance = 0.08
 answer_ttl_seconds = 60
 [routing]
-max_distance = 0.25
-smalltalk_max_distance = 0.28
 followup_max_words = 8
 followup_model = "mid"
 always_expensive = ["analysis"]
+[routing.vote]
+k = 5
+min_share = 0.6
+min_samples = 5
+spread = 2.0
 [routing.models]
 hit = "near"
 classifier = "mid"
@@ -55,7 +58,7 @@ def test_load_good(tmp_path):
 
 def test_repo_settings_file_is_valid():
     t = load_tunables("settings.toml")
-    assert t.cost.models and t.routing.max_distance > 0
+    assert t.cost.models and t.routing.vote.k > 0
 
 
 def test_missing_file(tmp_path):

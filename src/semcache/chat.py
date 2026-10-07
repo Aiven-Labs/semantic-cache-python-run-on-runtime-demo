@@ -25,7 +25,7 @@ from .embed import Embedder
 from .followups import build_suggestions, follow_the_answer
 from .github import list_dir, read_file, repo_info
 from .repocache import RepoCache
-from .routes import FALLBACK, record_turn, route_match
+from .routes import FALLBACK, record_turn, vote_match
 from .seed import TEMPLATES
 
 _CID = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
@@ -323,8 +323,7 @@ class ChatService:
         search_cached: Callable[[str], bool],
         answer_cache: SemanticCache,
         search: Callable[[str], dict],
-        route_max_distance: float,
-        route_limits: dict[str, float],
+        route_vote,
         history_turns: int,
         max_tool_steps: int,
         pricing: Pricing,
@@ -342,8 +341,8 @@ class ChatService:
         self.always_expensive, self.route_pins = set(always_expensive), route_pins
         self.search_cached = search_cached
         self.answer_cache, self.search = answer_cache, search
-        self.route_max_distance, self.history_turns = route_max_distance, history_turns
-        self.route_limits, self.max_tool_steps = route_limits, max_tool_steps
+        self.route_vote, self.history_turns = route_vote, history_turns
+        self.max_tool_steps = max_tool_steps
         self.pricing, self.stats, self.github_token = pricing, stats, github_token
         self.repo_cache = repo_cache
         self.followup_max_words, self.followup_model = followup_max_words, followup_model
@@ -635,9 +634,7 @@ class ChatService:
         )
 
     def _decide(self, history: list[dict], message: str, usage: dict) -> Decision:
-        route, distance = route_match(
-            self.catalog, self.embedder, message, self.route_max_distance, self.route_limits
-        )
+        route, distance = vote_match(self.catalog, self.embedder, message, self.route_vote)
         if route is None:
             inherited = inherit_route(history, message, FALLBACK, self.followup_max_words)
             if inherited and self.followup_model:
