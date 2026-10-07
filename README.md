@@ -224,10 +224,18 @@ Both write a report into `benchmarks/`. They need the secrets in fnox, and `mise
 ```sh
 mise run bench-classifiers                              # Jev, Qwen, Haiku, Sonnet, Opus -> report.md
 mise run bench-classifiers -- claude-opus-5 qwen3-32b   # or pick your own models
+mise run bench-classifiers -- --formats all             # json, csv, html, pdf, md (default: md,json)
+mise run bench-classifiers -- --from-saved --formats html,pdf   # re-render, no model calls
 mise run bench-routing                                  # router strategies on the same messages
 uv run pytest tests/test_benchmark.py tests/test_classifier_report.py   # no network needed
 ```
 
+- Every result in every format has a test id, `classifier-compare::<model>::<id>`. The id is the
+  first 8 hex digits of the message's SHA-256 (case and spacing ignored), so a message keeps its id
+  across runs and formats. JSON and CSV have one row per message per model; Markdown, HTML and PDF
+  add a pass/fail grid, each model's mistakes and where the models disagree. PDF needs
+  `uv sync --extra report`. Use `--out-dir` to write somewhere else. The formats come from
+  `src/semcache/report.py`, which any other test run can reuse.
 - `benchmarks/routing.jsonl` is the labeled set (93 messages, 12 of them off-topic). Add your own
   lines as `{"text": "...", "route": "find|inspect|analysis|smalltalk|agent"}`; `agent` means
   out of scope.

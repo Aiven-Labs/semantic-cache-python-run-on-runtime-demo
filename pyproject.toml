@@ -22,10 +22,14 @@ dependencies = [
 tui = [
     "textual>=8.2.8",
 ]
+report = [
+    "reportlab>=5.0.1",
+]
 
 [dependency-groups]
 dev = [
     "pytest>=8",
+    "reportlab>=5.0.1",
     "ruff>=0.8",
     "textual>=8.2.8",
 ]

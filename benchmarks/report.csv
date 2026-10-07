@@ -1,0 +1,559 @@
+test_id,suite,subject,item_id,text,expected,actual,passed,in_scope,confidence,seconds,tokens_in,tokens_out
+classifier-compare::jev-latest::5209455b,classifier-compare,jev-latest,5209455b,what are some good otel options,search,search,True,True,1.0,0.422,552,61
+classifier-compare::jev-latest::67eb0776,classifier-compare,jev-latest,67eb0776,any good opentelemetry collectors?,search,search,True,True,1.0,0.183,554,61
+classifier-compare::jev-latest::02cbd68d,classifier-compare,jev-latest,02cbd68d,best observability tools,search,search,True,True,1.0,0.183,551,61
+classifier-compare::jev-latest::f49d21a0,classifier-compare,jev-latest,f49d21a0,good observability options?,search,search,True,True,1.0,0.222,552,61
+classifier-compare::jev-latest::31d9dd67,classifier-compare,jev-latest,31d9dd67,what are some good observability tools,search,search,True,True,1.0,0.163,554,61
+classifier-compare::jev-latest::ff3f51fd,classifier-compare,jev-latest,ff3f51fd,got any self-hosted feature toggle projects?,search,search,True,True,1.0,0.201,555,61
+classifier-compare::jev-latest::cd8f360a,classifier-compare,jev-latest,cd8f360a,diary apps,search,search,True,True,1.0,0.196,547,61
+classifier-compare::jev-latest::0714460b,classifier-compare,jev-latest,0714460b,API-first content management systems,search,search,True,True,0.92,0.21,550,61
+classifier-compare::jev-latest::3bc433fa,classifier-compare,jev-latest,3bc433fa,open source alternatives to Notion,search,search,True,True,1.0,0.409,551,61
+classifier-compare::jev-latest::e476be13,classifier-compare,jev-latest,e476be13,something like dayone,search,search,True,True,0.99,0.187,549,61
+classifier-compare::jev-latest::8ba408d7,classifier-compare,jev-latest,8ba408d7,ways to monitor Kafka clusters,search,search,True,True,0.95,0.17,550,61
+classifier-compare::jev-latest::5f946a29,classifier-compare,jev-latest,5f946a29,tools for tracing microservices,search,search,True,True,1.0,0.253,552,61
+classifier-compare::jev-latest::f90cb40e,classifier-compare,jev-latest,f90cb40e,what are good log aggregation projects,search,search,True,True,1.0,0.161,551,61
+classifier-compare::jev-latest::144fffd2,classifier-compare,jev-latest,144fffd2,self-hosted web analytics,search,search,True,True,0.92,0.251,551,61
+classifier-compare::jev-latest::aabb65b6,classifier-compare,jev-latest,aabb65b6,search GitHub for job queue dashboards,search,search,True,True,1.0,0.275,554,61
+classifier-compare::jev-latest::3ea9eb10,classifier-compare,jev-latest,3ea9eb10,any open source CRM worth a look?,search,search,True,True,1.0,0.185,553,61
+classifier-compare::jev-latest::6a8f2e51,classifier-compare,jev-latest,6a8f2e51,looking for a workflow engine,search,search,True,True,1.0,0.193,550,61
+classifier-compare::jev-latest::486433f5,classifier-compare,jev-latest,486433f5,anything similar to Redash?,search,search,True,True,1.0,0.214,551,61
+classifier-compare::jev-latest::6ce51210,classifier-compare,jev-latest,6ce51210,self-hosted password managers,search,search,True,True,1.0,0.207,551,61
+classifier-compare::jev-latest::0a5ade6e,classifier-compare,jev-latest,0a5ade6e,good alternatives to Grafana,search,search,True,True,1.0,0.169,550,61
+classifier-compare::jev-latest::ee737c3c,classifier-compare,jev-latest,ee737c3c,durable execution frameworks,search,search,True,True,0.95,0.295,548,61
+classifier-compare::jev-latest::cb05a57d,classifier-compare,jev-latest,cb05a57d,vector database projects,search,search,True,True,0.99,0.175,548,61
+classifier-compare::jev-latest::617501ed,classifier-compare,jev-latest,617501ed,what are some self-hosted wiki options,search,search,True,True,1.0,0.233,554,61
+classifier-compare::jev-latest::c114c8b4,classifier-compare,jev-latest,c114c8b4,apps for monitoring uptime,search,search,True,True,1.0,0.261,549,61
+classifier-compare::jev-latest::f4045867,classifier-compare,jev-latest,f4045867,open source scheduling tools,search,search,True,True,1.0,0.402,549,61
+classifier-compare::jev-latest::665f4762,classifier-compare,jev-latest,665f4762,what's out there for error tracking?,search,search,True,True,1.0,0.225,553,61
+classifier-compare::jev-latest::222a1a13,classifier-compare,jev-latest,222a1a13,what apps are built on Kafka?,search,search,True,True,0.9,0.173,552,61
+classifier-compare::jev-latest::5a279438,classifier-compare,jev-latest,5a279438,what programming language is Flowise built with?,repo,repo,True,True,0.6,0.217,554,61
+classifier-compare::jev-latest::349fa2df,classifier-compare,jev-latest,349fa2df,star count for prometheus/prometheus,repo,repo,True,True,1.0,0.2,554,61
+classifier-compare::jev-latest::f5898309,classifier-compare,jev-latest,f5898309,list the top-level folders in getsentry/sentry,repo,repo,True,True,0.96,0.265,557,61
+classifier-compare::jev-latest::7b5b3871,classifier-compare,jev-latest,7b5b3871,does langgenius/dify have a compose file?,repo,repo,True,True,1.0,0.184,556,61
+classifier-compare::jev-latest::a290777d,classifier-compare,jev-latest,a290777d,what license does Kestra use,repo,repo,True,True,0.86,0.162,551,61
+classifier-compare::jev-latest::564e2b35,classifier-compare,jev-latest,564e2b35,is featbit/featbit still maintained?,repo,repo,True,True,1.0,0.202,555,61
+classifier-compare::jev-latest::8c707b85,classifier-compare,jev-latest,8c707b85,look at the Dockerfile of immich-app/immich,repo,repo,True,True,0.96,0.187,558,61
+classifier-compare::jev-latest::5a53ec25,classifier-compare,jev-latest,5a53ec25,which services does plausible/analytics use,repo,repo,True,True,0.34,0.281,553,61
+classifier-compare::jev-latest::4008d774,classifier-compare,jev-latest,4008d774,read the README of n8n-io/n8n,repo,repo,True,True,0.94,0.205,557,61
+classifier-compare::jev-latest::898a61e2,classifier-compare,jev-latest,898a61e2,when was supabase/supabase last updated,repo,repo,True,True,0.99,0.358,554,61
+classifier-compare::jev-latest::423003a9,classifier-compare,jev-latest,423003a9,what's in the docker folder of appsmithorg/appsmith,repo,repo,True,True,1.0,0.163,559,61
+classifier-compare::jev-latest::3b61652e,classifier-compare,jev-latest,3b61652e,what database does Directus need?,repo,out_of_scope,False,True,0.38,0.187,553,63
+classifier-compare::jev-latest::61295329,classifier-compare,jev-latest,61295329,open the compose file for outline/outline,repo,repo,True,True,0.47,0.266,554,61
+classifier-compare::jev-latest::e36e2a7d,classifier-compare,jev-latest,e36e2a7d,how big is the SigNoz repo,repo,repo,True,True,1.0,0.178,553,61
+classifier-compare::jev-latest::7f1046cd,classifier-compare,jev-latest,7f1046cd,who maintains Uptime Kuma,repo,repo,True,True,0.87,0.386,551,61
+classifier-compare::jev-latest::a3d85595,classifier-compare,jev-latest,a3d85595,what does the Ghost repo's root folder look like,repo,repo,True,True,1.0,0.176,555,61
+classifier-compare::jev-latest::6c7b1943,classifier-compare,jev-latest,6c7b1943,is Metabase's compose file runtime-ready?,repo,repo,True,True,0.86,0.179,554,61
+classifier-compare::jev-latest::292c5a58,classifier-compare,jev-latest,292c5a58,compare the top two of those,analysis,analysis,True,True,1.0,0.174,551,61
+classifier-compare::jev-latest::2d43bb7d,classifier-compare,jev-latest,2d43bb7d,which of these would make the best new template?,analysis,analysis,True,True,0.76,0.191,555,61
+classifier-compare::jev-latest::646967e8,classifier-compare,jev-latest,646967e8,weigh the trade-offs between Grafana and Kibana,analysis,analysis,True,True,1.0,0.183,555,61
+classifier-compare::jev-latest::a287c6b7,classifier-compare,jev-latest,a287c6b7,rank these candidates for me,analysis,analysis,True,True,0.94,0.386,550,61
+classifier-compare::jev-latest::1cfe39fb,classifier-compare,jev-latest,1cfe39fb,which categories are we missing templates for?,analysis,search,False,True,0.36,0.219,553,61
+classifier-compare::jev-latest::545265e9,classifier-compare,jev-latest,545265e9,should we add Dify or Flowise?,analysis,analysis,True,True,0.75,0.339,554,61
+classifier-compare::jev-latest::ca2a8426,classifier-compare,jev-latest,ca2a8426,summarize the strengths and risks of these projects,analysis,analysis,True,True,0.99,0.223,553,61
+classifier-compare::jev-latest::0ee19809,classifier-compare,jev-latest,0ee19809,"which is the better fit for Aiven Runtime, Plausible or Umami?",analysis,analysis,True,True,1.0,0.288,562,61
+classifier-compare::jev-latest::4a8e090f,classifier-compare,jev-latest,4a8e090f,what would it take to turn n8n into a template?,analysis,out_of_scope,False,True,0.3,0.254,558,63
+classifier-compare::jev-latest::2173e863,classifier-compare,jev-latest,2173e863,pick the best of the three and say why,analysis,analysis,True,True,0.98,0.172,554,61
+classifier-compare::jev-latest::67cf5956,classifier-compare,jev-latest,67cf5956,recommend which one to build first,analysis,analysis,True,True,0.7,0.212,551,61
+classifier-compare::jev-latest::49d8c592,classifier-compare,jev-latest,49d8c592,is SigNoz or Uptrace the stronger candidate?,analysis,analysis,True,True,1.0,0.53,557,61
+classifier-compare::jev-latest::485837a3,classifier-compare,jev-latest,485837a3,compare Metabase and Redash as templates,analysis,analysis,True,True,1.0,0.163,553,61
+classifier-compare::jev-latest::d5216702,classifier-compare,jev-latest,d5216702,where do the existing templates overlap?,analysis,analysis,True,True,0.9,0.294,552,61
+classifier-compare::jev-latest::ce06092f,classifier-compare,jev-latest,ce06092f,hello!,chat,chat,True,True,1.0,0.225,547,61
+classifier-compare::jev-latest::e9058ab1,classifier-compare,jev-latest,e9058ab1,yo,chat,chat,True,True,1.0,0.2,546,61
+classifier-compare::jev-latest::7654bd3b,classifier-compare,jev-latest,7654bd3b,morning!,chat,chat,True,True,1.0,0.164,547,61
+classifier-compare::jev-latest::844347e5,classifier-compare,jev-latest,844347e5,thank you,chat,chat,True,True,1.0,0.282,547,61
+classifier-compare::jev-latest::341f722a,classifier-compare,jev-latest,341f722a,appreciate the help,chat,chat,True,True,1.0,0.166,548,61
+classifier-compare::jev-latest::6f2096e7,classifier-compare,jev-latest,6f2096e7,"alright, understood",chat,chat,True,True,0.94,0.194,548,61
+classifier-compare::jev-latest::c34045c1,classifier-compare,jev-latest,c34045c1,cool,chat,chat,True,True,0.99,0.247,546,61
+classifier-compare::jev-latest::b9043c16,classifier-compare,jev-latest,b9043c16,sweet,chat,chat,True,True,0.99,0.174,546,61
+classifier-compare::jev-latest::eaea2385,classifier-compare,jev-latest,eaea2385,exactly what I needed,chat,chat,True,True,1.0,0.214,549,61
+classifier-compare::jev-latest::d24d7435,classifier-compare,jev-latest,d24d7435,forget it,chat,other,False,True,0.29,0.162,547,61
+classifier-compare::jev-latest::4507f7dc,classifier-compare,jev-latest,4507f7dc,"ha, funny",chat,chat,True,True,0.86,0.177,548,61
+classifier-compare::jev-latest::385934c9,classifier-compare,jev-latest,385934c9,"oh, that's interesting",chat,chat,True,True,0.99,0.277,550,61
+classifier-compare::jev-latest::89cdc057,classifier-compare,jev-latest,89cdc057,that makes sense,chat,chat,True,True,0.99,0.213,548,61
+classifier-compare::jev-latest::47843e8d,classifier-compare,jev-latest,47843e8d,"excellent, many thanks",chat,chat,True,True,1.0,0.175,549,61
+classifier-compare::jev-latest::55b5e556,classifier-compare,jev-latest,55b5e556,"my bad, I read that wrong",chat,chat,True,True,0.74,0.192,552,61
+classifier-compare::jev-latest::69d91e77,classifier-compare,jev-latest,69d91e77,nice work,chat,chat,True,True,1.0,0.226,547,61
+classifier-compare::jev-latest::1e592d7f,classifier-compare,jev-latest,1e592d7f,can you explain that more simply?,chat,chat,True,True,0.99,0.413,552,61
+classifier-compare::jev-latest::691a8ef8,classifier-compare,jev-latest,691a8ef8,what made you choose that one?,chat,chat,True,True,0.98,0.176,552,61
+classifier-compare::jev-latest::b5013eb1,classifier-compare,jev-latest,b5013eb1,go on,chat,chat,True,True,0.7,0.189,547,61
+classifier-compare::jev-latest::b28cf7ed,classifier-compare,jev-latest,b28cf7ed,is that definitely right?,chat,chat,True,True,0.87,0.178,550,61
+classifier-compare::jev-latest::992dc95d,classifier-compare,jev-latest,992dc95d,say that again?,chat,chat,True,True,0.89,0.154,549,61
+classifier-compare::jev-latest::8e494a73,classifier-compare,jev-latest,8e494a73,what are you able to help with?,chat,chat,True,True,0.46,0.233,553,61
+classifier-compare::jev-latest::0e26c6be,classifier-compare,jev-latest,0e26c6be,what are you exactly?,chat,chat,True,True,0.45,0.143,550,61
+classifier-compare::jev-latest::05426928,classifier-compare,jev-latest,05426928,what's the weather in Atlanta?,out_of_scope,out_of_scope,True,False,1.0,0.235,552,63
+classifier-compare::jev-latest::f0d2a809,classifier-compare,jev-latest,f0d2a809,write me a haiku about databases,out_of_scope,out_of_scope,True,False,0.99,0.175,552,63
+classifier-compare::jev-latest::d45b0db2,classifier-compare,jev-latest,d45b0db2,how do I write a Dockerfile for a Python app?,out_of_scope,out_of_scope,True,False,1.0,0.164,558,63
+classifier-compare::jev-latest::c990cc06,classifier-compare,jev-latest,c990cc06,what is the capital of France?,out_of_scope,out_of_scope,True,False,1.0,0.192,552,63
+classifier-compare::jev-latest::87fab88e,classifier-compare,jev-latest,87fab88e,explain how HNSW indexes work,out_of_scope,out_of_scope,True,False,0.93,0.299,552,63
+classifier-compare::jev-latest::51f8270d,classifier-compare,jev-latest,51f8270d,translate 'good morning' into French,out_of_scope,out_of_scope,True,False,1.0,0.195,552,63
+classifier-compare::jev-latest::d21703e8,classifier-compare,jev-latest,d21703e8,what's 15% of 240?,out_of_scope,out_of_scope,True,False,1.0,0.2,557,63
+classifier-compare::jev-latest::8f3dbc19,classifier-compare,jev-latest,8f3dbc19,what's the difference between TCP and UDP?,out_of_scope,out_of_scope,True,False,1.0,0.181,554,63
+classifier-compare::jev-latest::db6acc5a,classifier-compare,jev-latest,db6acc5a,give me a regex that matches an email address,out_of_scope,out_of_scope,True,False,1.0,0.19,554,63
+classifier-compare::jev-latest::2055ba32,classifier-compare,jev-latest,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,1.0,0.523,554,63
+classifier-compare::jev-latest::9a5c72bd,classifier-compare,jev-latest,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,1.0,0.162,551,63
+classifier-compare::jev-latest::dae67444,classifier-compare,jev-latest,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,1.0,0.385,556,63
+classifier-compare::qwen3-32b::5209455b,classifier-compare,qwen3-32b,5209455b,what are some good otel options,search,search,True,True,,2.796,301,21
+classifier-compare::qwen3-32b::67eb0776,classifier-compare,qwen3-32b,67eb0776,any good opentelemetry collectors?,search,search,True,True,,0.425,301,21
+classifier-compare::qwen3-32b::02cbd68d,classifier-compare,qwen3-32b,02cbd68d,best observability tools,search,search,True,True,,0.66,298,20
+classifier-compare::qwen3-32b::f49d21a0,classifier-compare,qwen3-32b,f49d21a0,good observability options?,search,search,True,True,,0.523,299,21
+classifier-compare::qwen3-32b::31d9dd67,classifier-compare,qwen3-32b,31d9dd67,what are some good observability tools,search,search,True,True,,0.511,301,23
+classifier-compare::qwen3-32b::ff3f51fd,classifier-compare,qwen3-32b,ff3f51fd,got any self-hosted feature toggle projects?,search,search,True,True,,0.614,303,22
+classifier-compare::qwen3-32b::cd8f360a,classifier-compare,qwen3-32b,cd8f360a,diary apps,search,search,True,True,,0.62,296,20
+classifier-compare::qwen3-32b::0714460b,classifier-compare,qwen3-32b,0714460b,API-first content management systems,search,search,True,True,,0.507,299,25
+classifier-compare::qwen3-32b::3bc433fa,classifier-compare,qwen3-32b,3bc433fa,open source alternatives to Notion,search,search,True,True,,0.515,300,22
+classifier-compare::qwen3-32b::e476be13,classifier-compare,qwen3-32b,e476be13,something like dayone,search,search,True,True,,0.475,298,21
+classifier-compare::qwen3-32b::8ba408d7,classifier-compare,qwen3-32b,8ba408d7,ways to monitor Kafka clusters,search,search,True,True,,0.652,299,20
+classifier-compare::qwen3-32b::5f946a29,classifier-compare,qwen3-32b,5f946a29,tools for tracing microservices,search,search,True,True,,0.41,299,21
+classifier-compare::qwen3-32b::f90cb40e,classifier-compare,qwen3-32b,f90cb40e,what are good log aggregation projects,search,search,True,True,,0.422,300,19
+classifier-compare::qwen3-32b::144fffd2,classifier-compare,qwen3-32b,144fffd2,self-hosted web analytics,search,search,True,True,,0.394,299,22
+classifier-compare::qwen3-32b::aabb65b6,classifier-compare,qwen3-32b,aabb65b6,search GitHub for job queue dashboards,search,search,True,True,,0.512,301,20
+classifier-compare::qwen3-32b::3ea9eb10,classifier-compare,qwen3-32b,3ea9eb10,any open source CRM worth a look?,search,search,True,True,,0.563,302,20
+classifier-compare::qwen3-32b::6a8f2e51,classifier-compare,qwen3-32b,6a8f2e51,looking for a workflow engine,search,search,True,True,,0.366,299,19
+classifier-compare::qwen3-32b::486433f5,classifier-compare,qwen3-32b,486433f5,anything similar to Redash?,search,search,True,True,,0.517,300,23
+classifier-compare::qwen3-32b::6ce51210,classifier-compare,qwen3-32b,6ce51210,self-hosted password managers,search,search,True,True,,0.502,299,22
+classifier-compare::qwen3-32b::0a5ade6e,classifier-compare,qwen3-32b,0a5ade6e,good alternatives to Grafana,search,search,True,True,,0.616,299,22
+classifier-compare::qwen3-32b::ee737c3c,classifier-compare,qwen3-32b,ee737c3c,durable execution frameworks,search,search,True,True,,0.51,297,21
+classifier-compare::qwen3-32b::cb05a57d,classifier-compare,qwen3-32b,cb05a57d,vector database projects,search,search,True,True,,0.398,297,19
+classifier-compare::qwen3-32b::617501ed,classifier-compare,qwen3-32b,617501ed,what are some self-hosted wiki options,search,search,True,True,,0.383,302,21
+classifier-compare::qwen3-32b::c114c8b4,classifier-compare,qwen3-32b,c114c8b4,apps for monitoring uptime,search,search,True,True,,0.584,298,19
+classifier-compare::qwen3-32b::f4045867,classifier-compare,qwen3-32b,f4045867,open source scheduling tools,search,search,True,True,,0.476,298,20
+classifier-compare::qwen3-32b::665f4762,classifier-compare,qwen3-32b,665f4762,what's out there for error tracking?,search,search,True,True,,0.512,302,19
+classifier-compare::qwen3-32b::222a1a13,classifier-compare,qwen3-32b,222a1a13,what apps are built on Kafka?,search,search,True,True,,0.446,301,20
+classifier-compare::qwen3-32b::5a279438,classifier-compare,qwen3-32b,5a279438,what programming language is Flowise built with?,repo,repo,True,True,,0.555,303,22
+classifier-compare::qwen3-32b::349fa2df,classifier-compare,qwen3-32b,349fa2df,star count for prometheus/prometheus,repo,repo,True,True,,0.436,301,20
+classifier-compare::qwen3-32b::f5898309,classifier-compare,qwen3-32b,f5898309,list the top-level folders in getsentry/sentry,repo,repo,True,True,,0.511,304,20
+classifier-compare::qwen3-32b::7b5b3871,classifier-compare,qwen3-32b,7b5b3871,does langgenius/dify have a compose file?,repo,repo,True,True,,0.511,305,21
+classifier-compare::qwen3-32b::a290777d,classifier-compare,qwen3-32b,a290777d,what license does Kestra use,repo,repo,True,True,,0.382,301,19
+classifier-compare::qwen3-32b::564e2b35,classifier-compare,qwen3-32b,564e2b35,is featbit/featbit still maintained?,repo,repo,True,True,,0.745,303,21
+classifier-compare::qwen3-32b::8c707b85,classifier-compare,qwen3-32b,8c707b85,look at the Dockerfile of immich-app/immich,repo,repo,True,True,,0.921,306,22
+classifier-compare::qwen3-32b::5a53ec25,classifier-compare,qwen3-32b,5a53ec25,which services does plausible/analytics use,repo,repo,True,True,,1.023,301,20
+classifier-compare::qwen3-32b::4008d774,classifier-compare,qwen3-32b,4008d774,read the README of n8n-io/n8n,repo,repo,True,True,,0.576,305,23
+classifier-compare::qwen3-32b::898a61e2,classifier-compare,qwen3-32b,898a61e2,when was supabase/supabase last updated,repo,repo,True,True,,0.793,305,23
+classifier-compare::qwen3-32b::423003a9,classifier-compare,qwen3-32b,423003a9,what's in the docker folder of appsmithorg/appsmith,repo,repo,True,True,,0.429,306,21
+classifier-compare::qwen3-32b::3b61652e,classifier-compare,qwen3-32b,3b61652e,what database does Directus need?,repo,repo,True,True,,0.458,301,21
+classifier-compare::qwen3-32b::61295329,classifier-compare,qwen3-32b,61295329,open the compose file for outline/outline,repo,repo,True,True,,0.625,302,19
+classifier-compare::qwen3-32b::e36e2a7d,classifier-compare,qwen3-32b,e36e2a7d,how big is the SigNoz repo,repo,repo,True,True,,0.806,302,20
+classifier-compare::qwen3-32b::7f1046cd,classifier-compare,qwen3-32b,7f1046cd,who maintains Uptime Kuma,repo,repo,True,True,,0.509,300,24
+classifier-compare::qwen3-32b::a3d85595,classifier-compare,qwen3-32b,a3d85595,what does the Ghost repo's root folder look like,repo,repo,True,True,,0.424,304,23
+classifier-compare::qwen3-32b::6c7b1943,classifier-compare,qwen3-32b,6c7b1943,is Metabase's compose file runtime-ready?,repo,repo,True,True,,0.425,304,22
+classifier-compare::qwen3-32b::292c5a58,classifier-compare,qwen3-32b,292c5a58,compare the top two of those,analysis,analysis,True,True,,0.449,300,16
+classifier-compare::qwen3-32b::2d43bb7d,classifier-compare,qwen3-32b,2d43bb7d,which of these would make the best new template?,analysis,analysis,True,True,,0.446,304,16
+classifier-compare::qwen3-32b::646967e8,classifier-compare,qwen3-32b,646967e8,weigh the trade-offs between Grafana and Kibana,analysis,analysis,True,True,,0.511,305,16
+classifier-compare::qwen3-32b::a287c6b7,classifier-compare,qwen3-32b,a287c6b7,rank these candidates for me,analysis,analysis,True,True,,0.615,299,16
+classifier-compare::qwen3-32b::1cfe39fb,classifier-compare,qwen3-32b,1cfe39fb,which categories are we missing templates for?,analysis,analysis,True,True,,0.51,302,16
+classifier-compare::qwen3-32b::545265e9,classifier-compare,qwen3-32b,545265e9,should we add Dify or Flowise?,analysis,analysis,True,True,,0.407,303,16
+classifier-compare::qwen3-32b::ca2a8426,classifier-compare,qwen3-32b,ca2a8426,summarize the strengths and risks of these projects,analysis,analysis,True,True,,0.451,302,16
+classifier-compare::qwen3-32b::0ee19809,classifier-compare,qwen3-32b,0ee19809,"which is the better fit for Aiven Runtime, Plausible or Umami?",analysis,analysis,True,True,,0.474,310,16
+classifier-compare::qwen3-32b::4a8e090f,classifier-compare,qwen3-32b,4a8e090f,what would it take to turn n8n into a template?,analysis,analysis,True,True,,0.636,307,22
+classifier-compare::qwen3-32b::2173e863,classifier-compare,qwen3-32b,2173e863,pick the best of the three and say why,analysis,analysis,True,True,,0.33,303,16
+classifier-compare::qwen3-32b::67cf5956,classifier-compare,qwen3-32b,67cf5956,recommend which one to build first,analysis,analysis,True,True,,0.418,300,16
+classifier-compare::qwen3-32b::49d8c592,classifier-compare,qwen3-32b,49d8c592,is SigNoz or Uptrace the stronger candidate?,analysis,analysis,True,True,,0.563,305,16
+classifier-compare::qwen3-32b::485837a3,classifier-compare,qwen3-32b,485837a3,compare Metabase and Redash as templates,analysis,analysis,True,True,,0.442,303,16
+classifier-compare::qwen3-32b::d5216702,classifier-compare,qwen3-32b,d5216702,where do the existing templates overlap?,analysis,analysis,True,True,,0.391,301,16
+classifier-compare::qwen3-32b::ce06092f,classifier-compare,qwen3-32b,ce06092f,hello!,chat,chat,True,True,,0.497,296,16
+classifier-compare::qwen3-32b::e9058ab1,classifier-compare,qwen3-32b,e9058ab1,yo,chat,chat,True,True,,0.342,295,16
+classifier-compare::qwen3-32b::7654bd3b,classifier-compare,qwen3-32b,7654bd3b,morning!,chat,chat,True,True,,0.35,296,16
+classifier-compare::qwen3-32b::844347e5,classifier-compare,qwen3-32b,844347e5,thank you,chat,chat,True,True,,0.536,296,16
+classifier-compare::qwen3-32b::341f722a,classifier-compare,qwen3-32b,341f722a,appreciate the help,chat,chat,True,True,,0.414,297,16
+classifier-compare::qwen3-32b::6f2096e7,classifier-compare,qwen3-32b,6f2096e7,"alright, understood",chat,chat,True,True,,0.406,297,16
+classifier-compare::qwen3-32b::c34045c1,classifier-compare,qwen3-32b,c34045c1,cool,chat,chat,True,True,,0.496,295,16
+classifier-compare::qwen3-32b::b9043c16,classifier-compare,qwen3-32b,b9043c16,sweet,chat,out_of_scope,False,True,,0.389,295,18
+classifier-compare::qwen3-32b::eaea2385,classifier-compare,qwen3-32b,eaea2385,exactly what I needed,chat,chat,True,True,,0.388,298,16
+classifier-compare::qwen3-32b::d24d7435,classifier-compare,qwen3-32b,d24d7435,forget it,chat,out_of_scope,False,True,,0.4,296,18
+classifier-compare::qwen3-32b::4507f7dc,classifier-compare,qwen3-32b,4507f7dc,"ha, funny",chat,chat,True,True,,0.349,297,16
+classifier-compare::qwen3-32b::385934c9,classifier-compare,qwen3-32b,385934c9,"oh, that's interesting",chat,chat,True,True,,0.64,299,16
+classifier-compare::qwen3-32b::89cdc057,classifier-compare,qwen3-32b,89cdc057,that makes sense,chat,chat,True,True,,0.615,297,16
+classifier-compare::qwen3-32b::47843e8d,classifier-compare,qwen3-32b,47843e8d,"excellent, many thanks",chat,chat,True,True,,0.614,298,16
+classifier-compare::qwen3-32b::55b5e556,classifier-compare,qwen3-32b,55b5e556,"my bad, I read that wrong",chat,chat,True,True,,0.409,301,16
+classifier-compare::qwen3-32b::69d91e77,classifier-compare,qwen3-32b,69d91e77,nice work,chat,chat,True,True,,0.613,296,19
+classifier-compare::qwen3-32b::1e592d7f,classifier-compare,qwen3-32b,1e592d7f,can you explain that more simply?,chat,chat,True,True,,2.359,301,16
+classifier-compare::qwen3-32b::691a8ef8,classifier-compare,qwen3-32b,691a8ef8,what made you choose that one?,chat,chat,True,True,,0.581,301,16
+classifier-compare::qwen3-32b::b5013eb1,classifier-compare,qwen3-32b,b5013eb1,go on,chat,chat,True,True,,0.748,296,16
+classifier-compare::qwen3-32b::b28cf7ed,classifier-compare,qwen3-32b,b28cf7ed,is that definitely right?,chat,chat,True,True,,0.546,299,16
+classifier-compare::qwen3-32b::992dc95d,classifier-compare,qwen3-32b,992dc95d,say that again?,chat,chat,True,True,,0.698,298,16
+classifier-compare::qwen3-32b::8e494a73,classifier-compare,qwen3-32b,8e494a73,what are you able to help with?,chat,chat,True,True,,0.509,302,16
+classifier-compare::qwen3-32b::0e26c6be,classifier-compare,qwen3-32b,0e26c6be,what are you exactly?,chat,chat,True,True,,0.588,299,16
+classifier-compare::qwen3-32b::05426928,classifier-compare,qwen3-32b,05426928,what's the weather in Atlanta?,out_of_scope,out_of_scope,True,False,,0.79,301,18
+classifier-compare::qwen3-32b::f0d2a809,classifier-compare,qwen3-32b,f0d2a809,write me a haiku about databases,out_of_scope,out_of_scope,True,False,,0.455,301,18
+classifier-compare::qwen3-32b::d45b0db2,classifier-compare,qwen3-32b,d45b0db2,how do I write a Dockerfile for a Python app?,out_of_scope,out_of_scope,True,False,,0.428,306,18
+classifier-compare::qwen3-32b::c990cc06,classifier-compare,qwen3-32b,c990cc06,what is the capital of France?,out_of_scope,out_of_scope,True,False,,0.494,301,21
+classifier-compare::qwen3-32b::87fab88e,classifier-compare,qwen3-32b,87fab88e,explain how HNSW indexes work,out_of_scope,out_of_scope,True,False,,0.409,301,18
+classifier-compare::qwen3-32b::51f8270d,classifier-compare,qwen3-32b,51f8270d,translate 'good morning' into French,out_of_scope,out_of_scope,True,False,,0.603,301,18
+classifier-compare::qwen3-32b::d21703e8,classifier-compare,qwen3-32b,d21703e8,what's 15% of 240?,out_of_scope,out_of_scope,True,False,,0.521,306,18
+classifier-compare::qwen3-32b::8f3dbc19,classifier-compare,qwen3-32b,8f3dbc19,what's the difference between TCP and UDP?,out_of_scope,out_of_scope,True,False,,0.408,303,18
+classifier-compare::qwen3-32b::db6acc5a,classifier-compare,qwen3-32b,db6acc5a,give me a regex that matches an email address,out_of_scope,out_of_scope,True,False,,0.346,303,18
+classifier-compare::qwen3-32b::2055ba32,classifier-compare,qwen3-32b,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,,0.374,303,18
+classifier-compare::qwen3-32b::9a5c72bd,classifier-compare,qwen3-32b,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,,0.408,300,18
+classifier-compare::qwen3-32b::dae67444,classifier-compare,qwen3-32b,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,,0.395,303,18
+classifier-compare::claude-haiku-4-5::5209455b,classifier-compare,claude-haiku-4-5,5209455b,what are some good otel options,search,search,True,True,,0.76,313,30
+classifier-compare::claude-haiku-4-5::67eb0776,classifier-compare,claude-haiku-4-5,67eb0776,any good opentelemetry collectors?,search,search,True,True,,0.67,314,29
+classifier-compare::claude-haiku-4-5::02cbd68d,classifier-compare,claude-haiku-4-5,02cbd68d,best observability tools,search,search,True,True,,0.824,310,30
+classifier-compare::claude-haiku-4-5::f49d21a0,classifier-compare,claude-haiku-4-5,f49d21a0,good observability options?,search,search,True,True,,0.797,311,30
+classifier-compare::claude-haiku-4-5::31d9dd67,classifier-compare,claude-haiku-4-5,31d9dd67,what are some good observability tools,search,search,True,True,,0.853,313,28
+classifier-compare::claude-haiku-4-5::ff3f51fd,classifier-compare,claude-haiku-4-5,ff3f51fd,got any self-hosted feature toggle projects?,search,search,True,True,,0.808,315,29
+classifier-compare::claude-haiku-4-5::cd8f360a,classifier-compare,claude-haiku-4-5,cd8f360a,diary apps,search,search,True,True,,0.744,308,26
+classifier-compare::claude-haiku-4-5::0714460b,classifier-compare,claude-haiku-4-5,0714460b,API-first content management systems,search,search,True,True,,0.713,312,30
+classifier-compare::claude-haiku-4-5::3bc433fa,classifier-compare,claude-haiku-4-5,3bc433fa,open source alternatives to Notion,search,search,True,True,,0.758,312,29
+classifier-compare::claude-haiku-4-5::e476be13,classifier-compare,claude-haiku-4-5,e476be13,something like dayone,search,search,True,True,,0.869,310,29
+classifier-compare::claude-haiku-4-5::8ba408d7,classifier-compare,claude-haiku-4-5,8ba408d7,ways to monitor Kafka clusters,search,search,True,True,,0.866,312,28
+classifier-compare::claude-haiku-4-5::5f946a29,classifier-compare,claude-haiku-4-5,5f946a29,tools for tracing microservices,search,search,True,True,,0.867,313,30
+classifier-compare::claude-haiku-4-5::f90cb40e,classifier-compare,claude-haiku-4-5,f90cb40e,what are good log aggregation projects,search,search,True,True,,0.829,313,27
+classifier-compare::claude-haiku-4-5::144fffd2,classifier-compare,claude-haiku-4-5,144fffd2,self-hosted web analytics,search,search,True,True,,0.75,311,29
+classifier-compare::claude-haiku-4-5::aabb65b6,classifier-compare,claude-haiku-4-5,aabb65b6,search GitHub for job queue dashboards,search,search,True,True,,0.782,313,28
+classifier-compare::claude-haiku-4-5::3ea9eb10,classifier-compare,claude-haiku-4-5,3ea9eb10,any open source CRM worth a look?,search,search,True,True,,0.822,315,28
+classifier-compare::claude-haiku-4-5::6a8f2e51,classifier-compare,claude-haiku-4-5,6a8f2e51,looking for a workflow engine,search,search,True,True,,0.818,311,26
+classifier-compare::claude-haiku-4-5::486433f5,classifier-compare,claude-haiku-4-5,486433f5,anything similar to Redash?,search,search,True,True,,0.84,313,31
+classifier-compare::claude-haiku-4-5::6ce51210,classifier-compare,claude-haiku-4-5,6ce51210,self-hosted password managers,search,search,True,True,,0.738,311,29
+classifier-compare::claude-haiku-4-5::0a5ade6e,classifier-compare,claude-haiku-4-5,0a5ade6e,good alternatives to Grafana,search,search,True,True,,0.777,312,30
+classifier-compare::claude-haiku-4-5::ee737c3c,classifier-compare,claude-haiku-4-5,ee737c3c,durable execution frameworks,search,search,True,True,,0.676,310,28
+classifier-compare::claude-haiku-4-5::cb05a57d,classifier-compare,claude-haiku-4-5,cb05a57d,vector database projects,search,search,True,True,,0.757,309,26
+classifier-compare::claude-haiku-4-5::617501ed,classifier-compare,claude-haiku-4-5,617501ed,what are some self-hosted wiki options,search,search,True,True,,0.768,314,28
+classifier-compare::claude-haiku-4-5::c114c8b4,classifier-compare,claude-haiku-4-5,c114c8b4,apps for monitoring uptime,search,search,True,True,,0.795,311,28
+classifier-compare::claude-haiku-4-5::f4045867,classifier-compare,claude-haiku-4-5,f4045867,open source scheduling tools,search,search,True,True,,0.896,310,28
+classifier-compare::claude-haiku-4-5::665f4762,classifier-compare,claude-haiku-4-5,665f4762,what's out there for error tracking?,search,search,True,True,,0.82,314,26
+classifier-compare::claude-haiku-4-5::222a1a13,classifier-compare,claude-haiku-4-5,222a1a13,what apps are built on Kafka?,search,search,True,True,,0.922,314,29
+classifier-compare::claude-haiku-4-5::5a279438,classifier-compare,claude-haiku-4-5,5a279438,what programming language is Flowise built with?,repo,repo,True,True,,0.92,316,32
+classifier-compare::claude-haiku-4-5::349fa2df,classifier-compare,claude-haiku-4-5,349fa2df,star count for prometheus/prometheus,repo,repo,True,True,,0.718,312,26
+classifier-compare::claude-haiku-4-5::f5898309,classifier-compare,claude-haiku-4-5,f5898309,list the top-level folders in getsentry/sentry,repo,repo,True,True,,0.817,319,29
+classifier-compare::claude-haiku-4-5::7b5b3871,classifier-compare,claude-haiku-4-5,7b5b3871,does langgenius/dify have a compose file?,repo,repo,True,True,,0.718,318,29
+classifier-compare::claude-haiku-4-5::a290777d,classifier-compare,claude-haiku-4-5,a290777d,what license does Kestra use,repo,repo,True,True,,0.794,313,30
+classifier-compare::claude-haiku-4-5::564e2b35,classifier-compare,claude-haiku-4-5,564e2b35,is featbit/featbit still maintained?,repo,repo,True,True,,0.873,315,28
+classifier-compare::claude-haiku-4-5::8c707b85,classifier-compare,claude-haiku-4-5,8c707b85,look at the Dockerfile of immich-app/immich,repo,repo,True,True,,0.723,319,30
+classifier-compare::claude-haiku-4-5::5a53ec25,classifier-compare,claude-haiku-4-5,5a53ec25,which services does plausible/analytics use,repo,repo,True,True,,0.793,315,28
+classifier-compare::claude-haiku-4-5::4008d774,classifier-compare,claude-haiku-4-5,4008d774,read the README of n8n-io/n8n,repo,repo,True,True,,1.013,319,32
+classifier-compare::claude-haiku-4-5::898a61e2,classifier-compare,claude-haiku-4-5,898a61e2,when was supabase/supabase last updated,repo,repo,True,True,,0.775,317,30
+classifier-compare::claude-haiku-4-5::423003a9,classifier-compare,claude-haiku-4-5,423003a9,what's in the docker folder of appsmithorg/appsmith,repo,repo,True,True,,0.801,320,30
+classifier-compare::claude-haiku-4-5::3b61652e,classifier-compare,claude-haiku-4-5,3b61652e,what database does Directus need?,repo,repo,True,True,,0.705,314,28
+classifier-compare::claude-haiku-4-5::61295329,classifier-compare,claude-haiku-4-5,61295329,open the compose file for outline/outline,repo,repo,True,True,,0.73,314,26
+classifier-compare::claude-haiku-4-5::e36e2a7d,classifier-compare,claude-haiku-4-5,e36e2a7d,how big is the SigNoz repo,repo,repo,True,True,,0.779,315,30
+classifier-compare::claude-haiku-4-5::7f1046cd,classifier-compare,claude-haiku-4-5,7f1046cd,who maintains Uptime Kuma,repo,repo,True,True,,0.816,314,32
+classifier-compare::claude-haiku-4-5::a3d85595,classifier-compare,claude-haiku-4-5,a3d85595,what does the Ghost repo's root folder look like,repo,repo,True,True,,0.79,316,29
+classifier-compare::claude-haiku-4-5::6c7b1943,classifier-compare,claude-haiku-4-5,6c7b1943,is Metabase's compose file runtime-ready?,repo,repo,True,True,,0.953,318,30
+classifier-compare::claude-haiku-4-5::292c5a58,classifier-compare,claude-haiku-4-5,292c5a58,compare the top two of those,analysis,chat,False,True,,0.921,312,23
+classifier-compare::claude-haiku-4-5::2d43bb7d,classifier-compare,claude-haiku-4-5,2d43bb7d,which of these would make the best new template?,analysis,chat,False,True,,0.719,316,23
+classifier-compare::claude-haiku-4-5::646967e8,classifier-compare,claude-haiku-4-5,646967e8,weigh the trade-offs between Grafana and Kibana,analysis,analysis,True,True,,0.714,320,23
+classifier-compare::claude-haiku-4-5::a287c6b7,classifier-compare,claude-haiku-4-5,a287c6b7,rank these candidates for me,analysis,chat,False,True,,0.806,311,23
+classifier-compare::claude-haiku-4-5::1cfe39fb,classifier-compare,claude-haiku-4-5,1cfe39fb,which categories are we missing templates for?,analysis,other,False,True,,0.835,314,23
+classifier-compare::claude-haiku-4-5::545265e9,classifier-compare,claude-haiku-4-5,545265e9,should we add Dify or Flowise?,analysis,analysis,True,True,,0.922,317,23
+classifier-compare::claude-haiku-4-5::ca2a8426,classifier-compare,claude-haiku-4-5,ca2a8426,summarize the strengths and risks of these projects,analysis,analysis,True,True,,0.786,316,23
+classifier-compare::claude-haiku-4-5::0ee19809,classifier-compare,claude-haiku-4-5,0ee19809,"which is the better fit for Aiven Runtime, Plausible or Umami?",analysis,analysis,True,True,,0.681,326,23
+classifier-compare::claude-haiku-4-5::4a8e090f,classifier-compare,claude-haiku-4-5,4a8e090f,what would it take to turn n8n into a template?,analysis,repo,False,True,,0.991,319,41
+classifier-compare::claude-haiku-4-5::2173e863,classifier-compare,claude-haiku-4-5,2173e863,pick the best of the three and say why,analysis,chat,False,True,,0.818,315,23
+classifier-compare::claude-haiku-4-5::67cf5956,classifier-compare,claude-haiku-4-5,67cf5956,recommend which one to build first,analysis,chat,False,True,,0.73,312,23
+classifier-compare::claude-haiku-4-5::49d8c592,classifier-compare,claude-haiku-4-5,49d8c592,is SigNoz or Uptrace the stronger candidate?,analysis,analysis,True,True,,0.793,319,23
+classifier-compare::claude-haiku-4-5::485837a3,classifier-compare,claude-haiku-4-5,485837a3,compare Metabase and Redash as templates,analysis,analysis,True,True,,0.831,317,23
+classifier-compare::claude-haiku-4-5::d5216702,classifier-compare,claude-haiku-4-5,d5216702,where do the existing templates overlap?,analysis,analysis,True,True,,0.784,313,23
+classifier-compare::claude-haiku-4-5::ce06092f,classifier-compare,claude-haiku-4-5,ce06092f,hello!,chat,chat,True,True,,0.667,308,23
+classifier-compare::claude-haiku-4-5::e9058ab1,classifier-compare,claude-haiku-4-5,e9058ab1,yo,chat,chat,True,True,,0.805,307,23
+classifier-compare::claude-haiku-4-5::7654bd3b,classifier-compare,claude-haiku-4-5,7654bd3b,morning!,chat,chat,True,True,,0.807,308,23
+classifier-compare::claude-haiku-4-5::844347e5,classifier-compare,claude-haiku-4-5,844347e5,thank you,chat,chat,True,True,,0.727,308,23
+classifier-compare::claude-haiku-4-5::341f722a,classifier-compare,claude-haiku-4-5,341f722a,appreciate the help,chat,chat,True,True,,0.896,309,23
+classifier-compare::claude-haiku-4-5::6f2096e7,classifier-compare,claude-haiku-4-5,6f2096e7,"alright, understood",chat,chat,True,True,,0.697,310,23
+classifier-compare::claude-haiku-4-5::c34045c1,classifier-compare,claude-haiku-4-5,c34045c1,cool,chat,chat,True,True,,0.726,307,23
+classifier-compare::claude-haiku-4-5::b9043c16,classifier-compare,claude-haiku-4-5,b9043c16,sweet,chat,chat,True,True,,0.957,307,23
+classifier-compare::claude-haiku-4-5::eaea2385,classifier-compare,claude-haiku-4-5,eaea2385,exactly what I needed,chat,chat,True,True,,0.718,310,23
+classifier-compare::claude-haiku-4-5::d24d7435,classifier-compare,claude-haiku-4-5,d24d7435,forget it,chat,chat,True,True,,0.719,308,23
+classifier-compare::claude-haiku-4-5::4507f7dc,classifier-compare,claude-haiku-4-5,4507f7dc,"ha, funny",chat,chat,True,True,,0.741,309,23
+classifier-compare::claude-haiku-4-5::385934c9,classifier-compare,claude-haiku-4-5,385934c9,"oh, that's interesting",chat,chat,True,True,,0.709,311,23
+classifier-compare::claude-haiku-4-5::89cdc057,classifier-compare,claude-haiku-4-5,89cdc057,that makes sense,chat,chat,True,True,,0.797,309,23
+classifier-compare::claude-haiku-4-5::47843e8d,classifier-compare,claude-haiku-4-5,47843e8d,"excellent, many thanks",chat,chat,True,True,,0.82,310,23
+classifier-compare::claude-haiku-4-5::55b5e556,classifier-compare,claude-haiku-4-5,55b5e556,"my bad, I read that wrong",chat,chat,True,True,,0.82,313,23
+classifier-compare::claude-haiku-4-5::69d91e77,classifier-compare,claude-haiku-4-5,69d91e77,nice work,chat,chat,True,True,,0.716,308,23
+classifier-compare::claude-haiku-4-5::1e592d7f,classifier-compare,claude-haiku-4-5,1e592d7f,can you explain that more simply?,chat,chat,True,True,,0.754,313,23
+classifier-compare::claude-haiku-4-5::691a8ef8,classifier-compare,claude-haiku-4-5,691a8ef8,what made you choose that one?,chat,chat,True,True,,0.884,313,23
+classifier-compare::claude-haiku-4-5::b5013eb1,classifier-compare,claude-haiku-4-5,b5013eb1,go on,chat,chat,True,True,,0.668,308,23
+classifier-compare::claude-haiku-4-5::b28cf7ed,classifier-compare,claude-haiku-4-5,b28cf7ed,is that definitely right?,chat,chat,True,True,,0.767,311,23
+classifier-compare::claude-haiku-4-5::992dc95d,classifier-compare,claude-haiku-4-5,992dc95d,say that again?,chat,chat,True,True,,0.817,310,23
+classifier-compare::claude-haiku-4-5::8e494a73,classifier-compare,claude-haiku-4-5,8e494a73,what are you able to help with?,chat,chat,True,True,,0.804,314,23
+classifier-compare::claude-haiku-4-5::0e26c6be,classifier-compare,claude-haiku-4-5,0e26c6be,what are you exactly?,chat,chat,True,True,,0.732,311,23
+classifier-compare::claude-haiku-4-5::05426928,classifier-compare,claude-haiku-4-5,05426928,what's the weather in Atlanta?,out_of_scope,out_of_scope,True,False,,0.813,313,27
+classifier-compare::claude-haiku-4-5::f0d2a809,classifier-compare,claude-haiku-4-5,f0d2a809,write me a haiku about databases,out_of_scope,out_of_scope,True,False,,0.774,313,27
+classifier-compare::claude-haiku-4-5::d45b0db2,classifier-compare,claude-haiku-4-5,d45b0db2,how do I write a Dockerfile for a Python app?,out_of_scope,out_of_scope,True,False,,0.767,318,27
+classifier-compare::claude-haiku-4-5::c990cc06,classifier-compare,claude-haiku-4-5,c990cc06,what is the capital of France?,out_of_scope,out_of_scope,True,False,,0.772,313,27
+classifier-compare::claude-haiku-4-5::87fab88e,classifier-compare,claude-haiku-4-5,87fab88e,explain how HNSW indexes work,out_of_scope,out_of_scope,True,False,,0.777,314,27
+classifier-compare::claude-haiku-4-5::51f8270d,classifier-compare,claude-haiku-4-5,51f8270d,translate 'good morning' into French,out_of_scope,out_of_scope,True,False,,0.906,314,27
+classifier-compare::claude-haiku-4-5::d21703e8,classifier-compare,claude-haiku-4-5,d21703e8,what's 15% of 240?,out_of_scope,out_of_scope,True,False,,0.827,315,27
+classifier-compare::claude-haiku-4-5::8f3dbc19,classifier-compare,claude-haiku-4-5,8f3dbc19,what's the difference between TCP and UDP?,out_of_scope,out_of_scope,True,False,,0.755,315,27
+classifier-compare::claude-haiku-4-5::db6acc5a,classifier-compare,claude-haiku-4-5,db6acc5a,give me a regex that matches an email address,out_of_scope,out_of_scope,True,False,,0.883,315,27
+classifier-compare::claude-haiku-4-5::2055ba32,classifier-compare,claude-haiku-4-5,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,,0.788,316,27
+classifier-compare::claude-haiku-4-5::9a5c72bd,classifier-compare,claude-haiku-4-5,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,,0.849,313,27
+classifier-compare::claude-haiku-4-5::dae67444,classifier-compare,claude-haiku-4-5,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,,0.783,315,27
+classifier-compare::claude-sonnet-5::5209455b,classifier-compare,claude-sonnet-5,5209455b,what are some good otel options,search,search,True,True,,1.674,425,64
+classifier-compare::claude-sonnet-5::67eb0776,classifier-compare,claude-sonnet-5,67eb0776,any good opentelemetry collectors?,search,search,True,True,,1.74,430,30
+classifier-compare::claude-sonnet-5::02cbd68d,classifier-compare,claude-sonnet-5,02cbd68d,best observability tools,search,search,True,True,,1.536,423,26
+classifier-compare::claude-sonnet-5::f49d21a0,classifier-compare,claude-sonnet-5,f49d21a0,good observability options?,search,search,True,True,,1.267,423,28
+classifier-compare::claude-sonnet-5::31d9dd67,classifier-compare,claude-sonnet-5,31d9dd67,what are some good observability tools,search,search,True,True,,1.293,426,26
+classifier-compare::claude-sonnet-5::ff3f51fd,classifier-compare,claude-sonnet-5,ff3f51fd,got any self-hosted feature toggle projects?,search,search,True,True,,1.539,433,32
+classifier-compare::claude-sonnet-5::cd8f360a,classifier-compare,claude-sonnet-5,cd8f360a,diary apps,search,search,True,True,,1.597,422,28
+classifier-compare::claude-sonnet-5::0714460b,classifier-compare,claude-sonnet-5,0714460b,API-first content management systems,search,search,True,True,,1.772,425,28
+classifier-compare::claude-sonnet-5::3bc433fa,classifier-compare,claude-sonnet-5,3bc433fa,open source alternatives to Notion,search,search,True,True,,1.362,428,49
+classifier-compare::claude-sonnet-5::e476be13,classifier-compare,claude-sonnet-5,e476be13,something like dayone,search,search,True,True,,1.405,423,28
+classifier-compare::claude-sonnet-5::8ba408d7,classifier-compare,claude-sonnet-5,8ba408d7,ways to monitor Kafka clusters,search,search,True,True,,1.507,431,51
+classifier-compare::claude-sonnet-5::5f946a29,classifier-compare,claude-sonnet-5,5f946a29,tools for tracing microservices,search,search,True,True,,1.464,427,28
+classifier-compare::claude-sonnet-5::f90cb40e,classifier-compare,claude-sonnet-5,f90cb40e,what are good log aggregation projects,search,search,True,True,,1.488,428,27
+classifier-compare::claude-sonnet-5::144fffd2,classifier-compare,claude-sonnet-5,144fffd2,self-hosted web analytics,search,search,True,True,,1.769,427,49
+classifier-compare::claude-sonnet-5::aabb65b6,classifier-compare,claude-sonnet-5,aabb65b6,search GitHub for job queue dashboards,search,search,True,True,,1.382,431,29
+classifier-compare::claude-sonnet-5::3ea9eb10,classifier-compare,claude-sonnet-5,3ea9eb10,any open source CRM worth a look?,search,search,True,True,,1.355,429,27
+classifier-compare::claude-sonnet-5::6a8f2e51,classifier-compare,claude-sonnet-5,6a8f2e51,looking for a workflow engine,search,search,True,True,,1.377,427,27
+classifier-compare::claude-sonnet-5::486433f5,classifier-compare,claude-sonnet-5,486433f5,anything similar to Redash?,search,search,True,True,,1.329,427,33
+classifier-compare::claude-sonnet-5::6ce51210,classifier-compare,claude-sonnet-5,6ce51210,self-hosted password managers,search,search,True,True,,1.43,426,30
+classifier-compare::claude-sonnet-5::0a5ade6e,classifier-compare,claude-sonnet-5,0a5ade6e,good alternatives to Grafana,search,search,True,True,,1.475,428,38
+classifier-compare::claude-sonnet-5::ee737c3c,classifier-compare,claude-sonnet-5,ee737c3c,durable execution frameworks,search,search,True,True,,1.413,426,30
+classifier-compare::claude-sonnet-5::cb05a57d,classifier-compare,claude-sonnet-5,cb05a57d,vector database projects,search,search,True,True,,1.42,423,25
+classifier-compare::claude-sonnet-5::617501ed,classifier-compare,claude-sonnet-5,617501ed,what are some self-hosted wiki options,search,search,True,True,,1.639,430,30
+classifier-compare::claude-sonnet-5::c114c8b4,classifier-compare,claude-sonnet-5,c114c8b4,apps for monitoring uptime,search,search,True,True,,1.738,428,47
+classifier-compare::claude-sonnet-5::f4045867,classifier-compare,claude-sonnet-5,f4045867,open source scheduling tools,search,search,True,True,,1.281,426,30
+classifier-compare::claude-sonnet-5::665f4762,classifier-compare,claude-sonnet-5,665f4762,what's out there for error tracking?,search,search,True,True,,1.299,428,26
+classifier-compare::claude-sonnet-5::222a1a13,classifier-compare,claude-sonnet-5,222a1a13,what apps are built on Kafka?,search,search,True,True,,1.618,429,30
+classifier-compare::claude-sonnet-5::5a279438,classifier-compare,claude-sonnet-5,5a279438,what programming language is Flowise built with?,repo,repo,True,True,,1.495,430,50
+classifier-compare::claude-sonnet-5::349fa2df,classifier-compare,claude-sonnet-5,349fa2df,star count for prometheus/prometheus,repo,repo,True,True,,1.439,430,32
+classifier-compare::claude-sonnet-5::f5898309,classifier-compare,claude-sonnet-5,f5898309,list the top-level folders in getsentry/sentry,repo,repo,True,True,,1.678,434,50
+classifier-compare::claude-sonnet-5::7b5b3871,classifier-compare,claude-sonnet-5,7b5b3871,does langgenius/dify have a compose file?,repo,repo,True,True,,1.316,432,30
+classifier-compare::claude-sonnet-5::a290777d,classifier-compare,claude-sonnet-5,a290777d,what license does Kestra use,repo,repo,True,True,,1.49,426,32
+classifier-compare::claude-sonnet-5::564e2b35,classifier-compare,claude-sonnet-5,564e2b35,is featbit/featbit still maintained?,repo,repo,True,True,,1.698,431,53
+classifier-compare::claude-sonnet-5::8c707b85,classifier-compare,claude-sonnet-5,8c707b85,look at the Dockerfile of immich-app/immich,repo,repo,True,True,,1.356,435,30
+classifier-compare::claude-sonnet-5::5a53ec25,classifier-compare,claude-sonnet-5,5a53ec25,which services does plausible/analytics use,repo,repo,True,True,,1.585,429,30
+classifier-compare::claude-sonnet-5::4008d774,classifier-compare,claude-sonnet-5,4008d774,read the README of n8n-io/n8n,repo,repo,True,True,,1.565,431,49
+classifier-compare::claude-sonnet-5::898a61e2,classifier-compare,claude-sonnet-5,898a61e2,when was supabase/supabase last updated,repo,repo,True,True,,1.263,430,35
+classifier-compare::claude-sonnet-5::423003a9,classifier-compare,claude-sonnet-5,423003a9,what's in the docker folder of appsmithorg/appsmith,repo,repo,True,True,,1.335,438,34
+classifier-compare::claude-sonnet-5::3b61652e,classifier-compare,claude-sonnet-5,3b61652e,what database does Directus need?,repo,repo,True,True,,1.131,426,28
+classifier-compare::claude-sonnet-5::61295329,classifier-compare,claude-sonnet-5,61295329,open the compose file for outline/outline,repo,repo,True,True,,1.385,429,28
+classifier-compare::claude-sonnet-5::e36e2a7d,classifier-compare,claude-sonnet-5,e36e2a7d,how big is the SigNoz repo,repo,repo,True,True,,1.601,429,49
+classifier-compare::claude-sonnet-5::7f1046cd,classifier-compare,claude-sonnet-5,7f1046cd,who maintains Uptime Kuma,repo,repo,True,True,,1.498,430,34
+classifier-compare::claude-sonnet-5::a3d85595,classifier-compare,claude-sonnet-5,a3d85595,what does the Ghost repo's root folder look like,repo,repo,True,True,,2.194,433,85
+classifier-compare::claude-sonnet-5::6c7b1943,classifier-compare,claude-sonnet-5,6c7b1943,is Metabase's compose file runtime-ready?,repo,repo,True,True,,1.778,434,62
+classifier-compare::claude-sonnet-5::292c5a58,classifier-compare,claude-sonnet-5,292c5a58,compare the top two of those,analysis,analysis,True,True,,2.045,425,56
+classifier-compare::claude-sonnet-5::2d43bb7d,classifier-compare,claude-sonnet-5,2d43bb7d,which of these would make the best new template?,analysis,analysis,True,True,,2.004,428,70
+classifier-compare::claude-sonnet-5::646967e8,classifier-compare,claude-sonnet-5,646967e8,weigh the trade-offs between Grafana and Kibana,analysis,analysis,True,True,,1.451,437,24
+classifier-compare::claude-sonnet-5::a287c6b7,classifier-compare,claude-sonnet-5,a287c6b7,rank these candidates for me,analysis,analysis,True,True,,1.271,426,29
+classifier-compare::claude-sonnet-5::1cfe39fb,classifier-compare,claude-sonnet-5,1cfe39fb,which categories are we missing templates for?,analysis,other,False,True,,1.42,429,22
+classifier-compare::claude-sonnet-5::545265e9,classifier-compare,claude-sonnet-5,545265e9,should we add Dify or Flowise?,analysis,analysis,True,True,,1.266,430,24
+classifier-compare::claude-sonnet-5::ca2a8426,classifier-compare,claude-sonnet-5,ca2a8426,summarize the strengths and risks of these projects,analysis,analysis,True,True,,1.917,432,78
+classifier-compare::claude-sonnet-5::0ee19809,classifier-compare,claude-sonnet-5,0ee19809,"which is the better fit for Aiven Runtime, Plausible or Umami?",analysis,analysis,True,True,,1.528,443,24
+classifier-compare::claude-sonnet-5::4a8e090f,classifier-compare,claude-sonnet-5,4a8e090f,what would it take to turn n8n into a template?,analysis,repo,False,True,,1.69,432,74
+classifier-compare::claude-sonnet-5::2173e863,classifier-compare,claude-sonnet-5,2173e863,pick the best of the three and say why,analysis,analysis,True,True,,1.674,428,49
+classifier-compare::claude-sonnet-5::67cf5956,classifier-compare,claude-sonnet-5,67cf5956,recommend which one to build first,analysis,analysis,True,True,,1.764,426,60
+classifier-compare::claude-sonnet-5::49d8c592,classifier-compare,claude-sonnet-5,49d8c592,is SigNoz or Uptrace the stronger candidate?,analysis,analysis,True,True,,1.529,438,24
+classifier-compare::claude-sonnet-5::485837a3,classifier-compare,claude-sonnet-5,485837a3,compare Metabase and Redash as templates,analysis,analysis,True,True,,1.329,431,24
+classifier-compare::claude-sonnet-5::d5216702,classifier-compare,claude-sonnet-5,d5216702,where do the existing templates overlap?,analysis,analysis,True,True,,1.638,429,53
+classifier-compare::claude-sonnet-5::ce06092f,classifier-compare,claude-sonnet-5,ce06092f,hello!,chat,chat,True,True,,1.283,421,23
+classifier-compare::claude-sonnet-5::e9058ab1,classifier-compare,claude-sonnet-5,e9058ab1,yo,chat,chat,True,True,,1.458,420,34
+classifier-compare::claude-sonnet-5::7654bd3b,classifier-compare,claude-sonnet-5,7654bd3b,morning!,chat,chat,True,True,,1.298,421,33
+classifier-compare::claude-sonnet-5::844347e5,classifier-compare,claude-sonnet-5,844347e5,thank you,chat,chat,True,True,,1.234,421,23
+classifier-compare::claude-sonnet-5::341f722a,classifier-compare,claude-sonnet-5,341f722a,appreciate the help,chat,chat,True,True,,1.282,424,23
+classifier-compare::claude-sonnet-5::6f2096e7,classifier-compare,claude-sonnet-5,6f2096e7,"alright, understood",chat,chat,True,True,,1.537,423,23
+classifier-compare::claude-sonnet-5::c34045c1,classifier-compare,claude-sonnet-5,c34045c1,cool,chat,chat,True,True,,1.535,420,50
+classifier-compare::claude-sonnet-5::b9043c16,classifier-compare,claude-sonnet-5,b9043c16,sweet,chat,chat,True,True,,1.571,421,48
+classifier-compare::claude-sonnet-5::eaea2385,classifier-compare,claude-sonnet-5,eaea2385,exactly what I needed,chat,chat,True,True,,1.293,425,23
+classifier-compare::claude-sonnet-5::d24d7435,classifier-compare,claude-sonnet-5,d24d7435,forget it,chat,chat,True,True,,1.334,421,23
+classifier-compare::claude-sonnet-5::4507f7dc,classifier-compare,claude-sonnet-5,4507f7dc,"ha, funny",chat,chat,True,True,,1.504,423,38
+classifier-compare::claude-sonnet-5::385934c9,classifier-compare,claude-sonnet-5,385934c9,"oh, that's interesting",chat,chat,True,True,,1.568,426,48
+classifier-compare::claude-sonnet-5::89cdc057,classifier-compare,claude-sonnet-5,89cdc057,that makes sense,chat,chat,True,True,,1.288,423,23
+classifier-compare::claude-sonnet-5::47843e8d,classifier-compare,claude-sonnet-5,47843e8d,"excellent, many thanks",chat,chat,True,True,,1.201,426,23
+classifier-compare::claude-sonnet-5::55b5e556,classifier-compare,claude-sonnet-5,55b5e556,"my bad, I read that wrong",chat,chat,True,True,,2.016,428,60
+classifier-compare::claude-sonnet-5::69d91e77,classifier-compare,claude-sonnet-5,69d91e77,nice work,chat,chat,True,True,,1.63,421,23
+classifier-compare::claude-sonnet-5::1e592d7f,classifier-compare,claude-sonnet-5,1e592d7f,can you explain that more simply?,chat,chat,True,True,,1.12,427,23
+classifier-compare::claude-sonnet-5::691a8ef8,classifier-compare,claude-sonnet-5,691a8ef8,what made you choose that one?,chat,chat,True,True,,1.654,426,61
+classifier-compare::claude-sonnet-5::b5013eb1,classifier-compare,claude-sonnet-5,b5013eb1,go on,chat,chat,True,True,,1.942,420,76
+classifier-compare::claude-sonnet-5::b28cf7ed,classifier-compare,claude-sonnet-5,b28cf7ed,is that definitely right?,chat,chat,True,True,,1.943,425,87
+classifier-compare::claude-sonnet-5::992dc95d,classifier-compare,claude-sonnet-5,992dc95d,say that again?,chat,chat,True,True,,1.702,422,74
+classifier-compare::claude-sonnet-5::8e494a73,classifier-compare,claude-sonnet-5,8e494a73,what are you able to help with?,chat,other,False,True,,1.167,426,22
+classifier-compare::claude-sonnet-5::0e26c6be,classifier-compare,claude-sonnet-5,0e26c6be,what are you exactly?,chat,chat,True,True,,1.58,425,62
+classifier-compare::claude-sonnet-5::05426928,classifier-compare,claude-sonnet-5,05426928,what's the weather in Atlanta?,out_of_scope,out_of_scope,True,False,,1.479,430,27
+classifier-compare::claude-sonnet-5::f0d2a809,classifier-compare,claude-sonnet-5,f0d2a809,write me a haiku about databases,out_of_scope,out_of_scope,True,False,,1.449,427,27
+classifier-compare::claude-sonnet-5::d45b0db2,classifier-compare,claude-sonnet-5,d45b0db2,how do I write a Dockerfile for a Python app?,out_of_scope,out_of_scope,True,False,,1.329,435,27
+classifier-compare::claude-sonnet-5::c990cc06,classifier-compare,claude-sonnet-5,c990cc06,what is the capital of France?,out_of_scope,out_of_scope,True,False,,1.419,426,27
+classifier-compare::claude-sonnet-5::87fab88e,classifier-compare,claude-sonnet-5,87fab88e,explain how HNSW indexes work,out_of_scope,out_of_scope,True,False,,1.753,429,53
+classifier-compare::claude-sonnet-5::51f8270d,classifier-compare,claude-sonnet-5,51f8270d,translate 'good morning' into French,out_of_scope,out_of_scope,True,False,,1.367,428,27
+classifier-compare::claude-sonnet-5::d21703e8,classifier-compare,claude-sonnet-5,d21703e8,what's 15% of 240?,out_of_scope,out_of_scope,True,False,,1.303,427,27
+classifier-compare::claude-sonnet-5::8f3dbc19,classifier-compare,claude-sonnet-5,8f3dbc19,what's the difference between TCP and UDP?,out_of_scope,out_of_scope,True,False,,1.342,432,27
+classifier-compare::claude-sonnet-5::db6acc5a,classifier-compare,claude-sonnet-5,db6acc5a,give me a regex that matches an email address,out_of_scope,out_of_scope,True,False,,1.388,429,27
+classifier-compare::claude-sonnet-5::2055ba32,classifier-compare,claude-sonnet-5,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,,1.291,429,27
+classifier-compare::claude-sonnet-5::9a5c72bd,classifier-compare,claude-sonnet-5,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,,1.276,431,27
+classifier-compare::claude-sonnet-5::dae67444,classifier-compare,claude-sonnet-5,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,,1.279,430,27
+classifier-compare::claude-opus-5-5::5209455b,classifier-compare,claude-opus-5-5,5209455b,what are some good otel options,search,search,True,True,,2.118,427,70
+classifier-compare::claude-opus-5-5::67eb0776,classifier-compare,claude-opus-5-5,67eb0776,any good opentelemetry collectors?,search,search,True,True,,1.42,432,30
+classifier-compare::claude-opus-5-5::02cbd68d,classifier-compare,claude-opus-5-5,02cbd68d,best observability tools,search,search,True,True,,2.582,425,90
+classifier-compare::claude-opus-5-5::f49d21a0,classifier-compare,claude-opus-5-5,f49d21a0,good observability options?,search,search,True,True,,1.534,425,30
+classifier-compare::claude-opus-5-5::31d9dd67,classifier-compare,claude-opus-5-5,31d9dd67,what are some good observability tools,search,search,True,True,,1.386,428,30
+classifier-compare::claude-opus-5-5::ff3f51fd,classifier-compare,claude-opus-5-5,ff3f51fd,got any self-hosted feature toggle projects?,search,search,True,True,,1.748,435,31
+classifier-compare::claude-opus-5-5::cd8f360a,classifier-compare,claude-opus-5-5,cd8f360a,diary apps,search,search,True,True,,1.475,424,28
+classifier-compare::claude-opus-5-5::0714460b,classifier-compare,claude-opus-5-5,0714460b,API-first content management systems,search,search,True,True,,1.43,427,30
+classifier-compare::claude-opus-5-5::3bc433fa,classifier-compare,claude-opus-5-5,3bc433fa,open source alternatives to Notion,search,search,True,True,,1.447,430,32
+classifier-compare::claude-opus-5-5::e476be13,classifier-compare,claude-opus-5-5,e476be13,something like dayone,search,search,True,True,,1.625,425,28
+classifier-compare::claude-opus-5-5::8ba408d7,classifier-compare,claude-opus-5-5,8ba408d7,ways to monitor Kafka clusters,search,search,True,True,,5.308,433,32
+classifier-compare::claude-opus-5-5::5f946a29,classifier-compare,claude-opus-5-5,5f946a29,tools for tracing microservices,search,search,True,True,,1.49,429,31
+classifier-compare::claude-opus-5-5::f90cb40e,classifier-compare,claude-opus-5-5,f90cb40e,what are good log aggregation projects,search,search,True,True,,1.65,430,27
+classifier-compare::claude-opus-5-5::144fffd2,classifier-compare,claude-opus-5-5,144fffd2,self-hosted web analytics,search,search,True,True,,1.429,429,31
+classifier-compare::claude-opus-5-5::aabb65b6,classifier-compare,claude-opus-5-5,aabb65b6,search GitHub for job queue dashboards,search,search,True,True,,1.491,433,29
+classifier-compare::claude-opus-5-5::3ea9eb10,classifier-compare,claude-opus-5-5,3ea9eb10,any open source CRM worth a look?,search,search,True,True,,2.75,431,27
+classifier-compare::claude-opus-5-5::6a8f2e51,classifier-compare,claude-opus-5-5,6a8f2e51,looking for a workflow engine,search,search,True,True,,1.85,429,27
+classifier-compare::claude-opus-5-5::486433f5,classifier-compare,claude-opus-5-5,486433f5,anything similar to Redash?,search,search,True,True,,1.747,429,36
+classifier-compare::claude-opus-5-5::6ce51210,classifier-compare,claude-opus-5-5,6ce51210,self-hosted password managers,search,search,True,True,,1.355,428,30
+classifier-compare::claude-opus-5-5::0a5ade6e,classifier-compare,claude-opus-5-5,0a5ade6e,good alternatives to Grafana,search,search,True,True,,1.494,430,33
+classifier-compare::claude-opus-5-5::ee737c3c,classifier-compare,claude-opus-5-5,ee737c3c,durable execution frameworks,search,search,True,True,,1.453,428,30
+classifier-compare::claude-opus-5-5::cb05a57d,classifier-compare,claude-opus-5-5,cb05a57d,vector database projects,search,search,True,True,,2.97,425,25
+classifier-compare::claude-opus-5-5::617501ed,classifier-compare,claude-opus-5-5,617501ed,what are some self-hosted wiki options,search,search,True,True,,1.343,432,30
+classifier-compare::claude-opus-5-5::c114c8b4,classifier-compare,claude-opus-5-5,c114c8b4,apps for monitoring uptime,search,search,True,True,,1.523,430,29
+classifier-compare::claude-opus-5-5::f4045867,classifier-compare,claude-opus-5-5,f4045867,open source scheduling tools,search,search,True,True,,2.358,428,30
+classifier-compare::claude-opus-5-5::665f4762,classifier-compare,claude-opus-5-5,665f4762,what's out there for error tracking?,search,search,True,True,,1.434,430,26
+classifier-compare::claude-opus-5-5::222a1a13,classifier-compare,claude-opus-5-5,222a1a13,what apps are built on Kafka?,search,search,True,True,,1.612,431,27
+classifier-compare::claude-opus-5-5::5a279438,classifier-compare,claude-opus-5-5,5a279438,what programming language is Flowise built with?,repo,repo,True,True,,1.82,432,70
+classifier-compare::claude-opus-5-5::349fa2df,classifier-compare,claude-opus-5-5,349fa2df,star count for prometheus/prometheus,repo,repo,True,True,,2.094,432,32
+classifier-compare::claude-opus-5-5::f5898309,classifier-compare,claude-opus-5-5,f5898309,list the top-level folders in getsentry/sentry,repo,repo,True,True,,2.048,436,31
+classifier-compare::claude-opus-5-5::7b5b3871,classifier-compare,claude-opus-5-5,7b5b3871,does langgenius/dify have a compose file?,repo,repo,True,True,,1.381,434,30
+classifier-compare::claude-opus-5-5::a290777d,classifier-compare,claude-opus-5-5,a290777d,what license does Kestra use,repo,repo,True,True,,2.511,428,54
+classifier-compare::claude-opus-5-5::564e2b35,classifier-compare,claude-opus-5-5,564e2b35,is featbit/featbit still maintained?,repo,repo,True,True,,2.621,433,30
+classifier-compare::claude-opus-5-5::8c707b85,classifier-compare,claude-opus-5-5,8c707b85,look at the Dockerfile of immich-app/immich,repo,repo,True,True,,1.626,437,30
+classifier-compare::claude-opus-5-5::5a53ec25,classifier-compare,claude-opus-5-5,5a53ec25,which services does plausible/analytics use,repo,repo,True,True,,1.487,431,30
+classifier-compare::claude-opus-5-5::4008d774,classifier-compare,claude-opus-5-5,4008d774,read the README of n8n-io/n8n,repo,repo,True,True,,1.384,433,32
+classifier-compare::claude-opus-5-5::898a61e2,classifier-compare,claude-opus-5-5,898a61e2,when was supabase/supabase last updated,repo,repo,True,True,,1.586,432,30
+classifier-compare::claude-opus-5-5::423003a9,classifier-compare,claude-opus-5-5,423003a9,what's in the docker folder of appsmithorg/appsmith,repo,repo,True,True,,1.961,440,34
+classifier-compare::claude-opus-5-5::3b61652e,classifier-compare,claude-opus-5-5,3b61652e,what database does Directus need?,repo,repo,True,True,,2.014,428,58
+classifier-compare::claude-opus-5-5::61295329,classifier-compare,claude-opus-5-5,61295329,open the compose file for outline/outline,repo,repo,True,True,,1.808,431,28
+classifier-compare::claude-opus-5-5::e36e2a7d,classifier-compare,claude-opus-5-5,e36e2a7d,how big is the SigNoz repo,repo,repo,True,True,,1.743,431,57
+classifier-compare::claude-opus-5-5::7f1046cd,classifier-compare,claude-opus-5-5,7f1046cd,who maintains Uptime Kuma,repo,repo,True,True,,1.842,432,76
+classifier-compare::claude-opus-5-5::a3d85595,classifier-compare,claude-opus-5-5,a3d85595,what does the Ghost repo's root folder look like,repo,repo,True,True,,2.518,435,80
+classifier-compare::claude-opus-5-5::6c7b1943,classifier-compare,claude-opus-5-5,6c7b1943,is Metabase's compose file runtime-ready?,repo,repo,True,True,,1.87,436,59
+classifier-compare::claude-opus-5-5::292c5a58,classifier-compare,claude-opus-5-5,292c5a58,compare the top two of those,analysis,analysis,True,True,,2.088,427,73
+classifier-compare::claude-opus-5-5::2d43bb7d,classifier-compare,claude-opus-5-5,2d43bb7d,which of these would make the best new template?,analysis,analysis,True,True,,3.15,430,74
+classifier-compare::claude-opus-5-5::646967e8,classifier-compare,claude-opus-5-5,646967e8,weigh the trade-offs between Grafana and Kibana,analysis,analysis,True,True,,1.653,439,24
+classifier-compare::claude-opus-5-5::a287c6b7,classifier-compare,claude-opus-5-5,a287c6b7,rank these candidates for me,analysis,analysis,True,True,,1.984,428,52
+classifier-compare::claude-opus-5-5::1cfe39fb,classifier-compare,claude-opus-5-5,1cfe39fb,which categories are we missing templates for?,analysis,analysis,True,True,,2.227,431,112
+classifier-compare::claude-opus-5-5::545265e9,classifier-compare,claude-opus-5-5,545265e9,should we add Dify or Flowise?,analysis,analysis,True,True,,2.378,432,72
+classifier-compare::claude-opus-5-5::ca2a8426,classifier-compare,claude-opus-5-5,ca2a8426,summarize the strengths and risks of these projects,analysis,analysis,True,True,,1.948,434,65
+classifier-compare::claude-opus-5-5::0ee19809,classifier-compare,claude-opus-5-5,0ee19809,"which is the better fit for Aiven Runtime, Plausible or Umami?",analysis,analysis,True,True,,2.581,445,24
+classifier-compare::claude-opus-5-5::4a8e090f,classifier-compare,claude-opus-5-5,4a8e090f,what would it take to turn n8n into a template?,analysis,repo,False,True,,4.382,434,80
+classifier-compare::claude-opus-5-5::2173e863,classifier-compare,claude-opus-5-5,2173e863,pick the best of the three and say why,analysis,analysis,True,True,,3.855,430,69
+classifier-compare::claude-opus-5-5::67cf5956,classifier-compare,claude-opus-5-5,67cf5956,recommend which one to build first,analysis,analysis,True,True,,2.939,428,50
+classifier-compare::claude-opus-5-5::49d8c592,classifier-compare,claude-opus-5-5,49d8c592,is SigNoz or Uptrace the stronger candidate?,analysis,analysis,True,True,,1.4,440,24
+classifier-compare::claude-opus-5-5::485837a3,classifier-compare,claude-opus-5-5,485837a3,compare Metabase and Redash as templates,analysis,analysis,True,True,,1.432,433,24
+classifier-compare::claude-opus-5-5::d5216702,classifier-compare,claude-opus-5-5,d5216702,where do the existing templates overlap?,analysis,analysis,True,True,,1.433,431,24
+classifier-compare::claude-opus-5-5::ce06092f,classifier-compare,claude-opus-5-5,ce06092f,hello!,chat,chat,True,True,,1.537,423,23
+classifier-compare::claude-opus-5-5::e9058ab1,classifier-compare,claude-opus-5-5,e9058ab1,yo,chat,chat,True,True,,1.332,422,23
+classifier-compare::claude-opus-5-5::7654bd3b,classifier-compare,claude-opus-5-5,7654bd3b,morning!,chat,chat,True,True,,1.844,423,23
+classifier-compare::claude-opus-5-5::844347e5,classifier-compare,claude-opus-5-5,844347e5,thank you,chat,chat,True,True,,5.651,423,23
+classifier-compare::claude-opus-5-5::341f722a,classifier-compare,claude-opus-5-5,341f722a,appreciate the help,chat,chat,True,True,,1.25,426,23
+classifier-compare::claude-opus-5-5::6f2096e7,classifier-compare,claude-opus-5-5,6f2096e7,"alright, understood",chat,chat,True,True,,1.29,425,23
+classifier-compare::claude-opus-5-5::c34045c1,classifier-compare,claude-opus-5-5,c34045c1,cool,chat,chat,True,True,,2.049,422,23
+classifier-compare::claude-opus-5-5::b9043c16,classifier-compare,claude-opus-5-5,b9043c16,sweet,chat,chat,True,True,,1.428,423,23
+classifier-compare::claude-opus-5-5::eaea2385,classifier-compare,claude-opus-5-5,eaea2385,exactly what I needed,chat,chat,True,True,,1.484,427,23
+classifier-compare::claude-opus-5-5::d24d7435,classifier-compare,claude-opus-5-5,d24d7435,forget it,chat,chat,True,True,,2.103,423,53
+classifier-compare::claude-opus-5-5::4507f7dc,classifier-compare,claude-opus-5-5,4507f7dc,"ha, funny",chat,chat,True,True,,1.332,425,23
+classifier-compare::claude-opus-5-5::385934c9,classifier-compare,claude-opus-5-5,385934c9,"oh, that's interesting",chat,chat,True,True,,4.099,428,23
+classifier-compare::claude-opus-5-5::89cdc057,classifier-compare,claude-opus-5-5,89cdc057,that makes sense,chat,chat,True,True,,1.424,425,23
+classifier-compare::claude-opus-5-5::47843e8d,classifier-compare,claude-opus-5-5,47843e8d,"excellent, many thanks",chat,chat,True,True,,1.404,428,23
+classifier-compare::claude-opus-5-5::55b5e556,classifier-compare,claude-opus-5-5,55b5e556,"my bad, I read that wrong",chat,chat,True,True,,1.398,430,23
+classifier-compare::claude-opus-5-5::69d91e77,classifier-compare,claude-opus-5-5,69d91e77,nice work,chat,chat,True,True,,1.452,423,23
+classifier-compare::claude-opus-5-5::1e592d7f,classifier-compare,claude-opus-5-5,1e592d7f,can you explain that more simply?,chat,chat,True,True,,1.947,429,56
+classifier-compare::claude-opus-5-5::691a8ef8,classifier-compare,claude-opus-5-5,691a8ef8,what made you choose that one?,chat,chat,True,True,,1.689,428,64
+classifier-compare::claude-opus-5-5::b5013eb1,classifier-compare,claude-opus-5-5,b5013eb1,go on,chat,chat,True,True,,1.99,422,60
+classifier-compare::claude-opus-5-5::b28cf7ed,classifier-compare,claude-opus-5-5,b28cf7ed,is that definitely right?,chat,chat,True,True,,4.973,427,53
+classifier-compare::claude-opus-5-5::992dc95d,classifier-compare,claude-opus-5-5,992dc95d,say that again?,chat,chat,True,True,,1.738,424,23
+classifier-compare::claude-opus-5-5::8e494a73,classifier-compare,claude-opus-5-5,8e494a73,what are you able to help with?,chat,other,False,True,,3.454,428,93
+classifier-compare::claude-opus-5-5::0e26c6be,classifier-compare,claude-opus-5-5,0e26c6be,what are you exactly?,chat,other,False,True,,2.169,427,102
+classifier-compare::claude-opus-5-5::05426928,classifier-compare,claude-opus-5-5,05426928,what's the weather in Atlanta?,out_of_scope,out_of_scope,True,False,,2.831,432,27
+classifier-compare::claude-opus-5-5::f0d2a809,classifier-compare,claude-opus-5-5,f0d2a809,write me a haiku about databases,out_of_scope,out_of_scope,True,False,,1.481,429,27
+classifier-compare::claude-opus-5-5::d45b0db2,classifier-compare,claude-opus-5-5,d45b0db2,how do I write a Dockerfile for a Python app?,out_of_scope,out_of_scope,True,False,,1.539,437,27
+classifier-compare::claude-opus-5-5::c990cc06,classifier-compare,claude-opus-5-5,c990cc06,what is the capital of France?,out_of_scope,out_of_scope,True,False,,1.432,428,27
+classifier-compare::claude-opus-5-5::87fab88e,classifier-compare,claude-opus-5-5,87fab88e,explain how HNSW indexes work,out_of_scope,out_of_scope,True,False,,1.879,431,55
+classifier-compare::claude-opus-5-5::51f8270d,classifier-compare,claude-opus-5-5,51f8270d,translate 'good morning' into French,out_of_scope,out_of_scope,True,False,,1.499,430,27
+classifier-compare::claude-opus-5-5::d21703e8,classifier-compare,claude-opus-5-5,d21703e8,what's 15% of 240?,out_of_scope,out_of_scope,True,False,,1.537,429,27
+classifier-compare::claude-opus-5-5::8f3dbc19,classifier-compare,claude-opus-5-5,8f3dbc19,what's the difference between TCP and UDP?,out_of_scope,out_of_scope,True,False,,1.397,434,27
+classifier-compare::claude-opus-5-5::db6acc5a,classifier-compare,claude-opus-5-5,db6acc5a,give me a regex that matches an email address,out_of_scope,out_of_scope,True,False,,1.439,431,27
+classifier-compare::claude-opus-5-5::2055ba32,classifier-compare,claude-opus-5-5,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,,1.591,431,27
+classifier-compare::claude-opus-5-5::9a5c72bd,classifier-compare,claude-opus-5-5,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,,1.512,433,27
+classifier-compare::claude-opus-5-5::dae67444,classifier-compare,claude-opus-5-5,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,,1.45,432,27
+classifier-compare::claude-opus-5::5209455b,classifier-compare,claude-opus-5,5209455b,what are some good otel options,search,search,True,True,,4.693,425,91
+classifier-compare::claude-opus-5::67eb0776,classifier-compare,claude-opus-5,67eb0776,any good opentelemetry collectors?,search,search,True,True,,1.383,430,30
+classifier-compare::claude-opus-5::02cbd68d,classifier-compare,claude-opus-5,02cbd68d,best observability tools,search,other,False,True,,2.593,423,120
+classifier-compare::claude-opus-5::f49d21a0,classifier-compare,claude-opus-5,f49d21a0,good observability options?,search,search,True,True,,1.399,423,28
+classifier-compare::claude-opus-5::31d9dd67,classifier-compare,claude-opus-5,31d9dd67,what are some good observability tools,search,search,True,True,,1.691,426,30
+classifier-compare::claude-opus-5::ff3f51fd,classifier-compare,claude-opus-5,ff3f51fd,got any self-hosted feature toggle projects?,search,search,True,True,,1.535,433,34
+classifier-compare::claude-opus-5::cd8f360a,classifier-compare,claude-opus-5,cd8f360a,diary apps,search,search,True,True,,1.361,422,27
+classifier-compare::claude-opus-5::0714460b,classifier-compare,claude-opus-5,0714460b,API-first content management systems,search,search,True,True,,1.403,425,30
+classifier-compare::claude-opus-5::3bc433fa,classifier-compare,claude-opus-5,3bc433fa,open source alternatives to Notion,search,search,True,True,,1.535,428,33
+classifier-compare::claude-opus-5::e476be13,classifier-compare,claude-opus-5,e476be13,something like dayone,search,search,True,True,,1.802,423,58
+classifier-compare::claude-opus-5::8ba408d7,classifier-compare,claude-opus-5,8ba408d7,ways to monitor Kafka clusters,search,search,True,True,,1.474,431,33
+classifier-compare::claude-opus-5::5f946a29,classifier-compare,claude-opus-5,5f946a29,tools for tracing microservices,search,search,True,True,,1.435,427,31
+classifier-compare::claude-opus-5::f90cb40e,classifier-compare,claude-opus-5,f90cb40e,what are good log aggregation projects,search,search,True,True,,1.33,428,27
+classifier-compare::claude-opus-5::144fffd2,classifier-compare,claude-opus-5,144fffd2,self-hosted web analytics,search,search,True,True,,1.435,427,31
+classifier-compare::claude-opus-5::aabb65b6,classifier-compare,claude-opus-5,aabb65b6,search GitHub for job queue dashboards,search,search,True,True,,1.288,431,29
+classifier-compare::claude-opus-5::3ea9eb10,classifier-compare,claude-opus-5,3ea9eb10,any open source CRM worth a look?,search,search,True,True,,1.294,429,27
+classifier-compare::claude-opus-5::6a8f2e51,classifier-compare,claude-opus-5,6a8f2e51,looking for a workflow engine,search,search,True,True,,1.309,427,27
+classifier-compare::claude-opus-5::486433f5,classifier-compare,claude-opus-5,486433f5,anything similar to Redash?,search,search,True,True,,1.703,427,35
+classifier-compare::claude-opus-5::6ce51210,classifier-compare,claude-opus-5,6ce51210,self-hosted password managers,search,search,True,True,,1.676,426,30
+classifier-compare::claude-opus-5::0a5ade6e,classifier-compare,claude-opus-5,0a5ade6e,good alternatives to Grafana,search,search,True,True,,1.537,428,38
+classifier-compare::claude-opus-5::ee737c3c,classifier-compare,claude-opus-5,ee737c3c,durable execution frameworks,search,search,True,True,,1.435,426,31
+classifier-compare::claude-opus-5::cb05a57d,classifier-compare,claude-opus-5,cb05a57d,vector database projects,search,search,True,True,,1.297,423,25
+classifier-compare::claude-opus-5::617501ed,classifier-compare,claude-opus-5,617501ed,what are some self-hosted wiki options,search,search,True,True,,1.466,430,30
+classifier-compare::claude-opus-5::c114c8b4,classifier-compare,claude-opus-5,c114c8b4,apps for monitoring uptime,search,search,True,True,,1.434,428,29
+classifier-compare::claude-opus-5::f4045867,classifier-compare,claude-opus-5,f4045867,open source scheduling tools,search,search,True,True,,1.33,426,30
+classifier-compare::claude-opus-5::665f4762,classifier-compare,claude-opus-5,665f4762,what's out there for error tracking?,search,search,True,True,,1.844,428,54
+classifier-compare::claude-opus-5::222a1a13,classifier-compare,claude-opus-5,222a1a13,what apps are built on Kafka?,search,search,True,True,,1.536,429,59
+classifier-compare::claude-opus-5::5a279438,classifier-compare,claude-opus-5,5a279438,what programming language is Flowise built with?,repo,other,False,True,,2.37,430,120
+classifier-compare::claude-opus-5::349fa2df,classifier-compare,claude-opus-5,349fa2df,star count for prometheus/prometheus,repo,repo,True,True,,2.963,430,32
+classifier-compare::claude-opus-5::f5898309,classifier-compare,claude-opus-5,f5898309,list the top-level folders in getsentry/sentry,repo,repo,True,True,,1.785,434,87
+classifier-compare::claude-opus-5::7b5b3871,classifier-compare,claude-opus-5,7b5b3871,does langgenius/dify have a compose file?,repo,repo,True,True,,1.221,432,30
+classifier-compare::claude-opus-5::a290777d,classifier-compare,claude-opus-5,a290777d,what license does Kestra use,repo,repo,True,True,,1.4,426,32
+classifier-compare::claude-opus-5::564e2b35,classifier-compare,claude-opus-5,564e2b35,is featbit/featbit still maintained?,repo,repo,True,True,,1.319,431,30
+classifier-compare::claude-opus-5::8c707b85,classifier-compare,claude-opus-5,8c707b85,look at the Dockerfile of immich-app/immich,repo,repo,True,True,,1.83,435,72
+classifier-compare::claude-opus-5::5a53ec25,classifier-compare,claude-opus-5,5a53ec25,which services does plausible/analytics use,repo,repo,True,True,,1.961,429,79
+classifier-compare::claude-opus-5::4008d774,classifier-compare,claude-opus-5,4008d774,read the README of n8n-io/n8n,repo,repo,True,True,,1.641,431,55
+classifier-compare::claude-opus-5::898a61e2,classifier-compare,claude-opus-5,898a61e2,when was supabase/supabase last updated,repo,repo,True,True,,1.343,430,51
+classifier-compare::claude-opus-5::423003a9,classifier-compare,claude-opus-5,423003a9,what's in the docker folder of appsmithorg/appsmith,repo,repo,True,True,,1.617,438,51
+classifier-compare::claude-opus-5::3b61652e,classifier-compare,claude-opus-5,3b61652e,what database does Directus need?,repo,repo,True,True,,1.338,426,28
+classifier-compare::claude-opus-5::61295329,classifier-compare,claude-opus-5,61295329,open the compose file for outline/outline,repo,repo,True,True,,1.892,429,100
+classifier-compare::claude-opus-5::e36e2a7d,classifier-compare,claude-opus-5,e36e2a7d,how big is the SigNoz repo,repo,repo,True,True,,1.488,429,32
+classifier-compare::claude-opus-5::7f1046cd,classifier-compare,claude-opus-5,7f1046cd,who maintains Uptime Kuma,repo,repo,True,True,,1.866,430,67
+classifier-compare::claude-opus-5::a3d85595,classifier-compare,claude-opus-5,a3d85595,what does the Ghost repo's root folder look like,repo,repo,True,True,,1.774,433,80
+classifier-compare::claude-opus-5::6c7b1943,classifier-compare,claude-opus-5,6c7b1943,is Metabase's compose file runtime-ready?,repo,repo,True,True,,1.48,434,30
+classifier-compare::claude-opus-5::292c5a58,classifier-compare,claude-opus-5,292c5a58,compare the top two of those,analysis,analysis,True,True,,1.659,425,53
+classifier-compare::claude-opus-5::2d43bb7d,classifier-compare,claude-opus-5,2d43bb7d,which of these would make the best new template?,analysis,analysis,True,True,,1.748,428,64
+classifier-compare::claude-opus-5::646967e8,classifier-compare,claude-opus-5,646967e8,weigh the trade-offs between Grafana and Kibana,analysis,analysis,True,True,,1.247,437,24
+classifier-compare::claude-opus-5::a287c6b7,classifier-compare,claude-opus-5,a287c6b7,rank these candidates for me,analysis,analysis,True,True,,1.277,426,24
+classifier-compare::claude-opus-5::1cfe39fb,classifier-compare,claude-opus-5,1cfe39fb,which categories are we missing templates for?,analysis,other,False,True,,2.487,429,120
+classifier-compare::claude-opus-5::545265e9,classifier-compare,claude-opus-5,545265e9,should we add Dify or Flowise?,analysis,analysis,True,True,,1.289,430,24
+classifier-compare::claude-opus-5::ca2a8426,classifier-compare,claude-opus-5,ca2a8426,summarize the strengths and risks of these projects,analysis,analysis,True,True,,1.877,432,72
+classifier-compare::claude-opus-5::0ee19809,classifier-compare,claude-opus-5,0ee19809,"which is the better fit for Aiven Runtime, Plausible or Umami?",analysis,analysis,True,True,,1.396,443,24
+classifier-compare::claude-opus-5::4a8e090f,classifier-compare,claude-opus-5,4a8e090f,what would it take to turn n8n into a template?,analysis,other,False,True,,2.381,432,120
+classifier-compare::claude-opus-5::2173e863,classifier-compare,claude-opus-5,2173e863,pick the best of the three and say why,analysis,analysis,True,True,,1.672,428,58
+classifier-compare::claude-opus-5::67cf5956,classifier-compare,claude-opus-5,67cf5956,recommend which one to build first,analysis,analysis,True,True,,1.975,426,75
+classifier-compare::claude-opus-5::49d8c592,classifier-compare,claude-opus-5,49d8c592,is SigNoz or Uptrace the stronger candidate?,analysis,analysis,True,True,,1.268,438,24
+classifier-compare::claude-opus-5::485837a3,classifier-compare,claude-opus-5,485837a3,compare Metabase and Redash as templates,analysis,analysis,True,True,,1.536,431,24
+classifier-compare::claude-opus-5::d5216702,classifier-compare,claude-opus-5,d5216702,where do the existing templates overlap?,analysis,analysis,True,True,,1.746,429,58
+classifier-compare::claude-opus-5::ce06092f,classifier-compare,claude-opus-5,ce06092f,hello!,chat,chat,True,True,,1.222,421,23
+classifier-compare::claude-opus-5::e9058ab1,classifier-compare,claude-opus-5,e9058ab1,yo,chat,chat,True,True,,1.333,420,23
+classifier-compare::claude-opus-5::7654bd3b,classifier-compare,claude-opus-5,7654bd3b,morning!,chat,chat,True,True,,1.145,421,23
+classifier-compare::claude-opus-5::844347e5,classifier-compare,claude-opus-5,844347e5,thank you,chat,chat,True,True,,1.415,421,23
+classifier-compare::claude-opus-5::341f722a,classifier-compare,claude-opus-5,341f722a,appreciate the help,chat,chat,True,True,,1.252,424,23
+classifier-compare::claude-opus-5::6f2096e7,classifier-compare,claude-opus-5,6f2096e7,"alright, understood",chat,chat,True,True,,1.191,423,23
+classifier-compare::claude-opus-5::c34045c1,classifier-compare,claude-opus-5,c34045c1,cool,chat,chat,True,True,,1.055,420,23
+classifier-compare::claude-opus-5::b9043c16,classifier-compare,claude-opus-5,b9043c16,sweet,chat,chat,True,True,,1.29,421,23
+classifier-compare::claude-opus-5::eaea2385,classifier-compare,claude-opus-5,eaea2385,exactly what I needed,chat,chat,True,True,,1.265,425,23
+classifier-compare::claude-opus-5::d24d7435,classifier-compare,claude-opus-5,d24d7435,forget it,chat,chat,True,True,,1.219,421,23
+classifier-compare::claude-opus-5::4507f7dc,classifier-compare,claude-opus-5,4507f7dc,"ha, funny",chat,chat,True,True,,1.33,423,23
+classifier-compare::claude-opus-5::385934c9,classifier-compare,claude-opus-5,385934c9,"oh, that's interesting",chat,chat,True,True,,1.352,426,23
+classifier-compare::claude-opus-5::89cdc057,classifier-compare,claude-opus-5,89cdc057,that makes sense,chat,chat,True,True,,1.337,423,23
+classifier-compare::claude-opus-5::47843e8d,classifier-compare,claude-opus-5,47843e8d,"excellent, many thanks",chat,chat,True,True,,1.304,426,23
+classifier-compare::claude-opus-5::55b5e556,classifier-compare,claude-opus-5,55b5e556,"my bad, I read that wrong",chat,chat,True,True,,1.327,428,23
+classifier-compare::claude-opus-5::69d91e77,classifier-compare,claude-opus-5,69d91e77,nice work,chat,chat,True,True,,1.436,421,23
+classifier-compare::claude-opus-5::1e592d7f,classifier-compare,claude-opus-5,1e592d7f,can you explain that more simply?,chat,chat,True,True,,1.184,427,23
+classifier-compare::claude-opus-5::691a8ef8,classifier-compare,claude-opus-5,691a8ef8,what made you choose that one?,chat,chat,True,True,,1.128,426,23
+classifier-compare::claude-opus-5::b5013eb1,classifier-compare,claude-opus-5,b5013eb1,go on,chat,chat,True,True,,1.335,420,23
+classifier-compare::claude-opus-5::b28cf7ed,classifier-compare,claude-opus-5,b28cf7ed,is that definitely right?,chat,chat,True,True,,1.123,425,23
+classifier-compare::claude-opus-5::992dc95d,classifier-compare,claude-opus-5,992dc95d,say that again?,chat,chat,True,True,,1.73,422,69
+classifier-compare::claude-opus-5::8e494a73,classifier-compare,claude-opus-5,8e494a73,what are you able to help with?,chat,other,False,True,,1.086,426,22
+classifier-compare::claude-opus-5::0e26c6be,classifier-compare,claude-opus-5,0e26c6be,what are you exactly?,chat,other,False,True,,1.231,425,22
+classifier-compare::claude-opus-5::05426928,classifier-compare,claude-opus-5,05426928,what's the weather in Atlanta?,out_of_scope,out_of_scope,True,False,,1.374,430,27
+classifier-compare::claude-opus-5::f0d2a809,classifier-compare,claude-opus-5,f0d2a809,write me a haiku about databases,out_of_scope,out_of_scope,True,False,,1.251,427,27
+classifier-compare::claude-opus-5::d45b0db2,classifier-compare,claude-opus-5,d45b0db2,how do I write a Dockerfile for a Python app?,out_of_scope,out_of_scope,True,False,,1.227,435,27
+classifier-compare::claude-opus-5::c990cc06,classifier-compare,claude-opus-5,c990cc06,what is the capital of France?,out_of_scope,out_of_scope,True,False,,1.343,426,27
+classifier-compare::claude-opus-5::87fab88e,classifier-compare,claude-opus-5,87fab88e,explain how HNSW indexes work,out_of_scope,out_of_scope,True,False,,1.232,429,27
+classifier-compare::claude-opus-5::51f8270d,classifier-compare,claude-opus-5,51f8270d,translate 'good morning' into French,out_of_scope,out_of_scope,True,False,,1.243,428,27
+classifier-compare::claude-opus-5::d21703e8,classifier-compare,claude-opus-5,d21703e8,what's 15% of 240?,out_of_scope,out_of_scope,True,False,,1.209,427,27
+classifier-compare::claude-opus-5::8f3dbc19,classifier-compare,claude-opus-5,8f3dbc19,what's the difference between TCP and UDP?,out_of_scope,out_of_scope,True,False,,1.799,432,27
+classifier-compare::claude-opus-5::db6acc5a,classifier-compare,claude-opus-5,db6acc5a,give me a regex that matches an email address,out_of_scope,out_of_scope,True,False,,1.183,429,27
+classifier-compare::claude-opus-5::2055ba32,classifier-compare,claude-opus-5,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,,1.098,429,27
+classifier-compare::claude-opus-5::9a5c72bd,classifier-compare,claude-opus-5,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,,1.398,431,48
+classifier-compare::claude-opus-5::dae67444,classifier-compare,claude-opus-5,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,,1.199,430,27

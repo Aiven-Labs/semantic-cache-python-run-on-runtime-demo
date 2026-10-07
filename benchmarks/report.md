@@ -1,6 +1,6 @@
 # Classifier comparison
 
-Run on 2026-10-07: 93 labeled messages, one at a time with no conversation history. Every model chooses between the same six kinds: chat, search, repo, analysis, other and out_of_scope. Prices are the list prices in `settings.toml`.
+date: 2026-10-07 · messages: 93 · models: 6
 
 ## Summary
 
@@ -13,73 +13,172 @@ Run on 2026-10-07: 93 labeled messages, one at a time with no conversation histo
 | claude-opus-5-5 | 96.3% (3 wrong) | 96.8% | 12/12 | 0 | 1.98 s | 3.85 s | 430 / 39.0 | $2.886 |
 | claude-opus-5 | 92.6% (6 wrong) | 93.5% | 12/12 | 0 | 1.53 s | 2.37 s | 428 / 39.8 | $3.620 |
 
-In-scope accuracy covers the messages Template Scout is meant to handle. Off-topic caught is how many of the off-topic messages were labeled out_of_scope. Wrongly refused is how many in-scope messages a model called out_of_scope, which is the costly direction.
+## Results by message
 
-## Mistakes by model
+✓ passed, ✗ failed. Each cell shows the answer.
 
-### jev-latest (4 wrong)
+| id | message | expected | jev-latest | qwen3-32b | claude-haiku-4-5 | claude-sonnet-5 | claude-opus-5-5 | claude-opus-5 |
+|---|---|---|---|---|---|---|---|---|
+| `5209455b` | what are some good otel options | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `67eb0776` | any good opentelemetry collectors? | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `02cbd68d` | best observability tools | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✗ other |
+| `f49d21a0` | good observability options? | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `31d9dd67` | what are some good observability tools | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `ff3f51fd` | got any self-hosted feature toggle projects? | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `cd8f360a` | diary apps | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `0714460b` | API-first content management systems | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `3bc433fa` | open source alternatives to Notion | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `e476be13` | something like dayone | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `8ba408d7` | ways to monitor Kafka clusters | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `5f946a29` | tools for tracing microservices | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `f90cb40e` | what are good log aggregation projects | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `144fffd2` | self-hosted web analytics | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `aabb65b6` | search GitHub for job queue dashboards | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `3ea9eb10` | any open source CRM worth a look? | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `6a8f2e51` | looking for a workflow engine | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `486433f5` | anything similar to Redash? | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `6ce51210` | self-hosted password managers | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `0a5ade6e` | good alternatives to Grafana | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `ee737c3c` | durable execution frameworks | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `cb05a57d` | vector database projects | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `617501ed` | what are some self-hosted wiki options | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `c114c8b4` | apps for monitoring uptime | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `f4045867` | open source scheduling tools | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `665f4762` | what's out there for error tracking? | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `222a1a13` | what apps are built on Kafka? | search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search | ✓ search |
+| `5a279438` | what programming language is Flowise built with? | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✗ other |
+| `349fa2df` | star count for prometheus/prometheus | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `f5898309` | list the top-level folders in getsentry/sentry | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `7b5b3871` | does langgenius/dify have a compose file? | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `a290777d` | what license does Kestra use | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `564e2b35` | is featbit/featbit still maintained? | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `8c707b85` | look at the Dockerfile of immich-app/immich | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `5a53ec25` | which services does plausible/analytics use | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `4008d774` | read the README of n8n-io/n8n | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `898a61e2` | when was supabase/supabase last updated | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `423003a9` | what's in the docker folder of appsmithorg/appsmith | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `3b61652e` | what database does Directus need? | repo | ✗ out_of_scope | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `61295329` | open the compose file for outline/outline | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `e36e2a7d` | how big is the SigNoz repo | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `7f1046cd` | who maintains Uptime Kuma | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `a3d85595` | what does the Ghost repo's root folder look like | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `6c7b1943` | is Metabase's compose file runtime-ready? | repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo | ✓ repo |
+| `292c5a58` | compare the top two of those | analysis | ✓ analysis | ✓ analysis | ✗ chat | ✓ analysis | ✓ analysis | ✓ analysis |
+| `2d43bb7d` | which of these would make the best new template? | analysis | ✓ analysis | ✓ analysis | ✗ chat | ✓ analysis | ✓ analysis | ✓ analysis |
+| `646967e8` | weigh the trade-offs between Grafana and Kibana | analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis |
+| `a287c6b7` | rank these candidates for me | analysis | ✓ analysis | ✓ analysis | ✗ chat | ✓ analysis | ✓ analysis | ✓ analysis |
+| `1cfe39fb` | which categories are we missing templates for? | analysis | ✗ search | ✓ analysis | ✗ other | ✗ other | ✓ analysis | ✗ other |
+| `545265e9` | should we add Dify or Flowise? | analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis |
+| `ca2a8426` | summarize the strengths and risks of these projects | analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis |
+| `0ee19809` | which is the better fit for Aiven Runtime, Plausible or Umami? | analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis |
+| `4a8e090f` | what would it take to turn n8n into a template? | analysis | ✗ out_of_scope | ✓ analysis | ✗ repo | ✗ repo | ✗ repo | ✗ other |
+| `2173e863` | pick the best of the three and say why | analysis | ✓ analysis | ✓ analysis | ✗ chat | ✓ analysis | ✓ analysis | ✓ analysis |
+| `67cf5956` | recommend which one to build first | analysis | ✓ analysis | ✓ analysis | ✗ chat | ✓ analysis | ✓ analysis | ✓ analysis |
+| `49d8c592` | is SigNoz or Uptrace the stronger candidate? | analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis |
+| `485837a3` | compare Metabase and Redash as templates | analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis |
+| `d5216702` | where do the existing templates overlap? | analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis | ✓ analysis |
+| `ce06092f` | hello! | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `e9058ab1` | yo | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `7654bd3b` | morning! | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `844347e5` | thank you | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `341f722a` | appreciate the help | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `6f2096e7` | alright, understood | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `c34045c1` | cool | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `b9043c16` | sweet | chat | ✓ chat | ✗ out_of_scope | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `eaea2385` | exactly what I needed | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `d24d7435` | forget it | chat | ✗ other | ✗ out_of_scope | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `4507f7dc` | ha, funny | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `385934c9` | oh, that's interesting | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `89cdc057` | that makes sense | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `47843e8d` | excellent, many thanks | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `55b5e556` | my bad, I read that wrong | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `69d91e77` | nice work | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `1e592d7f` | can you explain that more simply? | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `691a8ef8` | what made you choose that one? | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `b5013eb1` | go on | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `b28cf7ed` | is that definitely right? | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `992dc95d` | say that again? | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat |
+| `8e494a73` | what are you able to help with? | chat | ✓ chat | ✓ chat | ✓ chat | ✗ other | ✗ other | ✗ other |
+| `0e26c6be` | what are you exactly? | chat | ✓ chat | ✓ chat | ✓ chat | ✓ chat | ✗ other | ✗ other |
+| `05426928` | what's the weather in Atlanta? | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `f0d2a809` | write me a haiku about databases | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `d45b0db2` | how do I write a Dockerfile for a Python app? | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `c990cc06` | what is the capital of France? | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `87fab88e` | explain how HNSW indexes work | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `51f8270d` | translate 'good morning' into French | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `d21703e8` | what's 15% of 240? | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `8f3dbc19` | what's the difference between TCP and UDP? | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `db6acc5a` | give me a regex that matches an email address | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `2055ba32` | how do I undo my last git commit? | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `9a5c72bd` | tell me a joke about Kubernetes | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
+| `dae67444` | what year did the first iPhone come out? | out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope | ✓ out_of_scope |
 
-- "what database does Directus need?": expected repo, got out_of_scope, confidence 0.38
-- "which categories are we missing templates for?": expected analysis, got search, confidence 0.36
-- "what would it take to turn n8n into a template?": expected analysis, got out_of_scope, confidence 0.30
-- "forget it": expected chat, got other, confidence 0.29
+Test ids are `classifier-compare::<subject>::<id>`.
 
-### qwen3-32b (2 wrong)
+## Mistakes by subject
 
-- "sweet": expected chat, got out_of_scope
-- "forget it": expected chat, got out_of_scope
+### jev-latest (4 failed)
 
-### claude-haiku-4-5 (7 wrong)
+- `classifier-compare::jev-latest::3b61652e` "what database does Directus need?": expected repo, got out_of_scope, confidence 0.38
+- `classifier-compare::jev-latest::1cfe39fb` "which categories are we missing templates for?": expected analysis, got search, confidence 0.36
+- `classifier-compare::jev-latest::4a8e090f` "what would it take to turn n8n into a template?": expected analysis, got out_of_scope, confidence 0.30
+- `classifier-compare::jev-latest::d24d7435` "forget it": expected chat, got other, confidence 0.29
 
-- "compare the top two of those": expected analysis, got chat
-- "which of these would make the best new template?": expected analysis, got chat
-- "rank these candidates for me": expected analysis, got chat
-- "which categories are we missing templates for?": expected analysis, got other
-- "what would it take to turn n8n into a template?": expected analysis, got repo
-- "pick the best of the three and say why": expected analysis, got chat
-- "recommend which one to build first": expected analysis, got chat
+### qwen3-32b (2 failed)
 
-### claude-sonnet-5 (3 wrong)
+- `classifier-compare::qwen3-32b::b9043c16` "sweet": expected chat, got out_of_scope
+- `classifier-compare::qwen3-32b::d24d7435` "forget it": expected chat, got out_of_scope
 
-- "which categories are we missing templates for?": expected analysis, got other
-- "what would it take to turn n8n into a template?": expected analysis, got repo
-- "what are you able to help with?": expected chat, got other
+### claude-haiku-4-5 (7 failed)
 
-### claude-opus-5-5 (3 wrong)
+- `classifier-compare::claude-haiku-4-5::292c5a58` "compare the top two of those": expected analysis, got chat
+- `classifier-compare::claude-haiku-4-5::2d43bb7d` "which of these would make the best new template?": expected analysis, got chat
+- `classifier-compare::claude-haiku-4-5::a287c6b7` "rank these candidates for me": expected analysis, got chat
+- `classifier-compare::claude-haiku-4-5::1cfe39fb` "which categories are we missing templates for?": expected analysis, got other
+- `classifier-compare::claude-haiku-4-5::4a8e090f` "what would it take to turn n8n into a template?": expected analysis, got repo
+- `classifier-compare::claude-haiku-4-5::2173e863` "pick the best of the three and say why": expected analysis, got chat
+- `classifier-compare::claude-haiku-4-5::67cf5956` "recommend which one to build first": expected analysis, got chat
 
-- "what would it take to turn n8n into a template?": expected analysis, got repo
-- "what are you able to help with?": expected chat, got other
-- "what are you exactly?": expected chat, got other
+### claude-sonnet-5 (3 failed)
 
-### claude-opus-5 (6 wrong)
+- `classifier-compare::claude-sonnet-5::1cfe39fb` "which categories are we missing templates for?": expected analysis, got other
+- `classifier-compare::claude-sonnet-5::4a8e090f` "what would it take to turn n8n into a template?": expected analysis, got repo
+- `classifier-compare::claude-sonnet-5::8e494a73` "what are you able to help with?": expected chat, got other
 
-- "best observability tools": expected search, got other
-- "what programming language is Flowise built with?": expected repo, got other
-- "which categories are we missing templates for?": expected analysis, got other
-- "what would it take to turn n8n into a template?": expected analysis, got other
-- "what are you able to help with?": expected chat, got other
-- "what are you exactly?": expected chat, got other
+### claude-opus-5-5 (3 failed)
 
-## Where the models disagree
+- `classifier-compare::claude-opus-5-5::4a8e090f` "what would it take to turn n8n into a template?": expected analysis, got repo
+- `classifier-compare::claude-opus-5-5::8e494a73` "what are you able to help with?": expected chat, got other
+- `classifier-compare::claude-opus-5-5::0e26c6be` "what are you exactly?": expected chat, got other
 
-- "best observability tools" (expected search): jev-latest: search, qwen3-32b: search, claude-haiku-4-5: search, claude-sonnet-5: search, claude-opus-5-5: search, claude-opus-5: other
-- "what programming language is Flowise built with?" (expected repo): jev-latest: repo, qwen3-32b: repo, claude-haiku-4-5: repo, claude-sonnet-5: repo, claude-opus-5-5: repo, claude-opus-5: other
-- "what database does Directus need?" (expected repo): jev-latest: out_of_scope, qwen3-32b: repo, claude-haiku-4-5: repo, claude-sonnet-5: repo, claude-opus-5-5: repo, claude-opus-5: repo
-- "compare the top two of those" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
-- "which of these would make the best new template?" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
-- "rank these candidates for me" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
-- "which categories are we missing templates for?" (expected analysis): jev-latest: search, qwen3-32b: analysis, claude-haiku-4-5: other, claude-sonnet-5: other, claude-opus-5-5: analysis, claude-opus-5: other
-- "what would it take to turn n8n into a template?" (expected analysis): jev-latest: out_of_scope, qwen3-32b: analysis, claude-haiku-4-5: repo, claude-sonnet-5: repo, claude-opus-5-5: repo, claude-opus-5: other
-- "pick the best of the three and say why" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
-- "recommend which one to build first" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
-- "sweet" (expected chat): jev-latest: chat, qwen3-32b: out_of_scope, claude-haiku-4-5: chat, claude-sonnet-5: chat, claude-opus-5-5: chat, claude-opus-5: chat
-- "forget it" (expected chat): jev-latest: other, qwen3-32b: out_of_scope, claude-haiku-4-5: chat, claude-sonnet-5: chat, claude-opus-5-5: chat, claude-opus-5: chat
-- "what are you able to help with?" (expected chat): jev-latest: chat, qwen3-32b: chat, claude-haiku-4-5: chat, claude-sonnet-5: other, claude-opus-5-5: other, claude-opus-5: other
-- "what are you exactly?" (expected chat): jev-latest: chat, qwen3-32b: chat, claude-haiku-4-5: chat, claude-sonnet-5: chat, claude-opus-5-5: other, claude-opus-5: other
+### claude-opus-5 (6 failed)
 
-## Caveats
+- `classifier-compare::claude-opus-5::02cbd68d` "best observability tools": expected search, got other
+- `classifier-compare::claude-opus-5::5a279438` "what programming language is Flowise built with?": expected repo, got other
+- `classifier-compare::claude-opus-5::1cfe39fb` "which categories are we missing templates for?": expected analysis, got other
+- `classifier-compare::claude-opus-5::4a8e090f` "what would it take to turn n8n into a template?": expected analysis, got other
+- `classifier-compare::claude-opus-5::8e494a73` "what are you able to help with?": expected chat, got other
+- `classifier-compare::claude-opus-5::0e26c6be` "what are you exactly?": expected chat, got other
 
+## Where subjects disagree
+
+- `02cbd68d` "best observability tools" (expected search): jev-latest: search, qwen3-32b: search, claude-haiku-4-5: search, claude-sonnet-5: search, claude-opus-5-5: search, claude-opus-5: other
+- `5a279438` "what programming language is Flowise built with?" (expected repo): jev-latest: repo, qwen3-32b: repo, claude-haiku-4-5: repo, claude-sonnet-5: repo, claude-opus-5-5: repo, claude-opus-5: other
+- `3b61652e` "what database does Directus need?" (expected repo): jev-latest: out_of_scope, qwen3-32b: repo, claude-haiku-4-5: repo, claude-sonnet-5: repo, claude-opus-5-5: repo, claude-opus-5: repo
+- `292c5a58` "compare the top two of those" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
+- `2d43bb7d` "which of these would make the best new template?" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
+- `a287c6b7` "rank these candidates for me" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
+- `1cfe39fb` "which categories are we missing templates for?" (expected analysis): jev-latest: search, qwen3-32b: analysis, claude-haiku-4-5: other, claude-sonnet-5: other, claude-opus-5-5: analysis, claude-opus-5: other
+- `4a8e090f` "what would it take to turn n8n into a template?" (expected analysis): jev-latest: out_of_scope, qwen3-32b: analysis, claude-haiku-4-5: repo, claude-sonnet-5: repo, claude-opus-5-5: repo, claude-opus-5: other
+- `2173e863` "pick the best of the three and say why" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
+- `67cf5956` "recommend which one to build first" (expected analysis): jev-latest: analysis, qwen3-32b: analysis, claude-haiku-4-5: chat, claude-sonnet-5: analysis, claude-opus-5-5: analysis, claude-opus-5: analysis
+- `b9043c16` "sweet" (expected chat): jev-latest: chat, qwen3-32b: out_of_scope, claude-haiku-4-5: chat, claude-sonnet-5: chat, claude-opus-5-5: chat, claude-opus-5: chat
+- `d24d7435` "forget it" (expected chat): jev-latest: other, qwen3-32b: out_of_scope, claude-haiku-4-5: chat, claude-sonnet-5: chat, claude-opus-5-5: chat, claude-opus-5: chat
+- `8e494a73` "what are you able to help with?" (expected chat): jev-latest: chat, qwen3-32b: chat, claude-haiku-4-5: chat, claude-sonnet-5: other, claude-opus-5-5: other, claude-opus-5: other
+- `0e26c6be` "what are you exactly?" (expected chat): jev-latest: chat, qwen3-32b: chat, claude-haiku-4-5: chat, claude-sonnet-5: chat, claude-opus-5-5: other, claude-opus-5: other
+
+## Notes
+
+- In-scope accuracy covers the messages Template Scout is meant to handle. Wrongly refused counts in-scope messages a model called out_of_scope, the costly direction.
+- One message per call, no conversation history; one run per model, so answers can differ on a rerun. Prices are the list prices in settings.toml.
 - 93 messages written and labeled by one person; some labels are judgment calls.
-- One message per call with no history, which undersells models that use conversation.
-- Single run per model: Jev and the LLMs can answer differently on a rerun.
-- Measures classification only, not answer quality. Cost is estimated from list prices.

@@ -1,24 +1,27 @@
 """Classifier shootout: Jev and general models on the same labeled messages, with a report.
 
-    mise run bench-classifiers                       # default model list
-    mise run bench-classifiers -- claude-opus-5 qwen3-32b    # your own list
+    mise run bench-classifiers                              # default models, md + json
+    mise run bench-classifiers -- claude-opus-5 qwen3-32b   # your own list
+    mise run bench-classifiers -- --formats all             # json, csv, html, pdf, md
+    mise run bench-classifiers -- --from-saved --formats html,pdf   # re-render, no model calls
 
 Needs TYPESAFE_API_KEY (for Jev) and SEMCACHE_LLM_BASE_URL / SEMCACHE_LLM_API_KEY (the gateway
-every other model goes through). Prices come from settings.toml. Writes, next to this file:
+every other model goes through). Prices come from settings.toml. Writes to --out-dir (default:
+next to this file):
 
-    classifier_compare.json   every answer, latency and token count
-    report.md                 the summary, per-model mistakes and where models disagree
+    classifier_compare.json   the raw answers, latency and token counts, one row per message
+    report.<ext>              the report, in each format asked for; every case has a test id
 
 Every classifier gets the same six choices: the five Template Scout kinds plus `out_of_scope`
 for messages the app is not meant to answer (general knowledge, coding help, jokes, weather).
-Messages are sent one at a time with no conversation history.
+Messages are sent one at a time with no conversation history. PDF needs `uv sync --extra report`.
 """
 
+import argparse
 import json
 import os
 import re
 import statistics
-import sys
 import time
 from datetime import date
 from pathlib import Path
@@ -28,6 +31,7 @@ from typesafe_sdk import Choice
 
 from semcache.decide import CLASSIFY_PROMPT
 from semcache.jev import CRITERIA, INSTRUCTIONS, JevClassifier
+from semcache.report import Case, Report, item_id, parse_formats, test_id, write
 from semcache.tunables import load_tunables
 
 HERE = Path(__file__).parent
@@ -133,106 +137,103 @@ def money(v) -> str:
     return "no price" if v is None else f"${v:.3f}"
 
 
-def report(result: dict, items: list[dict]) -> str:
-    models = list(result["summary"])
-    s = result["summary"]
-    lines = [
-        "# Classifier comparison",
-        "",
-        f"Run on {result['date']}: {len(items)} labeled messages, one at a time with no "
-        "conversation history. Every model chooses between the same six kinds: chat, search, "
-        "repo, analysis, other and out_of_scope. Prices are the list prices in `settings.toml`.",
-        "",
-        "## Summary",
-        "",
-        "| Model | In-scope accuracy | All-message accuracy | Off-topic caught | Wrongly refused | "
-        "Mean latency | p95 | Tokens in / out | $ per 1,000 calls |",
-        "|---|---|---|---|---|---|---|---|---|",
-    ]
-    for m in models:
-        x = s[m]
-        lines.append(
-            f"| {m} | {x['in_scope_accuracy']:.1%} ({x['in_scope_wrong']} wrong) "
-            f"| {x['accuracy']:.1%} | {x['out_of_scope_caught']}/{x['out_of_scope_total']} "
-            f"| {x['wrongly_refused']} | {x['mean_s']:.2f} s | {x['p95_s']:.2f} s "
-            f"| {x['mean_in_tokens']} / {x['mean_out_tokens']} | {money(x['usd_per_1000'])} |"
-        )
-    lines += [
-        "",
-        "In-scope accuracy covers the messages Template Scout is meant to handle. Off-topic caught "
-        "is how many of the off-topic messages were labeled out_of_scope. Wrongly refused is how "
-        "many in-scope messages a model called out_of_scope, which is the costly direction.",
-        "",
-        "## Mistakes by model",
-    ]
-    for m in models:
-        rows = result["rows"][m]
-        bad = [
-            (i["text"], TRUTH[i["route"]], r["kind"], r.get("confidence"))
-            for r, i in zip(rows, items, strict=True)
-            if r["kind"] != TRUTH[i["route"]]
-        ]
-        lines += ["", f"### {m} ({len(bad)} wrong)", ""]
-        if not bad:
-            lines.append("None.")
-        for text, truth, got, conf in bad:
-            c = f", confidence {conf:.2f}" if conf is not None else ""
-            lines.append(f'- "{text}": expected {truth}, got {got}{c}')
-    lines += ["", "## Where the models disagree", ""]
-    n = 0
-    for k, item in enumerate(items):
-        answers = {m: result["rows"][m][k]["kind"] for m in models}
-        if len(set(answers.values())) > 1:
-            n += 1
-            detail = ", ".join(f"{m}: {a}" for m, a in answers.items())
-            lines.append(f'- "{item["text"]}" (expected {TRUTH[item["route"]]}): {detail}')
-    if not n:
-        lines.append("They agree on every message.")
-    lines += [
-        "",
-        "## Caveats",
-        "",
-        f"- {len(items)} messages written and labeled by one person; some labels are judgment "
-        "calls.",
-        "- One message per call with no history, which undersells models that use conversation.",
-        "- Single run per model: Jev and the LLMs can answer differently on a rerun.",
-        "- Measures classification only, not answer quality. Cost is estimated from list prices.",
-    ]
-    return "\n".join(lines) + "\n"
+SUITE = "classifier-compare"
+
+
+def build_report(result: dict, items: list[dict]) -> Report:
+    """One case per message per model, with a test id: classifier-compare::<model>::<item id>."""
+    cases = []
+    for model, rows in result["rows"].items():
+        for item, row in zip(items, rows, strict=True):
+            expected = TRUTH[item["route"]]
+            cases.append(
+                Case(
+                    test_id=test_id(SUITE, model, item["text"]),
+                    suite=SUITE,
+                    subject=model,
+                    item_id=item_id(item["text"]),
+                    text=item["text"],
+                    expected=expected,
+                    actual=row["kind"],
+                    passed=row["kind"] == expected,
+                    in_scope=item["route"] != "agent",
+                    confidence=row.get("confidence"),
+                    seconds=round(row["seconds"], 3),
+                    tokens_in=row["in"],
+                    tokens_out=row["out"],
+                )  # fmt: skip
+            )
+    headers = [
+        "Model", "In-scope accuracy", "All-message accuracy", "Off-topic caught",
+        "Wrongly refused", "Mean latency", "p95", "Tokens in / out", "$ per 1,000 calls",
+    ]  # fmt: skip
+    table = []
+    for m, x in result["summary"].items():
+        table.append([
+            m, f"{x['in_scope_accuracy']:.1%} ({x['in_scope_wrong']} wrong)",
+            f"{x['accuracy']:.1%}", f"{x['out_of_scope_caught']}/{x['out_of_scope_total']}",
+            str(x["wrongly_refused"]), f"{x['mean_s']:.2f} s", f"{x['p95_s']:.2f} s",
+            f"{x['mean_in_tokens']} / {x['mean_out_tokens']}", money(x["usd_per_1000"]),
+        ])  # fmt: skip
+    return Report(
+        title="Classifier comparison", suite=SUITE,
+        meta={"date": result["date"], "messages": len(items), "models": len(result["rows"])},
+        summary_headers=headers, summary_rows=table, cases=cases,
+        notes=[
+            "In-scope accuracy covers the messages Template Scout is meant to handle. Wrongly "
+            "refused counts in-scope messages a model called out_of_scope, the costly direction.",
+            "One message per call, no conversation history; one run per model, so answers can "
+            "differ on a rerun. Prices are the list prices in settings.toml.",
+            f"{len(items)} messages written and labeled by one person; some labels are judgment "
+            "calls.",
+        ],
+    )  # fmt: skip
 
 
 def main() -> None:
-    names = sys.argv[1:] or DEFAULT_MODELS
-    tunables = load_tunables(os.environ.get("SEMCACHE_SETTINGS_FILE", "settings.toml"))
+    ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("models", nargs="*", help=f"gateway model names (default: {DEFAULT_MODELS})")
+    ap.add_argument("--formats", default="md,json", help="json,csv,html,pdf,md or 'all'")
+    ap.add_argument("--out-dir", default=str(HERE), help="where the report files go")
+    ap.add_argument("--from-saved", action="store_true", help="re-render classifier_compare.json")
+    args = ap.parse_args()
+    formats = parse_formats(args.formats)
     items = [json.loads(line) for line in (HERE / "routing.jsonl").read_text().splitlines() if line]
-    rows_by_model: dict[str, list[dict]] = {}
-    for name in names:
-        print(f"{name} ...", flush=True)
-        if name.startswith(JEV_PREFIX):
-            jev = JevClassifier(model=name, min_confidence=0.0)  # raw answer, no fallback gate
-            rows_by_model[name] = [via_jev(jev, i["text"]) for i in items]
-        else:
-            llm = ChatOpenAI(
-                model=name, base_url=os.environ["SEMCACHE_LLM_BASE_URL"],
-                api_key=os.environ["SEMCACHE_LLM_API_KEY"], timeout=120,
-            ).bind(max_tokens=120)  # fmt: skip
-            rows_by_model[name] = [via_model(llm, i["text"]) for i in items]
-    result = {
-        "date": date.today().isoformat(),
-        "summary": {
-            n: summarize(n, r, items, tunables.cost.models) for n, r in rows_by_model.items()
-        },
-        "rows": rows_by_model,
-    }
-    (HERE / "classifier_compare.json").write_text(json.dumps(result, indent=1))
-    (HERE / "report.md").write_text(report(result, items))
+    saved = HERE / "classifier_compare.json"
+
+    if args.from_saved:
+        result = json.loads(saved.read_text())
+    else:
+        tunables = load_tunables(os.environ.get("SEMCACHE_SETTINGS_FILE", "settings.toml"))
+        rows_by_model: dict[str, list[dict]] = {}
+        for name in args.models or DEFAULT_MODELS:
+            print(f"{name} ...", flush=True)
+            if name.startswith(JEV_PREFIX):
+                jev = JevClassifier(model=name, min_confidence=0.0)  # raw answer, no fallback gate
+                rows_by_model[name] = [via_jev(jev, i["text"]) for i in items]
+            else:
+                llm = ChatOpenAI(
+                    model=name, base_url=os.environ["SEMCACHE_LLM_BASE_URL"],
+                    api_key=os.environ["SEMCACHE_LLM_API_KEY"], timeout=120,
+                ).bind(max_tokens=120)  # fmt: skip
+                rows_by_model[name] = [via_model(llm, i["text"]) for i in items]
+        result = {
+            "date": date.today().isoformat(),
+            "summary": {
+                n: summarize(n, r, items, tunables.cost.models) for n, r in rows_by_model.items()
+            },
+            "rows": rows_by_model,
+        }
+        saved.write_text(json.dumps(result, indent=1))
+
     for s in result["summary"].values():
         print(
             f"{s['model']:20} in-scope {s['in_scope_accuracy']:.1%}  off-topic "
             f"{s['out_of_scope_caught']}/{s['out_of_scope_total']}  "
             f"refused {s['wrongly_refused']}  {s['mean_s']:.2f}s  {money(s['usd_per_1000'])}/1k"
         )
-    print("wrote benchmarks/report.md")
+    for path in write(build_report(result, items), formats, Path(args.out_dir)):
+        print("wrote", path)
 
 
 if __name__ == "__main__":

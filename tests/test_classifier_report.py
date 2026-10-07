@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
+from semcache.report import to_md
+
 SPEC = importlib.util.spec_from_file_location(
     "compare_classifiers", Path(__file__).parent.parent / "benchmarks" / "compare_classifiers.py"
 )
@@ -49,10 +51,10 @@ def test_cost_comes_from_settings_prices_and_is_none_without_one():
     )
 
 
-def test_the_report_lists_mistakes_and_disagreements():
+def sample_result():
     good = rows("search", "chat", "out_of_scope", "analysis")
     bad = rows("search", "chat", "out_of_scope", "chat")
-    result = {
+    return {
         "date": "2026-01-01",
         "summary": {
             "good": cc.summarize("good", good, ITEMS, {}),
@@ -60,7 +62,10 @@ def test_the_report_lists_mistakes_and_disagreements():
         },
         "rows": {"good": good, "bad": bad},
     }
-    md = cc.report(result, ITEMS)
+
+
+def test_the_markdown_report_lists_mistakes_and_disagreements():
+    md = to_md(cc.build_report(sample_result(), ITEMS))
     assert "| good |" in md and "| bad |" in md and "no price" in md
     assert '"rank these": expected analysis, got chat' in md  # a mistake, by model
     assert "good: analysis, bad: chat" in md  # and where they disagree
