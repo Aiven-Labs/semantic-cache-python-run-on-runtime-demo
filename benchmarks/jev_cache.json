@@ -1,0 +1,370 @@
+{
+ "API-first content management systems": {
+  "kind": "search",
+  "seconds": 0.1921849159998601
+ },
+ "alright, understood": {
+  "kind": "chat",
+  "seconds": 0.21173116699992534
+ },
+ "any good opentelemetry collectors?": {
+  "kind": "search",
+  "seconds": 0.1366900840002927
+ },
+ "any open source CRM worth a look?": {
+  "kind": "search",
+  "seconds": 0.16137483400052588
+ },
+ "anything similar to Redash?": {
+  "kind": "search",
+  "seconds": 0.14344970799993462
+ },
+ "appreciate the help": {
+  "kind": "chat",
+  "seconds": 0.16999933299939585
+ },
+ "apps for monitoring uptime": {
+  "kind": "search",
+  "seconds": 0.16326758400009567
+ },
+ "best observability tools": {
+  "kind": "search",
+  "seconds": 0.15614291700057947
+ },
+ "can you explain that more simply?": {
+  "kind": "chat",
+  "seconds": 0.22897266699965257
+ },
+ "compare Metabase and Redash as templates": {
+  "kind": "analysis",
+  "seconds": 0.15769170800012944
+ },
+ "compare the top two of those": {
+  "kind": "analysis",
+  "seconds": 0.1516133750001245
+ },
+ "cool": {
+  "kind": "chat",
+  "seconds": 0.15051120800035278
+ },
+ "diary apps": {
+  "kind": "search",
+  "seconds": 0.1597143330000108
+ },
+ "does langgenius/dify have a compose file?": {
+  "kind": "repo",
+  "seconds": 0.24811774999943736
+ },
+ "durable execution frameworks": {
+  "kind": "search",
+  "seconds": 0.20859400000063033
+ },
+ "exactly what I needed": {
+  "kind": "chat",
+  "seconds": 0.17120974999943428
+ },
+ "excellent, many thanks": {
+  "kind": "chat",
+  "seconds": 0.12224587499986228
+ },
+ "explain how HNSW indexes work": {
+  "kind": "chat",
+  "seconds": 0.29274316700048075
+ },
+ "forget it": {
+  "kind": "other",
+  "seconds": 0.17144583299977967
+ },
+ "give me a regex that matches an email address": {
+  "kind": "other",
+  "seconds": 0.16087729099945136
+ },
+ "go on": {
+  "kind": "chat",
+  "seconds": 0.1598800840001786
+ },
+ "good alternatives to Grafana": {
+  "kind": "search",
+  "seconds": 0.24581066600057966
+ },
+ "good observability options?": {
+  "kind": "search",
+  "seconds": 0.16517704099987895
+ },
+ "got any self-hosted feature toggle projects?": {
+  "kind": "search",
+  "seconds": 0.16959541699998226
+ },
+ "ha, funny": {
+  "kind": "chat",
+  "seconds": 0.1406619999997929
+ },
+ "how big is the SigNoz repo": {
+  "kind": "repo",
+  "seconds": 0.1532917920003456
+ },
+ "how do I undo my last git commit?": {
+  "kind": "other",
+  "seconds": 0.1997762920000241
+ },
+ "how do I write a Dockerfile for a Python app?": {
+  "kind": "other",
+  "seconds": 0.1673705830007748
+ },
+ "is Metabase's compose file runtime-ready?": {
+  "kind": "repo",
+  "seconds": 0.1444115829999646
+ },
+ "is SigNoz or Uptrace the stronger candidate?": {
+  "kind": "analysis",
+  "seconds": 0.16323937500055763
+ },
+ "is featbit/featbit still maintained?": {
+  "kind": "repo",
+  "seconds": 0.1467402079997555
+ },
+ "is that definitely right?": {
+  "kind": "chat",
+  "seconds": 0.17938024999966729
+ },
+ "list the top-level folders in getsentry/sentry": {
+  "kind": "repo",
+  "seconds": 0.13955016599993542
+ },
+ "look at the Dockerfile of immich-app/immich": {
+  "kind": "repo",
+  "seconds": 0.1725957919998109
+ },
+ "looking for a workflow engine": {
+  "kind": "search",
+  "seconds": 0.15828462500030582
+ },
+ "morning!": {
+  "kind": "chat",
+  "seconds": 0.1760159579998799
+ },
+ "my bad, I read that wrong": {
+  "kind": "chat",
+  "seconds": 0.16090695900038554
+ },
+ "nice work": {
+  "kind": "chat",
+  "seconds": 0.21473354200043104
+ },
+ "oh, that's interesting": {
+  "kind": "chat",
+  "seconds": 0.16052941599991755
+ },
+ "open source alternatives to Notion": {
+  "kind": "search",
+  "seconds": 0.1444585420003932
+ },
+ "open source scheduling tools": {
+  "kind": "search",
+  "seconds": 0.15409008400001767
+ },
+ "open the compose file for outline/outline": {
+  "kind": "repo",
+  "seconds": 0.13885941700027615
+ },
+ "pick the best of the three and say why": {
+  "kind": "analysis",
+  "seconds": 0.1299282919999314
+ },
+ "rank these candidates for me": {
+  "kind": "analysis",
+  "seconds": 0.14599591600017447
+ },
+ "read the README of n8n-io/n8n": {
+  "kind": "repo",
+  "seconds": 0.15152670899988152
+ },
+ "recommend which one to build first": {
+  "kind": "analysis",
+  "seconds": 0.15015029199912533
+ },
+ "say that again?": {
+  "kind": "chat",
+  "seconds": 0.17209508300038578
+ },
+ "search GitHub for job queue dashboards": {
+  "kind": "search",
+  "seconds": 0.1828252089999296
+ },
+ "self-hosted password managers": {
+  "kind": "search",
+  "seconds": 0.18797729200014146
+ },
+ "self-hosted web analytics": {
+  "kind": "search",
+  "seconds": 0.14878787500038015
+ },
+ "should we add Dify or Flowise?": {
+  "kind": "analysis",
+  "seconds": 0.22967962500024441
+ },
+ "something like dayone": {
+  "kind": "search",
+  "seconds": 0.17875208299938095
+ },
+ "star count for prometheus/prometheus": {
+  "kind": "repo",
+  "seconds": 0.17889391700009583
+ },
+ "summarize the strengths and risks of these projects": {
+  "kind": "analysis",
+  "seconds": 0.17085641700032284
+ },
+ "sweet": {
+  "kind": "chat",
+  "seconds": 0.14827054200031853
+ },
+ "tell me a joke about Kubernetes": {
+  "kind": "chat",
+  "seconds": 0.15336262500022713
+ },
+ "thank you": {
+  "kind": "chat",
+  "seconds": 0.257050000000163
+ },
+ "that makes sense": {
+  "kind": "chat",
+  "seconds": 0.20902300000034302
+ },
+ "tools for tracing microservices": {
+  "kind": "search",
+  "seconds": 0.16527812499953143
+ },
+ "translate 'good morning' into French": {
+  "kind": "other",
+  "seconds": 0.22671283299951028
+ },
+ "vector database projects": {
+  "kind": "search",
+  "seconds": 0.4089988750001794
+ },
+ "ways to monitor Kafka clusters": {
+  "kind": "search",
+  "seconds": 0.1639721659994393
+ },
+ "weigh the trade-offs between Grafana and Kibana": {
+  "kind": "analysis",
+  "seconds": 0.1613816669996595
+ },
+ "what apps are built on Kafka?": {
+  "kind": "search",
+  "seconds": 0.21983850000015082
+ },
+ "what are good log aggregation projects": {
+  "kind": "search",
+  "seconds": 0.14444862500022282
+ },
+ "what are some good observability tools": {
+  "kind": "search",
+  "seconds": 0.1447697909998169
+ },
+ "what are some good otel options": {
+  "kind": "search",
+  "seconds": 0.17211279200000718
+ },
+ "what are some self-hosted wiki options": {
+  "kind": "search",
+  "seconds": 0.16386237499955314
+ },
+ "what are you able to help with?": {
+  "kind": "chat",
+  "seconds": 0.25812916700033384
+ },
+ "what are you exactly?": {
+  "kind": "chat",
+  "seconds": 0.22655104200021015
+ },
+ "what database does Directus need?": {
+  "kind": "repo",
+  "seconds": 0.27743191700028547
+ },
+ "what does the Ghost repo's root folder look like": {
+  "kind": "repo",
+  "seconds": 0.1564811660000487
+ },
+ "what is the capital of France?": {
+  "kind": "other",
+  "seconds": 0.16042741700039187
+ },
+ "what license does Kestra use": {
+  "kind": "repo",
+  "seconds": 0.1678910000000542
+ },
+ "what made you choose that one?": {
+  "kind": "chat",
+  "seconds": 0.16694895799992082
+ },
+ "what programming language is Flowise built with?": {
+  "kind": "repo",
+  "seconds": 0.15717254199989839
+ },
+ "what would it take to turn n8n into a template?": {
+  "kind": "other",
+  "seconds": 0.19105608300014865
+ },
+ "what year did the first iPhone come out?": {
+  "kind": "other",
+  "seconds": 0.17367329100034112
+ },
+ "what's 15% of 240?": {
+  "kind": "other",
+  "seconds": 0.1643456249994415
+ },
+ "what's in the docker folder of appsmithorg/appsmith": {
+  "kind": "repo",
+  "seconds": 0.14047020899943163
+ },
+ "what's out there for error tracking?": {
+  "kind": "search",
+  "seconds": 0.1576131660003739
+ },
+ "what's the difference between TCP and UDP?": {
+  "kind": "other",
+  "seconds": 0.1772662079993097
+ },
+ "what's the weather in Atlanta?": {
+  "kind": "other",
+  "seconds": 0.172035292000146
+ },
+ "when was supabase/supabase last updated": {
+  "kind": "repo",
+  "seconds": 0.14887412500047503
+ },
+ "where do the existing templates overlap?": {
+  "kind": "analysis",
+  "seconds": 0.17701995800052828
+ },
+ "which categories are we missing templates for?": {
+  "kind": "search",
+  "seconds": 0.15249566599959508
+ },
+ "which is the better fit for Aiven Runtime, Plausible or Umami?": {
+  "kind": "analysis",
+  "seconds": 0.13153116600005887
+ },
+ "which of these would make the best new template?": {
+  "kind": "analysis",
+  "seconds": 0.1843242499999178
+ },
+ "which services does plausible/analytics use": {
+  "kind": "repo",
+  "seconds": 0.17517404099999112
+ },
+ "who maintains Uptime Kuma": {
+  "kind": "repo",
+  "seconds": 0.15092866600025445
+ },
+ "write me a haiku about databases": {
+  "kind": "other",
+  "seconds": 0.18277945800036832
+ },
+ "yo": {
+  "kind": "chat",
+  "seconds": 0.19678262500019628
+ }
+}
