@@ -197,60 +197,70 @@ three of my otel phrasings to `search` at 1.00.
 
 ## How they compare
 
-I put the same 93 labeled messages through three classifiers. They are single messages with no
-conversation history, labeled by me across the five kinds. The two general models get the
-production prompt through the Aiven gateway: Claude Haiku 4.5, the mid-tier fallback, and
-`qwen3-32b`, the cheap model the app uses for cache hits. Jev is `jev-latest`.
+I put the same 93 labeled messages through six classifiers, one message per call with no
+conversation history. 12 of the messages are off-topic ("explain how HNSW indexes work", "write me a
+haiku about databases"): Template Scout is not meant to answer those. My first run gave the
+classifiers no way to say so, and I scored the off-topic messages as if `other` were the right
+answer, which was wrong and penalized the models that happened to say small talk. In this run every
+model gets a sixth choice, `out_of_scope`, with the same wording. The app itself has no such route
+yet; this is how I would score it if it did.
 
-One correction before the numbers. My first version of this table scored all 93 messages, and 12 of
-them are off-topic: "explain how HNSW indexes work", "write me a haiku about databases", "what's the
-capital of France?". Template Scout is not meant to answer those, and it has no out-of-scope route.
-I had filed them under `agent` only because that is where the `other` kind lands. Scoring a
-classifier on whether it sends "tell me a joke" to the right place for a question the app should
-not be answering is not measuring anything I care about, and it penalized Qwen unfairly. The table
-below uses the 81 messages the app is meant to handle.
+Five models go through the Aiven gateway with the production prompt: Haiku 4.5, Sonnet 5, Opus 5,
+Opus 5.5 and Qwen3 32B, the cheap model the app uses for cache hits. Jev is `jev-latest`.
 
-| 81 in-scope messages | Jev | Qwen3 32B | Haiku 4.5 |
-|---|---|---|---|
-| Accuracy | 96.3% (3 wrong) | **98.8%** (1 wrong) | 90.1% (8 wrong) |
-| Mean latency | **0.30 s** | 0.50 s | 0.96 s |
-| p95 latency | **0.43 s** | 0.71 s | 1.13 s |
-| Tokens per call (in / out) | 513 / 52 | 261 / 19 | 269 / 26 |
-| List price per 1,000 calls | **$0.02** | $0.06 | $0.40 |
+| | In-scope accuracy (81) | Off-topic caught (12) | Mean latency | $ per 1,000 calls |
+|---|---|---|---|---|
+| Qwen3 32B | **97.5%** (2 wrong) | 12 | 0.56 s | $0.07 |
+| Claude Sonnet 5 | 96.3% (3 wrong) | 12 | 1.50 s | $1.42 |
+| Claude Opus 5.5 | 96.3% (3 wrong) | 12 | 1.98 s | $2.89 |
+| Jev | 95.1% (4 wrong) | 12 | **0.23 s** | **$0.02** |
+| Claude Opus 5 | 92.6% (6 wrong) | 12 | 1.53 s | $3.62 |
+| Claude Haiku 4.5 | 91.4% (7 wrong) | 12 | 0.80 s | $0.51 |
 
-On all 93 messages, off-topic included, it reads 95.7%, 91.4% and 88.2%, and Qwen looks worse than
-Jev because it calls six of the everyday questions small talk. That is a result about off-topic
-questions, which is why I stopped looking at it.
+Prices are the gateway's list prices from `settings.toml`, which I updated for this run. TypeSafe does
+not meter output tokens. The full report, with every mistake and every disagreement, is in
+`benchmarks/report.md`, and `mise run bench-classifiers` regenerates it.
 
-Prices are list prices from `settings.toml`; TypeSafe does not meter output tokens. Latency and
-price are Jev's clear win: about 18 times cheaper than Haiku, 3 times cheaper than Qwen, and faster
-than both. Accuracy is not. On this set Qwen is the most accurate, by two messages out of 81, which
-is within what I would expect from relabeling a few judgment calls. I would call Jev and Qwen tied
-on accuracy and Haiku behind.
+A few things stand out.
 
-Haiku's misses are a pattern. All eight are `analysis` messages like "compare the top two
-of those", "rank these candidates for me" and "pick the best of the three and say why", which it
-called small talk. The benchmark sends no history, so "those" and "these" point at nothing, and
-Haiku read them as being about the conversation, which is the `chat` description. Qwen and Jev
-mostly got them right. In the real app the previous turn is in the prompt, and that is the case
-Haiku would handle better.
+**Off-topic is a solved problem once there is a place to put it.** All six caught all 12. The
+interesting error runs the other way: calling a real question out of scope. Qwen did it twice
+("sweet", "forget it") and Jev twice ("what database does Directus need?", "what would it take to
+turn n8n into a template?"). The other four never did.
 
-Jev's three in-scope misses were "which categories are we missing templates for?" (find), "what
-would it take to turn n8n into a template?" (agent) and "forget it" (agent). All three came back
-under 0.45 confidence, so in production the 0.6 gate would have sent them to Haiku instead of
-acting on them. That is the practical argument for a classifier that reports confidence. Qwen's one
-miss was "forget it", which both Jev and Qwen called `other`; I labeled it small talk and I can see
-the argument for either.
+**Bigger did not mean better.** The top four are within two messages out of 81, which is inside what
+relabeling a few judgment calls would change, so I would call them tied. Opus 5, the most expensive
+model here, scored below Sonnet 5 and below the newer Opus 5.5. It called six in-scope messages
+`other`, including "best observability tools". Haiku was the weakest, and its mistakes are a
+pattern: five of its seven are `analysis` messages like "compare the top two of those" and "rank
+these candidates for me", which it read as being about the conversation and called `chat`. The
+benchmark sends no history, so "those" and "these" point at nothing. In the real app the previous
+turn is in the prompt, and that is the case Haiku would handle better.
+
+**Jev's mistakes announce themselves.** All four came back at 0.38 confidence or lower, so the 0.6
+gate would have sent every one of them to the fallback model instead of acting on them. None of the
+general models gives you that signal.
+
+**Cost and latency are where Jev is clearly ahead.** It is about 22 times cheaper than Haiku, 60
+times cheaper than Sonnet 5 and more than 100 times cheaper than Opus 5.5, and faster than all of
+them. Qwen is the real alternative: 3 times Jev's price, a little over twice its latency, and the
+best accuracy here. If I could not use Jev, I would use Qwen with this prompt.
+
+Some of the mistakes are the labels' fault. "forget it" is `chat` to me and `other` or
+`out_of_scope` to three models, and Sonnet 5 and both Opus models called "what are you able to help
+with?" `other`, which is a defensible reading. I did not tune the prompt for any model.
 
 ## Where I would use which
 
 - **Jev** when the answer is one of a fixed list and you can write down what each option means. It
-  is the fastest and cheapest, it reports a confidence, and its output cannot be malformed. You pay
-  in glue code for anything that needs free text. It was not more accurate than Qwen here.
+  is the fastest and cheapest, it reports a confidence you can gate on, and its output cannot be
+  malformed. You pay in glue code for anything that needs free text. It was not more accurate than
+  Qwen or the bigger Claude models here, only about as accurate.
 - **A general model** when you need the classifier to also extract or write something, or when the
-  right answer depends on a long conversation. You pay in parsing, latency and tokens. If you go
-  this way on a budget, Qwen3 32B matched Jev on accuracy here at a sixth of Haiku's price. It is
-  slower and 3 times Jev's price, and it does not report a confidence you can gate on.
+  right answer depends on a long conversation. You pay in parsing, latency and tokens. Paying more
+  did not buy accuracy here; if you go this way, Qwen3 32B was the best of the six at a fraction of
+  the Claude prices. It is slower and 3 times Jev's price, and it does not report a confidence you
+  can gate on.
 - **Both** is what the app does: Jev first, and Haiku as the fallback when Jev is unsure or down.
 
 ## An experiment that did not pan out
@@ -269,8 +279,10 @@ The code and numbers are on the `feat/no-hardcoded-distance` branch in `benchmar
 - 93 messages I wrote and labeled, 81 of them in scope, so some labels are judgment calls and
   one miss is two points of accuracy.
 - Single messages with no history, which undersells the model path.
-- Jev answers vary a little between runs. The routing benchmark used a cached set at about 94%;
-  the head-to-head run above scored 95.7% on all 93 messages.
+- One run per model. Jev and the LLMs can answer differently on a rerun; Jev scored 95.7% and 94.5%
+  on earlier runs of a slightly different setup.
+- I tested and priced `claude-sonnet-5`. The app's own answering model is configured as
+  `claude-sonnet-5-5`, which I did not test.
 - It measures classification, not answer quality, and prices are list prices, not my invoice.
 - I looked at Laya, another classifier, and dropped it before running anything: its model card says
   base checkpoints score near chance until fine-tuned.

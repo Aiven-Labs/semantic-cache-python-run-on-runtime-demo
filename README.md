@@ -217,6 +217,27 @@ no embeddings endpoint, so an embeddings service Aiven can reach is needed first
 embedding model means re-embedding every vector and re-tuning the distance thresholds in
 `settings.toml`). Confirm the Valkey service has search enabled.
 
+## Benchmarks
+
+Both write a report into `benchmarks/`. They need the secrets in fnox, and `mise run` supplies them.
+
+```sh
+mise run bench-classifiers                              # Jev, Qwen, Haiku, Sonnet, Opus -> report.md
+mise run bench-classifiers -- claude-opus-5 qwen3-32b   # or pick your own models
+mise run bench-routing                                  # router strategies on the same messages
+uv run pytest tests/test_benchmark.py tests/test_classifier_report.py   # no network needed
+```
+
+- `benchmarks/routing.jsonl` is the labeled set (93 messages, 12 of them off-topic). Add your own
+  lines as `{"text": "...", "route": "find|inspect|analysis|smalltalk|agent"}`; `agent` means
+  out of scope.
+- Any model name your gateway serves works for the classifier comparison. Jev is a name starting
+  with `jev` and needs `TYPESAFE_API_KEY`. Prices come from `[cost.models]` in `settings.toml`; a model
+  with no entry is reported as "no price".
+- The classifier comparison makes about 93 calls per model, one at a time, so Opus takes a few
+  minutes. The routing benchmark needs Valkey with the search module and the embeddings server up,
+  and uses its own `idx:bench` index, never the app's data.
+
 ## Next
 
 - Semantic routing: classify a repo into a template category.

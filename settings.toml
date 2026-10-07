@@ -77,9 +77,27 @@ detail_ttl_seconds = 604800      # the Compose file saved when a repo is found (
 # Cost: USD per 1 million tokens. These are ESTIMATES used for the cost and savings shown in chat.
 # Edit to match what your gateway actually bills. A model with no entry here is shown as
 # "no price set". Only the models this file uses need an entry.
+# Anthropic prices below are the Aiven gateway's, per million tokens. Cache read/write prices are
+# not modeled: the app does not use prompt caching.
 [cost.models."claude-haiku-4-5"]
-input_per_mtok = 1.00
-output_per_mtok = 5.00
+input_per_mtok = 1.155
+output_per_mtok = 5.775
+
+[cost.models."claude-sonnet-5"]
+input_per_mtok = 2.31
+output_per_mtok = 11.55
+
+[cost.models."claude-opus-5"]
+input_per_mtok = 5.775
+output_per_mtok = 28.875
+
+[cost.models."claude-opus-5-5"]
+input_per_mtok = 4.62
+output_per_mtok = 23.1
+
+[cost.models."aiven-model"]
+input_per_mtok = 0.0
+output_per_mtok = 0.0
 
 # TypeSafe list price: input $0.042 per million tokens, output not metered.
 [cost.models."jev-latest"]

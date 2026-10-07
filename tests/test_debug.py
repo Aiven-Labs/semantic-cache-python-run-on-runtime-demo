@@ -61,6 +61,6 @@ def test_settings_are_compact_one_line_each():
     sect = r.split("## Settings")[1].split("## Running")[0]
     assert (
         "routing.models.hit = " in sect
-        and "prices_usd_per_mtok.claude-haiku-4-5 = [1.0, 5.0]" in sect
+        and "prices_usd_per_mtok.claude-haiku-4-5 = [1.155, 5.775]" in sect
     )
     assert sect.count("\n") < 40  # was ~60 lines of indented JSON
