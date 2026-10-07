@@ -202,68 +202,75 @@ conversation history, labeled by me across the five kinds. The two general model
 production prompt through the Aiven gateway: Claude Haiku 4.5, the mid-tier fallback, and
 `qwen3-32b`, the cheap model the app uses for cache hits. Jev is `jev-latest`.
 
-| | Jev | Qwen3 32B | Haiku 4.5 |
+One correction before the numbers. My first version of this table scored all 93 messages, and 12 of
+them are off-topic: "explain how HNSW indexes work", "write me a haiku about databases", "what's the
+capital of France?". Template Scout is not meant to answer those, and it has no out-of-scope route.
+I had filed them under `agent` only because that is where the `other` kind lands. Scoring a
+classifier on whether it sends "tell me a joke" to the right place for a question the app should
+not be answering is not measuring anything I care about, and it penalized Qwen unfairly. The table
+below uses the 81 messages the app is meant to handle.
+
+| 81 in-scope messages | Jev | Qwen3 32B | Haiku 4.5 |
 |---|---|---|---|
-| Accuracy | 95.7% | 91.4% | 88.2% |
-| Mean latency | 0.30 s | 0.50 s | 0.96 s |
-| p95 latency | 0.43 s | 0.71 s | 1.13 s |
+| Accuracy | 96.3% (3 wrong) | **98.8%** (1 wrong) | 90.1% (8 wrong) |
+| Mean latency | **0.30 s** | 0.50 s | 0.96 s |
+| p95 latency | **0.43 s** | 0.71 s | 1.13 s |
 | Tokens per call (in / out) | 513 / 52 | 261 / 19 | 269 / 26 |
-| List price per 1,000 calls | $0.02 | $0.06 | $0.40 |
+| List price per 1,000 calls | **$0.02** | $0.06 | $0.40 |
 
-Prices are list prices from `settings.toml`; TypeSafe does not meter output tokens. Jev sends more
-input tokens because the criteria go with every call, and it still comes out cheapest and fastest:
-about 18 times cheaper than Haiku and 3 times faster. Qwen is the closest general model. It is 3
-times the price of Jev, not 18, and it is wrong on 8 messages to Jev's 4.
+On all 93 messages, off-topic included, it reads 95.7%, 91.4% and 88.2%, and Qwen looks worse than
+Jev because it calls six of the everyday questions small talk. That is a result about off-topic
+questions, which is why I stopped looking at it.
 
-The two general models fail in different ways, which is more interesting than the totals. Haiku
-differs from Jev on 11 messages, and 8 are `analysis` messages like "compare the top two of
-those", "rank these candidates for me" and "pick the best of the three and say why". Haiku called
-all of those small talk. The benchmark sends no history, so "those" and "these" point at nothing,
-and Haiku read them as being about the conversation, which is the `chat` description. Qwen and Jev
-got them right. I would not read too much into this: in the real app the previous turn is in the
-prompt, and that is the case Haiku would handle better.
+Prices are list prices from `settings.toml`; TypeSafe does not meter output tokens. Latency and
+price are Jev's clear win: about 18 times cheaper than Haiku, 3 times cheaper than Qwen, and faster
+than both. Accuracy is not. On this set Qwen is the most accurate, by two messages out of 81, which
+is within what I would expect from relabeling a few judgment calls. I would call Jev and Qwen tied
+on accuracy and Haiku behind.
 
-Qwen's misses go the other way. Six of its eight are everyday questions that belong in `other`:
-"translate 'good morning' into French", "what's the difference between TCP and UDP?", "how do I undo
-my last git commit?", "tell me a joke about Kubernetes". It called all of them small talk. It reads
-`chat` as "anything conversational" and not as "about this conversation", which is a prompt problem
-I could probably fix, and one Jev did not have with the same descriptions. I did not tune the
-prompt for any of the three.
+Haiku's misses are a pattern. All eight are `analysis` messages like "compare the top two
+of those", "rank these candidates for me" and "pick the best of the three and say why", which it
+called small talk. The benchmark sends no history, so "those" and "these" point at nothing, and
+Haiku read them as being about the conversation, which is the `chat` description. Qwen and Jev
+mostly got them right. In the real app the previous turn is in the prompt, and that is the case
+Haiku would handle better.
 
-Jev's own misses were 4 of 93: "which categories are we missing templates for?" (find), "what would
-it take to turn n8n into a template?" (agent), "forget it" (agent), and "explain how HNSW indexes
-work" (small talk). The first three came back under 0.45 confidence, so in production the 0.6 gate
-would have sent them to Haiku instead of acting on them. The fourth was wrong at 0.80 and would
-have gone through. That is the practical argument for a classifier that reports confidence, and
-also its limit: it catches most of its own mistakes, not all of them.
+Jev's three in-scope misses were "which categories are we missing templates for?" (find), "what
+would it take to turn n8n into a template?" (agent) and "forget it" (agent). All three came back
+under 0.45 confidence, so in production the 0.6 gate would have sent them to Haiku instead of
+acting on them. That is the practical argument for a classifier that reports confidence. Qwen's one
+miss was "forget it", which both Jev and Qwen called `other`; I labeled it small talk and I can see
+the argument for either.
 
 ## Where I would use which
 
 - **Jev** when the answer is one of a fixed list and you can write down what each option means. It
-  is faster, cheaper, and its output cannot be malformed. You pay in glue code for anything that
-  needs free text.
+  is the fastest and cheapest, it reports a confidence, and its output cannot be malformed. You pay
+  in glue code for anything that needs free text. It was not more accurate than Qwen here.
 - **A general model** when you need the classifier to also extract or write something, or when the
   right answer depends on a long conversation. You pay in parsing, latency and tokens. If you go
-  this way on a budget, Qwen3 32B did better than Haiku here at a sixth of the price, as long as
-  the prompt keeps "chat" narrow.
+  this way on a budget, Qwen3 32B matched Jev on accuracy here at a sixth of Haiku's price. It is
+  slower and 3 times Jev's price, and it does not report a confidence you can gate on.
 - **Both** is what the app does: Jev first, and Haiku as the fallback when Jev is unsure or down.
 
 ## An experiment that did not pan out
 
 I also tried to make the router stop using a hardcoded distance (0.25) by matching against earlier
 answered questions and letting the nearest ones vote on the route. It does learn: the share of
-messages that needed the classifier fell from 74% to about 35% over a run. It also made more
-confident mistakes, and its accuracy ended at 86% against 95.7% for the old router, mostly
+messages that needed the classifier fell from 74% to about 35% over a run (all 93 messages). It also made more
+confident mistakes, and its accuracy ended at 89% against 97.5% for the old router (in-scope
+messages only), mostly
 `inspect` and `analysis` messages landing on `find`. Raising the vote share it needs brings
 accuracy back to roughly the classifier's own, and the savings shrink to about one call in six.
 The code and numbers are on the `feat/no-hardcoded-distance` branch in `benchmarks/`.
 
 ## What this does not show
 
-- 93 messages I wrote and labeled, so some labels are judgment calls.
+- 93 messages I wrote and labeled, 81 of them in scope, so some labels are judgment calls and
+  one miss is two points of accuracy.
 - Single messages with no history, which undersells the model path.
 - Jev answers vary a little between runs. The routing benchmark used a cached set at about 94%;
-  the head-to-head run above scored 95.7%.
+  the head-to-head run above scored 95.7% on all 93 messages.
 - It measures classification, not answer quality, and prices are list prices, not my invoice.
 - I looked at Laya, another classifier, and dropped it before running anything: its model card says
   base checkpoints score near chance until fine-tuned.
