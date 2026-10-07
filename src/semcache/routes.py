@@ -1,7 +1,11 @@
-"""Semantic routing: match a message to the nearest example utterance stored in Valkey.
+"""Semantic routing: match a message to the nearest question already answered.
 
-Exemplars live in the same vector index as the catalog (kind=route). The route name is stored
-in `name`, so routing is one KNN query: nearest exemplar wins.
+Every answered turn is stored in the same vector index as the catalog (kind=turn): the question
+is embedded, and the route, tier and a clipped copy of the response ride along. The route name
+is stored in `name`, so routing is one KNN query: the nearest earlier question wins. Nothing is
+seeded; until history builds up, the classifier decides and its answers become the history.
+`seed_routes` still loads the hand-written exemplars as kind=route for anyone who wants them
+(the benchmark uses it as the old baseline).
 """
 
 import re
@@ -137,6 +141,28 @@ def seed_routes(catalog: Catalog, embedder: Embedder) -> None:
                 )  # fmt: skip
 
 
+RESPONSE_CLIP = 600  # enough to see what was answered, not a second copy of the transcript
+
+
+def record_turn(
+    catalog: Catalog, embedder: Embedder, message: str, route: str, response: str, tier: str
+) -> None:
+    """Remember an answered question so a later, similar one can borrow its route.
+
+    The id is the normalized question, so asking it again refreshes the entry, not duplicates it.
+    """
+    text = " ".join(message.split())
+    if route not in ROUTES or not text:
+        return
+    catalog.upsert(
+        "turn", text.lower(), embedder.embed(text),
+        {
+            "name": route, "description": text, "services": [],
+            "response": response[:RESPONSE_CLIP], "tier": tier,
+        },
+    )  # fmt: skip
+
+
 _QUESTION_START = re.compile(
     r"^(why|how|what|which|who|when|where|should|could|would|can|is|are|do|does|compare)\b", re.I
 )
@@ -187,7 +213,7 @@ def route_message(
     max_distance: float,
     limits: dict[str, float] | None = None,
 ):
-    hits = catalog.search(embedder.embed(text), "route", k=1)
+    hits = catalog.search(embedder.embed(text), "turn", k=1)
     return choose(hits, max_distance, text, limits)
 
 
@@ -199,5 +225,5 @@ def route_match(
     limits: dict[str, float] | None = None,
 ) -> tuple[str | None, float]:
     """Like route_message, but says "no match" instead of guessing a route."""
-    hits = catalog.search(embedder.embed(text), "route", k=1)
+    hits = catalog.search(embedder.embed(text), "turn", k=1)
     return match_route(hits, max_distance, limits)

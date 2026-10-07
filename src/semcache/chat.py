@@ -25,7 +25,7 @@ from .embed import Embedder
 from .followups import build_suggestions, follow_the_answer
 from .github import list_dir, read_file, repo_info
 from .repocache import RepoCache
-from .routes import FALLBACK, route_match
+from .routes import FALLBACK, record_turn, route_match
 from .seed import TEMPLATES
 
 _CID = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
@@ -793,9 +793,22 @@ class ChatService:
                 self.answer_cache.store(
                     "chat", message, answer, json.dumps({"usd": cost["usd"], "model": model})
                 )
+            self._remember(message, decision, answer)
         else:
             self._record_unanswered(model, usage, decision, classify_usage)
         yield {"type": "done"}
+
+    def _remember(self, message: str, decision: Decision, answer: str) -> None:
+        """Add this turn to the routing history. Follow-ups and the "classifier was down" fallback
+        are skipped: their route was inherited or a guess, and would teach the router noise."""
+        if decision.tier == "follow-up" or (
+            not decision.classifier_used and decision.route == FALLBACK
+        ):
+            return
+        try:
+            record_turn(self.catalog, self.embedder, message, decision.route, answer, decision.tier)
+        except Exception:  # history is an optimization; a Valkey hiccup must not fail the reply
+            pass
 
     def _record_unanswered(
         self, model: str, usage: dict, decision: Decision, classify: dict

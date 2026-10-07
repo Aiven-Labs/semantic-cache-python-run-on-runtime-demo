@@ -9,7 +9,7 @@ from .cache import _to_dict
 FIELDS = [
     "name", "description", "url", "stars", "services", "closest", "novelty",
     "buildable", "query", "source", "language", "license", "pushed", "topics",
-    "compose_path", "app_services", "image_apps",
+    "compose_path", "app_services", "image_apps", "response", "tier",
 ]  # fmt: skip
 
 _TAG_ESCAPE = re.compile(r"([^A-Za-z0-9_])")

@@ -94,7 +94,7 @@ class Cat:
         )
 
     def search(self, vec, kind, services=None, k=10):
-        return self.route_hits if kind == "route" else self.candidates
+        return self.route_hits if kind == "turn" else self.candidates
 
     def get(self, kind, name):
         return {"name": name, "compose_path": ""} if name in self.known else None

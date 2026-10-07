@@ -35,7 +35,6 @@ from .jev import JevClassifier
 from .manifest import EDIT_MANIFEST_URL, build_entry, fork_url, format_entry
 from .modelcheck import check as check_models
 from .repocache import RepoCache
-from .routes import seed_routes
 from .seed import TEMPLATES
 
 log = logging.getLogger("uvicorn.error")
@@ -69,7 +68,6 @@ async def lifespan(app: FastAPI):
         if not catalog.exists("template", t["name"]):
             vec = embedder.embed(embed_text(t["name"], t["description"], t["tags"], t["services"]))
             catalog.upsert("template", t["name"], vec, t)
-    seed_routes(catalog, embedder)
 
     def semantic_cache(index: str, prefix: str, max_distance: float, ttl: int) -> SemanticCache:
         c = SemanticCache(
