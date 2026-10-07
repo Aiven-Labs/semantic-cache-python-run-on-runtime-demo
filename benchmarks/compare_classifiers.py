@@ -25,7 +25,9 @@ import statistics
 import time
 from datetime import date
 from pathlib import Path
+from types import SimpleNamespace
 
+from coded_rules import classify as coded_classify
 from langchain_openai import ChatOpenAI
 from typesafe_sdk import Choice
 
@@ -43,6 +45,7 @@ DEFAULT_MODELS = [
     "claude-opus-5-5",
 ]
 JEV_PREFIX = "jev"
+CODED = "coded-rules"  # no model: regexes and keywords (benchmarks/coded_rules.py)
 
 OUT_OF_SCOPE = (
     "Not about open-source projects, templates, or this conversation: general knowledge, "
@@ -101,6 +104,12 @@ def via_jev(jev: JevClassifier, text: str) -> dict:
         "seconds": seconds, "in": resp.usage.input_tokens or 0,
         "out": resp.usage.output_tokens or 0,
     }  # fmt: skip
+
+
+def coded_row(text: str) -> dict:
+    t0 = time.monotonic()
+    kind = coded_classify(text)
+    return {"kind": kind, "seconds": time.monotonic() - t0, "in": 0, "out": 0}
 
 
 def summarize(name: str, rows: list[dict], items: list[dict], prices) -> dict:
@@ -201,27 +210,34 @@ def main() -> None:
     items = [json.loads(line) for line in (HERE / "routing.jsonl").read_text().splitlines() if line]
     saved = HERE / "classifier_compare.json"
 
-    if args.from_saved:
+    tunables = load_tunables(os.environ.get("SEMCACHE_SETTINGS_FILE", "settings.toml"))
+    prices = {**tunables.cost.models, CODED: SimpleNamespace(input_per_mtok=0, output_per_mtok=0)}
+
+    def run_model(name: str) -> list[dict]:
+        print(f"{name} ...", flush=True)
+        if name == CODED:
+            return [coded_row(i["text"]) for i in items]
+        if name.startswith(JEV_PREFIX):
+            jev = JevClassifier(model=name, min_confidence=0.0)  # raw answer, no fallback gate
+            return [via_jev(jev, i["text"]) for i in items]
+        llm = ChatOpenAI(
+            model=name, base_url=os.environ["SEMCACHE_LLM_BASE_URL"],
+            api_key=os.environ["SEMCACHE_LLM_API_KEY"], timeout=120,
+        ).bind(max_tokens=120)  # fmt: skip
+        return [via_model(llm, i["text"]) for i in items]
+
+    if args.from_saved:  # re-render what is saved; any models named are run and added to it
         result = json.loads(saved.read_text())
+        for name in args.models:
+            result["rows"][name] = run_model(name)
+            result["summary"][name] = summarize(name, result["rows"][name], items, prices)
+        if args.models:
+            saved.write_text(json.dumps(result, indent=1))
     else:
-        tunables = load_tunables(os.environ.get("SEMCACHE_SETTINGS_FILE", "settings.toml"))
-        rows_by_model: dict[str, list[dict]] = {}
-        for name in args.models or DEFAULT_MODELS:
-            print(f"{name} ...", flush=True)
-            if name.startswith(JEV_PREFIX):
-                jev = JevClassifier(model=name, min_confidence=0.0)  # raw answer, no fallback gate
-                rows_by_model[name] = [via_jev(jev, i["text"]) for i in items]
-            else:
-                llm = ChatOpenAI(
-                    model=name, base_url=os.environ["SEMCACHE_LLM_BASE_URL"],
-                    api_key=os.environ["SEMCACHE_LLM_API_KEY"], timeout=120,
-                ).bind(max_tokens=120)  # fmt: skip
-                rows_by_model[name] = [via_model(llm, i["text"]) for i in items]
+        rows_by_model = {n: run_model(n) for n in args.models or DEFAULT_MODELS}
         result = {
             "date": date.today().isoformat(),
-            "summary": {
-                n: summarize(n, r, items, tunables.cost.models) for n, r in rows_by_model.items()
-            },
+            "summary": {n: summarize(n, r, items, prices) for n, r in rows_by_model.items()},
             "rows": rows_by_model,
         }
         saved.write_text(json.dumps(result, indent=1))

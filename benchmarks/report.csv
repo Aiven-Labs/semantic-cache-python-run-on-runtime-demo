@@ -557,3 +557,96 @@ classifier-compare::claude-opus-5::db6acc5a,classifier-compare,claude-opus-5,db6
 classifier-compare::claude-opus-5::2055ba32,classifier-compare,claude-opus-5,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,,1.098,429,27
 classifier-compare::claude-opus-5::9a5c72bd,classifier-compare,claude-opus-5,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,,1.398,431,48
 classifier-compare::claude-opus-5::dae67444,classifier-compare,claude-opus-5,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,,1.199,430,27
+classifier-compare::coded-rules::5209455b,classifier-compare,coded-rules,5209455b,what are some good otel options,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::67eb0776,classifier-compare,coded-rules,67eb0776,any good opentelemetry collectors?,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::02cbd68d,classifier-compare,coded-rules,02cbd68d,best observability tools,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::f49d21a0,classifier-compare,coded-rules,f49d21a0,good observability options?,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::31d9dd67,classifier-compare,coded-rules,31d9dd67,what are some good observability tools,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::ff3f51fd,classifier-compare,coded-rules,ff3f51fd,got any self-hosted feature toggle projects?,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::cd8f360a,classifier-compare,coded-rules,cd8f360a,diary apps,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::0714460b,classifier-compare,coded-rules,0714460b,API-first content management systems,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::3bc433fa,classifier-compare,coded-rules,3bc433fa,open source alternatives to Notion,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::e476be13,classifier-compare,coded-rules,e476be13,something like dayone,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::8ba408d7,classifier-compare,coded-rules,8ba408d7,ways to monitor Kafka clusters,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::5f946a29,classifier-compare,coded-rules,5f946a29,tools for tracing microservices,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::f90cb40e,classifier-compare,coded-rules,f90cb40e,what are good log aggregation projects,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::144fffd2,classifier-compare,coded-rules,144fffd2,self-hosted web analytics,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::aabb65b6,classifier-compare,coded-rules,aabb65b6,search GitHub for job queue dashboards,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::3ea9eb10,classifier-compare,coded-rules,3ea9eb10,any open source CRM worth a look?,search,other,False,True,,0.0,0,0
+classifier-compare::coded-rules::6a8f2e51,classifier-compare,coded-rules,6a8f2e51,looking for a workflow engine,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::486433f5,classifier-compare,coded-rules,486433f5,anything similar to Redash?,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::6ce51210,classifier-compare,coded-rules,6ce51210,self-hosted password managers,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::0a5ade6e,classifier-compare,coded-rules,0a5ade6e,good alternatives to Grafana,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::ee737c3c,classifier-compare,coded-rules,ee737c3c,durable execution frameworks,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::cb05a57d,classifier-compare,coded-rules,cb05a57d,vector database projects,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::617501ed,classifier-compare,coded-rules,617501ed,what are some self-hosted wiki options,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::c114c8b4,classifier-compare,coded-rules,c114c8b4,apps for monitoring uptime,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::f4045867,classifier-compare,coded-rules,f4045867,open source scheduling tools,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::665f4762,classifier-compare,coded-rules,665f4762,what's out there for error tracking?,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::222a1a13,classifier-compare,coded-rules,222a1a13,what apps are built on Kafka?,search,search,True,True,,0.0,0,0
+classifier-compare::coded-rules::5a279438,classifier-compare,coded-rules,5a279438,what programming language is Flowise built with?,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::349fa2df,classifier-compare,coded-rules,349fa2df,star count for prometheus/prometheus,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::f5898309,classifier-compare,coded-rules,f5898309,list the top-level folders in getsentry/sentry,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::7b5b3871,classifier-compare,coded-rules,7b5b3871,does langgenius/dify have a compose file?,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::a290777d,classifier-compare,coded-rules,a290777d,what license does Kestra use,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::564e2b35,classifier-compare,coded-rules,564e2b35,is featbit/featbit still maintained?,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::8c707b85,classifier-compare,coded-rules,8c707b85,look at the Dockerfile of immich-app/immich,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::5a53ec25,classifier-compare,coded-rules,5a53ec25,which services does plausible/analytics use,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::4008d774,classifier-compare,coded-rules,4008d774,read the README of n8n-io/n8n,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::898a61e2,classifier-compare,coded-rules,898a61e2,when was supabase/supabase last updated,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::423003a9,classifier-compare,coded-rules,423003a9,what's in the docker folder of appsmithorg/appsmith,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::3b61652e,classifier-compare,coded-rules,3b61652e,what database does Directus need?,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::61295329,classifier-compare,coded-rules,61295329,open the compose file for outline/outline,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::e36e2a7d,classifier-compare,coded-rules,e36e2a7d,how big is the SigNoz repo,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::7f1046cd,classifier-compare,coded-rules,7f1046cd,who maintains Uptime Kuma,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::a3d85595,classifier-compare,coded-rules,a3d85595,what does the Ghost repo's root folder look like,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::6c7b1943,classifier-compare,coded-rules,6c7b1943,is Metabase's compose file runtime-ready?,repo,repo,True,True,,0.0,0,0
+classifier-compare::coded-rules::292c5a58,classifier-compare,coded-rules,292c5a58,compare the top two of those,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::2d43bb7d,classifier-compare,coded-rules,2d43bb7d,which of these would make the best new template?,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::646967e8,classifier-compare,coded-rules,646967e8,weigh the trade-offs between Grafana and Kibana,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::a287c6b7,classifier-compare,coded-rules,a287c6b7,rank these candidates for me,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::1cfe39fb,classifier-compare,coded-rules,1cfe39fb,which categories are we missing templates for?,analysis,other,False,True,,0.0,0,0
+classifier-compare::coded-rules::545265e9,classifier-compare,coded-rules,545265e9,should we add Dify or Flowise?,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::ca2a8426,classifier-compare,coded-rules,ca2a8426,summarize the strengths and risks of these projects,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::0ee19809,classifier-compare,coded-rules,0ee19809,"which is the better fit for Aiven Runtime, Plausible or Umami?",analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::4a8e090f,classifier-compare,coded-rules,4a8e090f,what would it take to turn n8n into a template?,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::2173e863,classifier-compare,coded-rules,2173e863,pick the best of the three and say why,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::67cf5956,classifier-compare,coded-rules,67cf5956,recommend which one to build first,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::49d8c592,classifier-compare,coded-rules,49d8c592,is SigNoz or Uptrace the stronger candidate?,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::485837a3,classifier-compare,coded-rules,485837a3,compare Metabase and Redash as templates,analysis,analysis,True,True,,0.0,0,0
+classifier-compare::coded-rules::d5216702,classifier-compare,coded-rules,d5216702,where do the existing templates overlap?,analysis,other,False,True,,0.0,0,0
+classifier-compare::coded-rules::ce06092f,classifier-compare,coded-rules,ce06092f,hello!,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::e9058ab1,classifier-compare,coded-rules,e9058ab1,yo,chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::7654bd3b,classifier-compare,coded-rules,7654bd3b,morning!,chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::844347e5,classifier-compare,coded-rules,844347e5,thank you,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::341f722a,classifier-compare,coded-rules,341f722a,appreciate the help,chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::6f2096e7,classifier-compare,coded-rules,6f2096e7,"alright, understood",chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::c34045c1,classifier-compare,coded-rules,c34045c1,cool,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::b9043c16,classifier-compare,coded-rules,b9043c16,sweet,chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::eaea2385,classifier-compare,coded-rules,eaea2385,exactly what I needed,chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::d24d7435,classifier-compare,coded-rules,d24d7435,forget it,chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::4507f7dc,classifier-compare,coded-rules,4507f7dc,"ha, funny",chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::385934c9,classifier-compare,coded-rules,385934c9,"oh, that's interesting",chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::89cdc057,classifier-compare,coded-rules,89cdc057,that makes sense,chat,search,False,True,,0.0,0,0
+classifier-compare::coded-rules::47843e8d,classifier-compare,coded-rules,47843e8d,"excellent, many thanks",chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::55b5e556,classifier-compare,coded-rules,55b5e556,"my bad, I read that wrong",chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::69d91e77,classifier-compare,coded-rules,69d91e77,nice work,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::1e592d7f,classifier-compare,coded-rules,1e592d7f,can you explain that more simply?,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::691a8ef8,classifier-compare,coded-rules,691a8ef8,what made you choose that one?,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::b5013eb1,classifier-compare,coded-rules,b5013eb1,go on,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::b28cf7ed,classifier-compare,coded-rules,b28cf7ed,is that definitely right?,chat,other,False,True,,0.0,0,0
+classifier-compare::coded-rules::992dc95d,classifier-compare,coded-rules,992dc95d,say that again?,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::8e494a73,classifier-compare,coded-rules,8e494a73,what are you able to help with?,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::0e26c6be,classifier-compare,coded-rules,0e26c6be,what are you exactly?,chat,chat,True,True,,0.0,0,0
+classifier-compare::coded-rules::05426928,classifier-compare,coded-rules,05426928,what's the weather in Atlanta?,out_of_scope,out_of_scope,True,False,,0.0,0,0
+classifier-compare::coded-rules::f0d2a809,classifier-compare,coded-rules,f0d2a809,write me a haiku about databases,out_of_scope,out_of_scope,True,False,,0.0,0,0
+classifier-compare::coded-rules::d45b0db2,classifier-compare,coded-rules,d45b0db2,how do I write a Dockerfile for a Python app?,out_of_scope,repo,False,False,,0.0,0,0
+classifier-compare::coded-rules::c990cc06,classifier-compare,coded-rules,c990cc06,what is the capital of France?,out_of_scope,out_of_scope,True,False,,0.0,0,0
+classifier-compare::coded-rules::87fab88e,classifier-compare,coded-rules,87fab88e,explain how HNSW indexes work,out_of_scope,search,False,False,,0.0,0,0
+classifier-compare::coded-rules::51f8270d,classifier-compare,coded-rules,51f8270d,translate 'good morning' into French,out_of_scope,out_of_scope,True,False,,0.0,0,0
+classifier-compare::coded-rules::d21703e8,classifier-compare,coded-rules,d21703e8,what's 15% of 240?,out_of_scope,other,False,False,,0.0,0,0
+classifier-compare::coded-rules::8f3dbc19,classifier-compare,coded-rules,8f3dbc19,what's the difference between TCP and UDP?,out_of_scope,other,False,False,,0.0,0,0
+classifier-compare::coded-rules::db6acc5a,classifier-compare,coded-rules,db6acc5a,give me a regex that matches an email address,out_of_scope,other,False,False,,0.0,0,0
+classifier-compare::coded-rules::2055ba32,classifier-compare,coded-rules,2055ba32,how do I undo my last git commit?,out_of_scope,out_of_scope,True,False,,0.0,0,0
+classifier-compare::coded-rules::9a5c72bd,classifier-compare,coded-rules,9a5c72bd,tell me a joke about Kubernetes,out_of_scope,out_of_scope,True,False,,0.0,0,0
+classifier-compare::coded-rules::dae67444,classifier-compare,coded-rules,dae67444,what year did the first iPhone come out?,out_of_scope,out_of_scope,True,False,,0.0,0,0

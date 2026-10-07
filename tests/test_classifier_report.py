@@ -7,6 +7,7 @@ from types import SimpleNamespace
 
 from semcache.report import to_md
 
+sys.path.insert(0, str(Path(__file__).parent.parent / "benchmarks"))  # for coded_rules
 SPEC = importlib.util.spec_from_file_location(
     "compare_classifiers", Path(__file__).parent.parent / "benchmarks" / "compare_classifiers.py"
 )

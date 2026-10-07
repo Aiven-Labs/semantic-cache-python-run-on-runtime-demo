@@ -33,6 +33,67 @@ Code takes it from there. A `search` goes to a cache-coverage check, a `repo` ne
 and `analysis` always gets the expensive model. So the classifier needs to return a kind, and for
 two of the kinds, a little more: the search words and the repo name.
 
+## Why not just write rules?
+
+The obvious alternative is code. The app already has plenty of it: a regex that spots chit-chat, a
+check for "a short noun phrase that is probably a search", another that strips "find me popular
+open source" down to the search words. So before swapping a prompt for a model, I wrote the rules
+version of this classifier, to see how far code goes. I wrote it once, from those existing regexes
+plus keyword lists, and did not tune it against the results. Here is the core of it:
+
+```python
+def classify(text: str) -> str:
+    t = text.strip()
+    if OFF_TOPIC.search(t):          # weather|joke|poem|haiku|translate|recipe|capital of ...
+        return "out_of_scope"
+    if OWNER_NAME.search(t):         # something/like-this
+        return "analysis" if ANALYSIS.search(t) else "repo"
+    if ANALYSIS.search(t):           # compare|rank|versus|trade-offs|recommend|which of ...
+        return "analysis"
+    if META_CHAT.search(t) or (len(t.split()) <= 6 and _CONVERSATIONAL.search(t)):
+        return "chat"
+    if REPO_FACT.search(t):          # language|license|stars|maintained|readme|folders ...
+        return "repo"
+    if SEARCH.search(t) or looks_like_topic(t):
+        return "search"
+    return "other"
+```
+
+It is instant, free and deterministic, and on 81 in-scope messages it scored **84.0%** (13 wrong).
+It caught 7 of the 12 off-topic messages. That is better than I expected for forty lines. It is
+also optimistic, because I had already read the 93 messages when I wrote it.
+
+The mistakes are all the same kind of mistake:
+
+- **Vocabulary it was never given.** Nine of the 13 misses are small talk: "yo", "morning!",
+  "sweet", "ha, funny", "that makes sense", "appreciate the help". None is in the keyword list, so
+  they fall to the last rule, which treats any short phrase that is not a question as a search
+  topic. A model reads "sweet" as a reaction without being told.
+- **Phrasing without the keyword.** "any open source CRM worth a look?" is a search, but it contains
+  none of the search words. "Which categories are we missing templates for?" is an analysis with no
+  analysis word in it.
+- **Off-topic only where I imagined it.** The stoplist caught weather, jokes and translation
+  because I thought of them. It missed "explain how HNSW indexes work", "what's the difference
+  between TCP and UDP?" and "what's 15% of 240?". The list of things a user might ask that this app
+  should not answer has no end.
+
+Every one of those is fixable with another keyword, and that is the problem. Each fix is a bet
+about wording, each can break a message that used to work ("sweet" is a reaction, "sweet potato
+apps" is a search), and the list only grows when someone notices a miss. The rules are as good as
+my imagination about how people type.
+
+A classifier moves that work somewhere else. The fix for "good otel options" was one sentence in a
+description, not a regex, and the description is something I can read back in a month. It also
+generalizes: nobody told Jev or Qwen about "sweet". And it reports a confidence, which a regex does
+not, so the app can say "I am not sure" and fall back to a bigger model.
+
+It is not either/or, and the app does not treat it that way. Code does what code is exact at:
+pulling `owner/name` out of a message, cleaning search words, deciding whether the cache already
+covers a topic, and matching a repeat of a question it has already answered, which skips the
+classifier entirely. The model handles the one part that rules do badly, which is deciding what a
+loosely worded sentence means. At $0.02 per thousand calls for Jev, and only on messages the
+router could not match, the cost of leaving that part to a model is close to nothing.
+
 ## Option A: a general model and a prompt
 
 This is what the app did first. One prompt, one JSON reply:
@@ -197,8 +258,8 @@ three of my otel phrasings to `search` at 1.00.
 
 ## How they compare
 
-I put the same 93 labeled messages through six classifiers, one message per call with no
-conversation history. 12 of the messages are off-topic ("explain how HNSW indexes work", "write me a
+I put the same 93 labeled messages through six models and the rules from the section above, one
+message per call with no conversation history. 12 of the messages are off-topic ("explain how HNSW indexes work", "write me a
 haiku about databases"): Template Scout is not meant to answer those. My first run gave the
 classifiers no way to say so, and I scored the off-topic messages as if `other` were the right
 answer, which was wrong and penalized the models that happened to say small talk. In this run every
@@ -216,6 +277,7 @@ Opus 5.5 and Qwen3 32B, the cheap model the app uses for cache hits. Jev is `jev
 | Jev | 95.1% (4 wrong) | 12 | **0.23 s** | **$0.02** |
 | Claude Opus 5 | 92.6% (6 wrong) | 12 | 1.53 s | $3.62 |
 | Claude Haiku 4.5 | 91.4% (7 wrong) | 12 | 0.80 s | $0.51 |
+| Hand-written rules | 84.0% (13 wrong) | 7 | 0.00 s | $0.00 |
 
 Prices are the gateway's list prices from `settings.toml`, which I updated for this run. TypeSafe does
 not meter output tokens. The full report, with every mistake and every disagreement, is in
@@ -223,10 +285,10 @@ not meter output tokens. The full report, with every mistake and every disagreem
 
 A few things stand out.
 
-**Off-topic is a solved problem once there is a place to put it.** All six caught all 12. The
+**Off-topic is a solved problem for a model once there is a place to put it.** All six models caught all 12; the rules caught 7. The
 interesting error runs the other way: calling a real question out of scope. Qwen did it twice
 ("sweet", "forget it") and Jev twice ("what database does Directus need?", "what would it take to
-turn n8n into a template?"). The other four never did.
+turn n8n into a template?"). The other four never did, and neither did the rules, which never called an in-scope message off-topic but left 5 off-topic ones unflagged.
 
 **Bigger did not mean better.** The top four are within two messages out of 81, which is inside what
 relabeling a few judgment calls would change, so I would call them tied. Opus 5, the most expensive
@@ -276,6 +338,7 @@ The code and numbers are on the `feat/no-hardcoded-distance` branch in `benchmar
 
 ## What this does not show
 
+- The rules baseline is one pass by someone who had seen the data. A careful rewrite would score higher than 84%, and I did not try to find out how much.
 - 93 messages I wrote and labeled, 81 of them in scope, so some labels are judgment calls and
   one miss is two points of accuracy.
 - Single messages with no history, which undersells the model path.
