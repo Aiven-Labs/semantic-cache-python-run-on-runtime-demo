@@ -100,7 +100,7 @@ to pick wrongly:
 | `templates()` | the existing templates; only offered when they are not already in the prompt |
 
 The chat shows each tool call under the reply. These are LangChain tools (plain function calling
-through LiteLLM), not MCP.
+through the gateway), not MCP.
 
 **Looking inside a project.** `repo` reads files from `raw.githubusercontent.com` first (no API
 quota, no credentials sent) and only lists folders through the GitHub API (1 call, so set
@@ -148,7 +148,7 @@ conversation so a reload shows them again. A new chat starts with starter chips.
   records it. `[routing.pin]` still forces a route to one model, and short follow-ups keep the
   previous turn's route on `followup_model` without calling the classifier.
 
-  **All chat models live on the Aiven gateway** (`SEMCACHE_LLM_BASE_URL`, a LiteLLM router): there
+  **All chat models live on the Aiven gateway** (`SEMCACHE_LLM_BASE_URL`, an agno gateway): there
   is no local proxy any more. At startup the app lists the gateway's models and warns about any
   name in `settings.toml` it does not serve; `/healthz` shows them as `missing_models`. The hit
   model was chosen by a test of the gateway's cheap models on the app's own prompts (chit-chat,
@@ -213,7 +213,7 @@ without them:
 | `SEMCACHE_EMBED_API_KEY` | (secret) |
 | `SEMCACHE_EMBED_MODEL` | `Qwen3-Embedding-0.6B-4bit-DWQ` |
 | `SEMCACHE_EMBED_DIM` | `1024` |
-| `SEMCACHE_LLM_BASE_URL` | the Aiven AI gateway (OpenAI-compatible LiteLLM router); serves every chat model |
+| `SEMCACHE_LLM_BASE_URL` | the Aiven AI gateway (OpenAI-compatible, built on agno); serves every chat model |
 | `SEMCACHE_LLM_API_KEY` | (secret) key for that gateway |
 | `TYPESAFE_API_KEY` | (secret, optional) TypeSafe AI key; turns on the Jev classifier |
 | `SEMCACHE_TEMPORAL_ADDRESS` | (optional) `host:7233` of a Temporal server; turns on seeding |

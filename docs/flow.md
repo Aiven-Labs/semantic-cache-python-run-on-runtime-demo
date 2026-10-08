@@ -7,8 +7,9 @@ the cache. This page is drawn from the code; each diagram names the module it co
 Contents: [System](#1-the-system) · [Search](#2-search-and-the-semantic-cache) ·
 [Chat decision](#3-chat-which-model-answers) · [One chat turn](#4-one-chat-turn-in-order) ·
 [Repo panel](#5-the-repo-details-panel) · [Manifest entry](#6-copy-manifest-entry) ·
-[Stores](#7-what-lives-in-valkey) · [Models](#8-every-model-and-when-it-runs) ·
-[Known limits](#9-known-limits)
+[Seeding](#7-seeding-an-owner-with-temporal) · [GitHub cool-down](#8-the-github-rate-limit-cool-down) ·
+[Stores](#9-what-lives-in-valkey) · [Models](#10-every-model-and-when-it-runs) ·
+[Known limits](#11-known-limits)
 
 ---
 
@@ -30,7 +31,7 @@ flowchart LR
 
   VK[("Valkey<br/>vector indexes + caches")]
   EMB["Embeddings<br/>OMLX on the host (local)"]
-  GW["Aiven AI gateway (LiteLLM)<br/>every chat model"]
+  GW["Aiven AI gateway (agno)<br/>every chat model"]
   GH["GitHub<br/>search API · raw files · contents API"]
 
   WEB --> PAGES
@@ -142,7 +143,7 @@ sequenceDiagram
   A->>E: embed(message)
   A->>V: KNN over router examples
   opt nothing matched and not a follow-up
-    A->>G: classifier call (Jev; Haiku without a key)
+    A->>G: classifier call (Jev, or Haiku without a key)
     G-->>A: kind (Jev) or {"kind", "query", "repo"} (Haiku)
   end
   A->>V: cache checks (crawl cache, index coverage, repo cache)
@@ -221,7 +222,60 @@ flowchart LR
 
 ---
 
-## 7. What lives in Valkey
+## 7. Seeding an owner with Temporal
+
+`SEED_OWNERS` entries run as one `SeedOwnerWorkflow` each (`seeding.py`, `seed_workflow.py`,
+`durable.py`). Temporal owns the waiting and retrying, so nothing sleeps in a loop.
+
+```mermaid
+flowchart TD
+  START["App start: one workflow per owner<br/>id seed-owner · USE_EXISTING"] --> LIST["activity list_missing<br/>one GitHub listing, skip repos already in the catalog"]
+  LIST -->|"no such owner"| UNK["UnknownOwner<br/>non-retryable, workflow fails"]
+  LIST --> FAN["up to 8 repos at once<br/>activity seed_repo each"]
+  FAN --> CALL["durable.request<br/>one GET, no retries"]
+  CALL -->|"200 or 404"| STORE["ingest into the catalog<br/>only after the check finished"]
+  CALL -->|"429, or 403 with Retry-After<br/>or quota spent"| RL["RateLimited(wait)"]
+  CALL -->|"5xx or network error"| UN["Unavailable"]
+  RL --> AE["ApplicationError<br/>next_retry_delay = wait"]
+  UN --> AB["ApplicationError<br/>normal backoff 10s to 15 min"]
+  AE --> RET{"attempts left?<br/>max 12"}
+  AB --> RET
+  RET -->|"yes: Temporal timer, then retry"| CALL
+  RET -->|"no"| FAILED["repo listed under failed<br/>others keep going"]
+  STORE --> DONE["result: owner, added, failed"]
+  FAILED --> DONE
+```
+
+A re-run only picks up the repos that failed, because `list_missing` skips what is stored.
+
+---
+
+## 8. The GitHub rate-limit cool-down
+
+`durable.GATE` is an httpx event hook on every client that calls `api.github.com`. One cool-down
+is shared by all threads in the process.
+
+```mermaid
+flowchart TD
+  Q["Search, repo panel, chat tool<br/>or a seeding activity"] --> CACHE{"semantic cache hit?"}
+  CACHE -->|"yes"| LOCAL["answer from the index<br/>no GitHub call"]
+  CACHE -->|"no"| GATE{"cool-down active?<br/>durable.blocked_for"}
+  GATE -->|"yes"| RAISE["RateLimited raised locally<br/>no network call"]
+  GATE -->|"no"| GH["request to api.github.com"]
+  GH --> RESP{"rate limited?<br/>429 or 403 with Retry-After"}
+  RESP -->|"no"| OK["results returned"]
+  RESP -->|"yes"| NOTE["note_rate_limit(wait)<br/>cool-down never shortened"]
+  NOTE --> RAISE
+  RAISE --> WEB["search: notice with seconds left,<br/>ranked results from the local index"]
+  RAISE --> TEMP["seeding: Temporal retries after the<br/>remaining wait"]
+```
+
+`raw.githubusercontent.com` is not gated: it does not count against the API quota. The cool-down
+lives in memory, so a restart clears it and each instance has its own.
+
+---
+
+## 9. What lives in Valkey
 
 | Key prefix / index | What | Written by | Lifetime |
 |---|---|---|---|
@@ -236,7 +290,7 @@ Search can be tuned in `settings.toml`: every distance, TTL, price and model nam
 
 ---
 
-## 8. Every model and when it runs
+## 10. Every model and when it runs
 
 | Model | Role | Runs when | Where |
 |---|---|---|---|
@@ -253,7 +307,7 @@ Prices in the cost readout are estimates in `settings.toml` (the gateway publish
 
 ---
 
-## 9. Known limits
+## 11. Known limits
 
 - **No failover.** If the chosen model errors, the turn ends with an error; it is not retried on
   another model. Only a failed classifier falls back (to Haiku with tools).
