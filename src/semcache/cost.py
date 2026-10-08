@@ -7,7 +7,10 @@ STAT_KEY = "stats:cost"
 
 class Pricing:
     def __init__(self, models: dict[str, ModelPrice]):
-        self.models = models
+        self.models = dict(models)  # a copy: the settings page replaces it while the app runs
+
+    def replace(self, models: dict[str, ModelPrice]) -> None:
+        self.models = dict(models)
 
     def known(self, model: str) -> bool:
         return model in self.models

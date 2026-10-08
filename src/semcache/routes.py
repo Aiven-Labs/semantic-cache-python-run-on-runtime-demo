@@ -1,7 +1,14 @@
-"""Semantic routing: match a message to the nearest example utterance stored in Valkey.
+"""Semantic routing: match a message to the nearest question already answered.
 
-Exemplars live in the same vector index as the catalog (kind=route). The route name is stored
-in `name`, so routing is one KNN query: nearest exemplar wins.
+Every answered turn is stored in the same vector index as the catalog (kind=turn): the question
+is embedded, and the route, tier and a clipped copy of the response ride along. The route name
+is stored in `name`, so routing is one KNN query. There is no distance constant: the nearest
+earlier questions vote, and a route only wins if the new message is about as close as that
+route's own questions have been to each other (a learned mean + spread; see `vote_route`).
+Nothing is seeded; until history builds up, the classifier decides and its answers
+become the history.
+`seed_routes` still loads the hand-written exemplars as kind=route for anyone who wants them
+(the benchmark uses it as the old baseline).
 """
 
 import re
@@ -137,6 +144,39 @@ def seed_routes(catalog: Catalog, embedder: Embedder) -> None:
                 )  # fmt: skip
 
 
+RESPONSE_CLIP = 600  # enough to see what was answered, not a second copy of the transcript
+
+
+def record_turn(
+    catalog: Catalog, embedder: Embedder, message: str, route: str, response: str, tier: str
+) -> None:
+    """Remember an answered question so a later, similar one can borrow its route.
+
+    The id is the normalized question, so asking it again refreshes the entry, not duplicates it.
+    """
+    text = " ".join(message.split())
+    if route not in ROUTES or not text:
+        return
+    vec = embedder.embed(text)
+    twin = next(
+        (
+            h for h in catalog.search(vec, "turn", k=5)
+            if h["name"] == route and h["description"].lower() != text.lower()
+        ),
+        None,
+    )  # fmt: skip
+    seen = catalog.exists("turn", text.lower())  # a repeat teaches nothing new
+    if twin and not seen:  # how far apart this route's own questions sit is what teaches the cutoff
+        catalog.add_route_sample(route, twin["distance"])
+    catalog.upsert(
+        "turn", text.lower(), vec,
+        {
+            "name": route, "description": text, "services": [],
+            "response": response[:RESPONSE_CLIP], "tier": tier,
+        },
+    )  # fmt: skip
+
+
 _QUESTION_START = re.compile(
     r"^(why|how|what|which|who|when|where|should|could|would|can|is|are|do|does|compare)\b", re.I
 )
@@ -158,6 +198,44 @@ def looks_like_topic(text: str) -> bool:
         and not _QUESTION_START.match(text)
         and not _CONVERSATIONAL.search(text)
     )
+
+
+STD_FLOOR = 0.02  # a route learned from near-identical questions would otherwise match only repeats
+
+
+def vote_route(
+    hits: list[dict], stats, *, spread: float, min_samples: int, min_share: float
+) -> tuple[str | None, float]:
+    """(route, distance) by similarity-weighted vote of the nearest earlier questions.
+
+    The winner is accepted only when (a) enough of the vote agrees, (b) its route has seen
+    `min_samples` pairs of its own questions, and (c) the nearest of its questions is no farther
+    than that route's learned mean + `spread` standard deviations. Otherwise (None, distance) and
+    the classifier decides. `stats(route)` returns (samples, mean, std).
+    """
+    if not hits:
+        return None, 1.0
+    distance = hits[0]["distance"]
+    weight: dict[str, float] = {}
+    for h in hits:
+        weight[h["name"]] = weight.get(h["name"], 0.0) + max(0.0, 1.0 - h["distance"])
+    total = sum(weight.values())
+    name = max(weight, key=weight.get)
+    if name not in ROUTES or total <= 0 or weight[name] / total < min_share:
+        return None, distance
+    n, mean, std = stats(name)
+    nearest = next(h["distance"] for h in hits if h["name"] == name)
+    if n < min_samples or nearest > mean + spread * max(std, STD_FLOOR):
+        return None, distance
+    return name, nearest
+
+
+def vote_match(catalog: Catalog, embedder: Embedder, text: str, cfg) -> tuple[str | None, float]:
+    hits = catalog.search(embedder.embed(text), "turn", k=cfg.k)
+    return vote_route(
+        hits, catalog.route_stats, spread=cfg.spread, min_samples=cfg.min_samples,
+        min_share=cfg.min_share,
+    )  # fmt: skip
 
 
 def match_route(
@@ -187,7 +265,7 @@ def route_message(
     max_distance: float,
     limits: dict[str, float] | None = None,
 ):
-    hits = catalog.search(embedder.embed(text), "route", k=1)
+    hits = catalog.search(embedder.embed(text), "turn", k=1)
     return choose(hits, max_distance, text, limits)
 
 
@@ -199,5 +277,5 @@ def route_match(
     limits: dict[str, float] | None = None,
 ) -> tuple[str | None, float]:
     """Like route_message, but says "no match" instead of guessing a route."""
-    hits = catalog.search(embedder.embed(text), "route", k=1)
+    hits = catalog.search(embedder.embed(text), "turn", k=1)
     return match_route(hits, max_distance, limits)

@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 from contextlib import asynccontextmanager
@@ -12,8 +13,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel
+from temporalio.client import Client
 from typesafe_sdk import TypeSafeClient
 
+from . import durable
 from .cache import SemanticCache
 from .catalog import Catalog, embed_text
 from .chat import ChatService, ConversationStore, valid_cid
@@ -33,10 +36,13 @@ from .followups import STARTERS
 from .github import discover, list_dir, read_file, repo_info
 from .jev import JevClassifier
 from .manifest import EDIT_MANIFEST_URL, build_entry, fork_url, format_entry
+from .model_settings import ModelSettings
 from .modelcheck import check as check_models
+from .modelcheck import gateway_models
 from .repocache import RepoCache
-from .routes import seed_routes
-from .seed import TEMPLATES
+from .seed import SEED_OWNERS, TEMPLATES
+from .seeding import SeedActivities, run_seeding
+from .settings_page import router as settings_router
 
 log = logging.getLogger("uvicorn.error")
 HERE = Path(__file__).parent
@@ -69,7 +75,6 @@ async def lifespan(app: FastAPI):
         if not catalog.exists("template", t["name"]):
             vec = embedder.embed(embed_text(t["name"], t["description"], t["tags"], t["services"]))
             catalog.upsert("template", t["name"], vec, t)
-    seed_routes(catalog, embedder)
 
     def semantic_cache(index: str, prefix: str, max_distance: float, ttl: int) -> SemanticCache:
         c = SemanticCache(
@@ -117,6 +122,11 @@ async def lifespan(app: FastAPI):
 
     repo_cache = RepoCache(client, tunables.github.repo_cache_ttl_seconds)
     app.state.repo_cache = repo_cache
+    app.state.seed_done = asyncio.Event()
+    if settings.temporal_address:
+        app.state.seeding = asyncio.create_task(_seed())  # does not delay startup
+    else:
+        log.warning("SEMCACHE_TEMPORAL_ADDRESS is not set: not seeding %s", ", ".join(SEED_OWNERS))
     pricing = Pricing(tunables.cost.models)
     stats = CostStats(client)
     app.state.stats, app.state.pricing = stats, pricing
@@ -129,8 +139,7 @@ async def lifespan(app: FastAPI):
         search_cached=lambda q: crawl_cache.lookup("search", q) is not None,
         answer_cache=answer_cache,
         search=run_search,
-        route_max_distance=tunables.routing.max_distance,
-        route_limits={"smalltalk": tunables.routing.smalltalk_max_distance},
+        route_vote=tunables.routing.vote,
         history_turns=tunables.chat.history_turns,
         max_tool_steps=tunables.chat.max_tool_steps,
         pricing=pricing, stats=stats, github_token=settings.github_token,
@@ -139,11 +148,25 @@ async def lifespan(app: FastAPI):
         followup_model=tunables.routing.followup_model,
         jev=jev,
     )  # fmt: skip
+
+    # Models and prices edited on /settings are saved in Valkey and win over settings.toml.
+    app.state.model_settings = ModelSettings(client, tunables)
+    app.state.admin_token = settings.admin_token
+    app.state.gateway_models = gateway_models(settings.llm_base_url, settings.llm_api_key)
+    try:
+        prices, models, followup, pins = app.state.model_settings.effective()
+        app.state.chat.apply_models(models, pins, followup, prices)
+    except Exception:  # bad saved data must not stop the app: it runs on settings.toml instead
+        log.exception("could not apply the models saved on /settings; using settings.toml")
+    if not settings.admin_token:
+        log.info("SEMCACHE_ADMIN_TOKEN is not set: /settings is read-only")
     yield
+    app.state.seed_done.set()  # worker stops; a running workflow resumes on next start
 
 
 app = FastAPI(title="Template Scout", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
+app.include_router(settings_router)
 
 
 @app.get("/healthz")
@@ -153,44 +176,71 @@ def healthz() -> dict:
     return {"ok": True, "models_checked": mc["checked"], "missing_models": mc["missing"]}
 
 
+def _ingest(repo, vec, source: str = "") -> None:
+    """Store one discovered repo in the catalog, plus the basics its details page reuses."""
+    catalog = app.state.catalog
+    services = repo.compose.services if repo.compose else ["unknown"]
+    closest = catalog.nearest_template(vec)
+    catalog.upsert(
+        "candidate", repo.full_name, vec,
+        {
+            "name": repo.full_name,
+            "description": repo.description,
+            "url": repo.url,
+            "stars": repo.stars,
+            "services": services or ["none"],
+            "buildable": compose_status(repo.compose),
+            "language": repo.language,
+            "license": repo.license,
+            "pushed": repo.pushed_at,
+            "topics": ",".join(repo.topics),
+            "compose_path": repo.compose.path if repo.compose else "",
+            "app_services": ",".join(repo.compose.app_services) if repo.compose else "",
+            "image_apps": ",".join(repo.compose.image_only_apps) if repo.compose else "",
+            "closest": closest[0] if closest else "",
+            "novelty": f"{closest[1]:.3f}" if closest else "1.000",
+            "source": source,
+        },
+    )  # fmt: skip
+    if repo.info:  # basic info came with the search result, so caching it costs no API call
+        app.state.repo_cache.put(
+            "info", repo.full_name, "", repo.info, ttl=tunables.github.detail_ttl_seconds
+        )
+    if repo.compose and repo.compose.raw:  # keep the file so its details page can show it
+        app.state.repo_cache.put(
+            "file", repo.full_name, repo.compose.path, repo.compose.raw,
+            ttl=tunables.github.detail_ttl_seconds,
+        )  # fmt: skip
+
+
+def _repo_vec(embedder, repo):
+    services = repo.compose.services if repo.compose else ["unknown"]
+    return embedder.embed(embed_text(repo.full_name, repo.description, repo.topics, services))
+
+
 def _crawl(query: str) -> int:
     """Fetch popular repos from GitHub and add them to the catalog. Returns count ingested."""
-    embedder, catalog = app.state.embedder, app.state.catalog
+    embedder = app.state.embedder
     repos = discover(query, token=settings.github_token, limit=tunables.search.results_per_query)
     for repo in repos:
-        services = repo.compose.services if repo.compose else ["unknown"]
-        vec = embedder.embed(embed_text(repo.full_name, repo.description, repo.topics, services))
-        closest = catalog.nearest_template(vec)
-        catalog.upsert(
-            "candidate", repo.full_name, vec,
-            {
-                "name": repo.full_name,
-                "description": repo.description,
-                "url": repo.url,
-                "stars": repo.stars,
-                "services": services or ["none"],
-                "buildable": compose_status(repo.compose),
-                "language": repo.language,
-                "license": repo.license,
-                "pushed": repo.pushed_at,
-                "topics": ",".join(repo.topics),
-                "compose_path": repo.compose.path if repo.compose else "",
-                "app_services": ",".join(repo.compose.app_services) if repo.compose else "",
-                "image_apps": ",".join(repo.compose.image_only_apps) if repo.compose else "",
-                "closest": closest[0] if closest else "",
-                "novelty": f"{closest[1]:.3f}" if closest else "1.000",
-            },
-        )  # fmt: skip
-        if repo.info:  # basic info came with the search result, so caching it costs no API call
-            app.state.repo_cache.put(
-                "info", repo.full_name, "", repo.info, ttl=tunables.github.detail_ttl_seconds
-            )
-        if repo.compose and repo.compose.raw:  # keep the file so its details page can show it
-            app.state.repo_cache.put(
-                "file", repo.full_name, repo.compose.path, repo.compose.raw,
-                ttl=tunables.github.detail_ttl_seconds,
-            )  # fmt: skip
+        _ingest(repo, _repo_vec(embedder, repo))
     return len(repos)
+
+
+async def _seed() -> None:
+    """Connect to Temporal and run the seeding workflow for each SEED_OWNERS entry. A Temporal
+    problem is logged and never stops the app."""
+    try:
+        client = await Client.connect(
+            settings.temporal_address, namespace=settings.temporal_namespace,
+            api_key=settings.temporal_api_key, tls=bool(settings.temporal_api_key),
+        )  # fmt: skip
+        acts = SeedActivities(
+            app.state.catalog, app.state.embedder, settings.github_token, _ingest, _repo_vec
+        )
+        await run_seeding(client, SEED_OWNERS, acts, app.state.seed_done)
+    except Exception:
+        log.exception("seeding via Temporal failed")
 
 
 def run_search(q: str, services: list[str] | None = None, refresh: bool = False) -> dict:
@@ -207,6 +257,11 @@ def run_search(q: str, services: list[str] | None = None, refresh: bool = False)
                 "crawled"
             ]:  # never cache an empty crawl, or similar searches skip GitHub for a day
                 cache.store("search", q, str(out["crawled"]))
+        except durable.RateLimited as e:  # cool-down: do not call GitHub again until it ends
+            out["notice"] = (
+                f"GitHub is rate limiting us; not searching it for another {e.wait:.0f}s. "
+                "Showing what is indexed."
+            )
         except httpx.HTTPError as e:
             out["notice"] = f"GitHub search failed ({type(e).__name__}); showing what is indexed."
 

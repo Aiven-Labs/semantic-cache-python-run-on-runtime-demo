@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Template Scout Settings</title>
+<style>
+  :root { --bg:#fff; --fg:#1a1a1a; --muted:#6b6b6b; --line:#e2e2e2; --accent:#ff3554; --chip:#f3f3f3;
+    --ok:#1a7f37; --okbg:#e8f5ec; --bad:#c62828; --badbg:#fdecea; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14141a; --fg:#eee; --muted:#9a9aa5; --line:#2c2c36; --chip:#23232d;
+      --ok:#4cc16d; --okbg:#14301d; --bad:#ff7b72; --badbg:#3a1a18; }
+  }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 system-ui, sans-serif; }
+  main { max-width:860px; margin:0 auto; padding:14px 16px 60px; }
+  h1 { margin:0; font-size:1.05rem; } h2 { font-size:.98rem; margin:26px 0 4px; }
+  a { color:var(--accent); text-decoration:none; }
+  .top { display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  nav { display:flex; gap:10px; font-size:.85rem; }
+  p.help, .hint { color:var(--muted); font-size:.82rem; margin:2px 0 8px; }
+  .banner { border-radius:8px; padding:8px 12px; margin:10px 0; }
+  .banner.ok { background:var(--okbg); color:var(--ok); } .banner.err { background:var(--badbg); color:var(--bad); }
+  .banner.info { background:var(--chip); }
+  table { border-collapse:collapse; width:100%; font-size:.88rem; }
+  th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:middle; }
+  th { color:var(--muted); font-weight:600; font-size:.78rem; }
+  td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  select, input, textarea, button { font:inherit; color:var(--fg); background:var(--bg);
+    border:1px solid var(--line); border-radius:6px; padding:5px 8px; }
+  select { min-width:220px; max-width:100%; }
+  textarea { width:100%; box-sizing:border-box; font-family:ui-monospace, monospace; font-size:.82rem; }
+  button { cursor:pointer; } button.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+  button.link { border:0; background:none; color:var(--accent); padding:0; }
+  button:disabled, select:disabled { opacity:.55; cursor:not-allowed; }
+  .tag { font-size:.72rem; border-radius:99px; padding:1px 7px; background:var(--chip); color:var(--muted); }
+  .tag.warn { background:var(--badbg); color:var(--bad); }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:8px 0; }
+  .token input { width:200px; }
+  code { background:var(--chip); border-radius:3px; padding:0 4px; font-size:.9em; }
+  .scroll { overflow-x:auto; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>Template Scout</h1>
+    <nav><a href="/">Search</a> <a href="/repos">Repos</a> <a href="/chat">Chat</a> <strong>Settings</strong></nav>
+  </div>
+
+  {% if ok %}<div class="banner ok">{{ ok }}</div>{% endif %}
+  {% if err %}<div class="banner err">{{ err }}</div>{% endif %}
+  {% if not editable %}
+  <div class="banner info">Read-only. To change models or prices, set <code>SEMCACHE_ADMIN_TOKEN</code>
+    (keep it in fnox) and restart the app. This app has no logins, so edits need that token.</div>
+  {% endif %}
+
+  <h2>Which model makes each decision</h2>
+  <p class="help">Models come from the list below. Changes apply to the next message, no restart.</p>
+  <form method="post" action="/settings/roles">
+    <div class="scroll"><table>
+      <tr><th>Decision</th><th>Model</th></tr>
+      {% for key, label, help, current in roles %}
+      <tr>
+        <td><strong>{{ label }}</strong><div class="hint">{{ help }}</div></td>
+        <td><select name="{{ key }}" {{ '' if editable else 'disabled' }}>
+          {% for m in model_names %}<option value="{{ m }}" {{ 'selected' if m == current }}>{{ m }}</option>{% endfor %}
+          {% if current and current not in model_names %}<option value="{{ current }}" selected>{{ current }} (not in list)</option>{% endif %}
+        </select></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td><strong>Jev classifier</strong><div class="hint">Classifies unmatched messages first, when
+          <code>TYPESAFE_API_KEY</code> is set. Set in <code>settings.toml</code>, not here.</div></td>
+        <td>{% if jev.model %}<code>{{ jev.model }}</code>
+          <span class="tag">confidence gate {{ jev.min_confidence }}</span>{% else %}<span class="tag">off (no TypeSafe key)</span>{% endif %}</td>
+      </tr>
+    </table></div>
+
+    <h2>Pin a route to one model</h2>
+    <p class="help">A pinned route always uses that model, whatever the hit or miss decision says.</p>
+    <div class="scroll"><table>
+      <tr><th>Route</th><th>Model</th></tr>
+      {% for route, current in pins %}
+      <tr><td><code>{{ route }}</code></td>
+        <td><select name="pin_{{ route }}" {{ '' if editable else 'disabled' }}>
+          <option value="" {{ 'selected' if not current }}>no pin</option>
+          {% for m in model_names %}<option value="{{ m }}" {{ 'selected' if m == current }}>{{ m }}</option>{% endfor %}
+        </select></td></tr>
+      {% endfor %}
+    </table></div>
+    <div class="row token">
+      <input type="password" name="token" placeholder="admin token" autocomplete="off" {{ '' if editable else 'disabled' }}>
+      <button class="primary" {{ '' if editable else 'disabled' }}>Save choices</button>
+    </div>
+  </form>
+
+  <h2>Models and prices</h2>
+  <p class="help">USD per million tokens. A model has to be on this list before a decision can use it.
+    {% if not gateway_known %}The gateway's model list could not be fetched, so names are unchecked.{% endif %}</p>
+  <div class="scroll"><table>
+    <tr><th>Model</th><th class="num">Input</th><th class="num">Output</th><th>Source</th><th></th></tr>
+    {% for m in models %}
+    <tr>
+      <td><code>{{ m.name }}</code>
+        {% if m.used %}<span class="tag">in use</span>{% endif %}
+        {% if m.missing %}<span class="tag warn">not on the gateway</span>{% endif %}</td>
+      <td class="num">${{ '%g' % m.input }}</td><td class="num">${{ '%g' % m.output }}</td>
+      <td><span class="tag">{{ m.source }}</span></td>
+      <td>{% if m.deletable and editable %}
+        <form method="post" action="/settings/models/delete" style="display:inline" class="tokened">
+          <input type="hidden" name="name" value="{{ m.name }}"><input type="hidden" name="token">
+          <button class="link" onclick="return confirm('Remove {{ m.name }}?')">remove</button></form>
+        {% endif %}</td>
+    </tr>
+    {% endfor %}
+  </table></div>
+
+  <h2>Add or update models from CSV</h2>
+  <p class="help">Header <code>model,input_per_mtok,output_per_mtok</code>. Prices can be <code>1.155</code>
+    or <code>$1.155/M</code>. Rows with a name already in the list update its price. Paste rows or
+    upload a file; if any row is wrong, nothing is imported.
+    <a href="/settings/models.csv">Download the current list</a>.</p>
+  <form method="post" action="/settings/models/import" enctype="multipart/form-data">
+    <textarea name="csv_text" rows="7" placeholder="model,input_per_mtok,output_per_mtok&#10;claude-haiku-4-5,$1.155/M,$5.775/M&#10;qwen3-32b,0.189,0.735" {{ '' if editable else 'disabled' }}></textarea>
+    <div class="row">
+      <input type="file" name="csv_file" accept=".csv,text/csv,text/plain" {{ '' if editable else 'disabled' }}>
+      <label><select name="mode" {{ '' if editable else 'disabled' }}>
+        <option value="merge">Add and update (keep the rest)</option>
+        <option value="replace">Replace everything saved here</option></select></label>
+    </div>
+    <div class="row token">
+      <input type="password" name="token" placeholder="admin token" autocomplete="off" {{ '' if editable else 'disabled' }}>
+      <button class="primary" {{ '' if editable else 'disabled' }}>Import</button>
+    </div>
+    <p class="hint">Replace only drops models saved on this page; the ones in <code>settings.toml</code>
+      stay, and a model that a decision is using can not be dropped.</p>
+  </form>
+</main>
+<script>
+  // Remember the admin token for this tab and fill it into every form that needs it.
+  var KEY = "scout-admin-token", fields = document.querySelectorAll('input[name="token"]');
+  var saved = ""; try { saved = sessionStorage.getItem(KEY) || ""; } catch (e) {}
+  fields.forEach(function (f) { if (!f.value) f.value = saved; });
+  document.querySelectorAll("form").forEach(function (form) {
+    form.addEventListener("submit", function () {
+      var vis = document.querySelector('input[type="password"][name="token"]');
+      var t = (form.querySelector('input[name="token"]') || {}).value || (vis && vis.value) || "";
+      form.querySelectorAll('input[name="token"]').forEach(function (f) { if (!f.value) f.value = t; });
+      try { if (t) sessionStorage.setItem(KEY, t); } catch (e) {}
+    });
+  });
+</script>
+</body>
+</html>

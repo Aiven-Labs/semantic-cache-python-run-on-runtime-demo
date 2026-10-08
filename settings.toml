@@ -10,8 +10,6 @@ answer_max_distance = 0.08       # a first chat question this close to an earlie
 answer_ttl_seconds = 86400
 
 [routing]
-max_distance = 0.25              # the router "matches" a message when its nearest example is this close
-smalltalk_max_distance = 0.28    # small talk gets a little more room (it is short and varied)
 # Short follow-ups ("so Dify uses vite?") match no router example because they only make sense in
 # context. If nothing matches and the message has at most this many words, it keeps the previous
 # tool route and answers with followup_model, without calling the classifier.
@@ -31,6 +29,15 @@ always_expensive = ["analysis"]
 # Every model name here must exist on the gateway (SEMCACHE_LLM_BASE_URL); the app checks at
 # startup and warns about any that do not. `miss` is also the baseline
 # for "saved by routing" in the cost readout.
+# No distance cutoff. The k nearest earlier questions vote on the route; the winner counts only if
+# the message is about as close as that route's own questions have been to each other (learned mean
+# + `spread` standard deviations). Until a route has `min_samples` pairs, the classifier decides.
+[routing.vote]
+k = 5
+min_share = 0.6
+min_samples = 5
+spread = 2.0
+
 [routing.models]
 hit = "qwen3-32b"                  # cheapest: answers from what is already cached (hosted on the gateway)
 classifier = "claude-haiku-4-5"     # mid tier: answers when Jev is off or unsure (and classifies if TYPESAFE_API_KEY is unset)
@@ -70,9 +77,27 @@ detail_ttl_seconds = 604800      # the Compose file saved when a repo is found (
 # Cost: USD per 1 million tokens. These are ESTIMATES used for the cost and savings shown in chat.
 # Edit to match what your gateway actually bills. A model with no entry here is shown as
 # "no price set". Only the models this file uses need an entry.
+# Anthropic prices below are the Aiven gateway's, per million tokens. Cache read/write prices are
+# not modeled: the app does not use prompt caching.
 [cost.models."claude-haiku-4-5"]
-input_per_mtok = 1.00
-output_per_mtok = 5.00
+input_per_mtok = 1.155
+output_per_mtok = 5.775
+
+[cost.models."claude-sonnet-5"]
+input_per_mtok = 2.31
+output_per_mtok = 11.55
+
+[cost.models."claude-opus-5"]
+input_per_mtok = 5.775
+output_per_mtok = 28.875
+
+[cost.models."claude-opus-5-5"]
+input_per_mtok = 4.62
+output_per_mtok = 23.1
+
+[cost.models."aiven-model"]
+input_per_mtok = 0.0
+output_per_mtok = 0.0
 
 # TypeSafe list price: input $0.042 per million tokens, output not metered.
 [cost.models."jev-latest"]

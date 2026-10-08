@@ -9,7 +9,7 @@ from .cache import _to_dict
 FIELDS = [
     "name", "description", "url", "stars", "services", "closest", "novelty",
     "buildable", "query", "source", "language", "license", "pushed", "topics",
-    "compose_path", "app_services", "image_apps",
+    "compose_path", "app_services", "image_apps", "response", "tier",
 ]  # fmt: skip
 
 _TAG_ESCAPE = re.compile(r"([^A-Za-z0-9_])")
@@ -119,6 +119,26 @@ class Catalog:
         """The stored embedding for one document, or None."""
         raw = self.r.hget(self.key(kind, ident), "embedding")
         return None if raw is None else np.frombuffer(raw, dtype=np.float32)
+
+    def route_stats(self, route: str) -> tuple[int, float, float]:
+        """(samples, mean, std) of how close a route's questions land to each other."""
+        raw = self.r.hgetall(f"stats:{self.prefix}{route}")
+        if not raw:
+            return 0, 0.0, 0.0
+        f = {(k.decode() if isinstance(k, bytes) else k): float(v) for k, v in raw.items()}
+        n = int(f.get("n", 0))
+        return n, f.get("mean", 0.0), (f.get("m2", 0.0) / n) ** 0.5 if n > 1 else 0.0
+
+    def add_route_sample(self, route: str, distance: float) -> None:
+        """Welford's running mean/variance, so no distance list is kept."""
+        key = f"stats:{self.prefix}{route}"  # outside the index prefix: never indexed as a doc
+        n, mean, std = self.route_stats(route)
+        m2 = (std**2) * n
+        n += 1
+        delta = distance - mean
+        mean += delta / n
+        m2 += delta * (distance - mean)
+        self.r.hset(key, mapping={"n": n, "mean": mean, "m2": m2})
 
     def nearest_template(self, vec: np.ndarray) -> tuple[str, float] | None:
         hits = self.search(vec, "template", k=1)

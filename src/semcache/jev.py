@@ -12,9 +12,12 @@ from .decide import KIND_TO_ROUTE
 CRITERIA = {
     "chat": "A greeting, thanks, reaction, or a question about the conversation itself "
     "('explain that', 'why did you pick it', 'tell me more'). Nothing new needs to be looked up.",
-    "search": "The user wants projects on a topic ('diary apps', 'something like dayone').",
+    "search": "The user wants to find projects, tools or options in a topic area ('diary apps', "
+    "'something like dayone', 'good otel options', 'best opentelemetry collectors'). "
+    "Asking what is good or available in an area is a search, not an analysis.",
     "repo": "A question about one specific GitHub project.",
-    "analysis": "Compare, rank, recommend, or weigh trade-offs among projects or templates.",
+    "analysis": "Compare, rank, or weigh trade-offs between specific projects or templates that "
+    "are named or already on the table ('which of those two is better', 'rank these').",
     "other": "Anything else.",
 }
 assert set(CRITERIA) == set(KIND_TO_ROUTE)

@@ -100,7 +100,7 @@ to pick wrongly:
 | `templates()` | the existing templates; only offered when they are not already in the prompt |
 
 The chat shows each tool call under the reply. These are LangChain tools (plain function calling
-through LiteLLM), not MCP.
+through the gateway), not MCP.
 
 **Looking inside a project.** `repo` reads files from `raw.githubusercontent.com` first (no API
 quota, no credentials sent) and only lists folders through the GitHub API (1 call, so set
@@ -148,7 +148,7 @@ conversation so a reload shows them again. A new chat starts with starter chips.
   records it. `[routing.pin]` still forces a route to one model, and short follow-ups keep the
   previous turn's route on `followup_model` without calling the classifier.
 
-  **All chat models live on the Aiven gateway** (`SEMCACHE_LLM_BASE_URL`, a LiteLLM router): there
+  **All chat models live on the Aiven gateway** (`SEMCACHE_LLM_BASE_URL`, an agno gateway): there
   is no local proxy any more. At startup the app lists the gateway's models and warns about any
   name in `settings.toml` it does not serve; `/healthz` shows them as `missing_models`. The hit
   model was chosen by a test of the gateway's cheap models on the app's own prompts (chit-chat,
@@ -180,6 +180,28 @@ priced at the `miss` model, minus the chosen model's cost; a counterfactual, not
 served at `/stats`. Token counts come from the model server; if it sends none, they are
 estimated at about 4 characters per token and flagged.
 
+## Settings page
+
+`/settings` shows which model makes each decision (hit, fallback classifier, miss, follow-up, and
+any route pinned to one model) and the list of models with their prices. You can change both
+without a restart; the next chat message uses the new choice.
+
+- **Pick a model:** each decision is a dropdown of the models on the list. A decision can only use
+  a model that is on the list.
+- **Add models and prices from CSV:** paste rows or upload a file with the header
+  `model,input_per_mtok,output_per_mtok`. Prices are USD per million tokens and can be written
+  `1.155` or `$1.155/M`. A row with a name already on the list updates its price. If any row is
+  wrong, nothing is imported and the page says which line. "Download the current list" exports the
+  same format. Spreadsheet pastes (tab-separated) work too.
+- **Where it is saved:** in Valkey, over the defaults in `settings.toml`. A restart keeps the
+  changes. Models from `settings.toml` can be repriced but not removed; a model a decision is using
+  can not be removed.
+- **Editing needs a token.** The app has no logins, so changes are off until `SEMCACHE_ADMIN_TOKEN`
+  is set (keep it in fnox: `fnox set SEMCACHE_ADMIN_TOKEN`). Without it the page is read-only. The
+  token is checked on every change and is never logged.
+- Models the gateway does not serve are flagged on the page. Jev's model and confidence gate are
+  read-only here; change them in `settings.toml`.
+
 ## Run locally
 
 All of these must be in the environment (fnox). There are no defaults and the app won't start
@@ -191,9 +213,23 @@ without them:
 | `SEMCACHE_EMBED_API_KEY` | (secret) |
 | `SEMCACHE_EMBED_MODEL` | `Qwen3-Embedding-0.6B-4bit-DWQ` |
 | `SEMCACHE_EMBED_DIM` | `1024` |
-| `SEMCACHE_LLM_BASE_URL` | the Aiven AI gateway (OpenAI-compatible LiteLLM router); serves every chat model |
+| `SEMCACHE_LLM_BASE_URL` | the Aiven AI gateway (OpenAI-compatible, built on agno); serves every chat model |
 | `SEMCACHE_LLM_API_KEY` | (secret) key for that gateway |
 | `TYPESAFE_API_KEY` | (secret, optional) TypeSafe AI key; turns on the Jev classifier |
+| `SEMCACHE_TEMPORAL_ADDRESS` | (optional) `host:7233` of a Temporal server; turns on seeding |
+| `SEMCACHE_TEMPORAL_NAMESPACE` | (optional) default `default` |
+| `SEMCACHE_TEMPORAL_API_KEY` | (secret, optional) Temporal Cloud key; also turns TLS on |
+
+### Seeding
+
+Every public repo of the orgs and users in `SEED_OWNERS` (`src/semcache/seed.py`, currently
+`Aiven-Labs`) is put in the catalog by a Temporal workflow, `SeedOwnerWorkflow`
+(`seed_workflow.py`). The app runs the worker itself, so it needs a Temporal server but no
+separate process. Temporal does the waiting and retrying: a rate-limited call fails with the delay
+GitHub asked for and is re-run then, a server error backs off, and a restart resumes the run. One
+workflow per owner has a fixed id (`seed-<owner>`), so starting it twice joins the run in progress,
+and each start only adds repos the catalog doesn't have. Without `SEMCACHE_TEMPORAL_ADDRESS` the
+app logs a warning and doesn't seed. Watch runs in the Temporal UI under `seed-<owner>`.
 
 `GITHUB_TOKEN` is optional (raises rate limits). Embeddings are the one thing still local: the
 gateway has no embeddings endpoint, so `SEMCACHE_EMBED_*` points at OMLX, and in `compose.yaml`
@@ -216,6 +252,35 @@ reach. **Embeddings are the blocker**: local OMLX is not reachable from Aiven, a
 no embeddings endpoint, so an embeddings service Aiven can reach is needed first (changing the
 embedding model means re-embedding every vector and re-tuning the distance thresholds in
 `settings.toml`). Confirm the Valkey service has search enabled.
+
+## Benchmarks
+
+Both write a report into `benchmarks/`. They need the secrets in fnox, and `mise run` supplies them.
+
+```sh
+mise run bench-classifiers                              # Jev, Qwen, Haiku, Sonnet, Opus -> report.md
+mise run bench-classifiers -- claude-opus-5 qwen3-32b   # or pick your own models
+mise run bench-classifiers -- --formats all             # json, csv, html, pdf, md (default: md,json)
+mise run bench-classifiers -- --from-saved --formats html,pdf   # re-render, no model calls
+mise run bench-routing                                  # router strategies on the same messages
+uv run pytest tests/test_benchmark.py tests/test_classifier_report.py   # no network needed
+```
+
+- Every result in every format has a test id, `classifier-compare::<model>::<id>`. The id is the
+  first 8 hex digits of the message's SHA-256 (case and spacing ignored), so a message keeps its id
+  across runs and formats. JSON and CSV have one row per message per model; Markdown, HTML and PDF
+  add a pass/fail grid, each model's mistakes and where the models disagree. PDF needs
+  `uv sync --extra report`. Use `--out-dir` to write somewhere else. The formats come from
+  `src/semcache/report.py`, which any other test run can reuse.
+- `benchmarks/routing.jsonl` is the labeled set (93 messages, 12 of them off-topic). Add your own
+  lines as `{"text": "...", "route": "find|inspect|analysis|smalltalk|agent"}`; `agent` means
+  out of scope.
+- Any model name your gateway serves works for the classifier comparison. Jev is a name starting
+  with `jev` and needs `TYPESAFE_API_KEY`. Prices come from `[cost.models]` in `settings.toml`; a model
+  with no entry is reported as "no price".
+- The classifier comparison makes about 93 calls per model, one at a time, so Opus takes a few
+  minutes. The routing benchmark needs Valkey with the search module and the embeddings server up,
+  and uses its own `idx:bench` index, never the app's data.
 
 ## Next
 

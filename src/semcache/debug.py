@@ -15,8 +15,7 @@ def settings_snapshot(t: Tunables, embed_model: str, embed_dim: int) -> dict:
         "embedding": {"model": embed_model, "dim": embed_dim},
         "cache": t.cache.model_dump(),
         "routing": {
-            "max_distance": t.routing.max_distance,
-            "smalltalk_max_distance": t.routing.smalltalk_max_distance,
+            "vote": t.routing.vote.model_dump(),
             "models": t.routing.models.model_dump(),
             "coverage": t.routing.coverage.model_dump(),
             "always_expensive": t.routing.always_expensive,

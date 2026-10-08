@@ -2,6 +2,10 @@
 
 BASE = "https://templates.aiven.io"
 
+# GitHub orgs and users whose public repos are all put in the catalog at startup, whatever a
+# search returns. Add a name here to have its projects suggested alongside search results.
+SEED_OWNERS = ["Aiven-Labs"]
+
 # (name, description, aiven services, tags)
 _T = [
     ("n8n", "Minimal deployment of n8n and the traefik web apps", [], ["n8n", "traefik"]),

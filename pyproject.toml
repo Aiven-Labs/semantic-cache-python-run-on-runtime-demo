@@ -13,6 +13,7 @@ dependencies = [
     "pydantic-settings>=2.6",
     "python-multipart>=0.0.32",
     "pyyaml>=6",
+    "temporalio>=1.34.0",
     "typesafe-sdk>=0.7.2",
     "uvicorn>=0.32",
     "valkey>=6.0",
@@ -22,10 +23,14 @@ dependencies = [
 tui = [
     "textual>=8.2.8",
 ]
+report = [
+    "reportlab>=5.0.1",
+]
 
 [dependency-groups]
 dev = [
     "pytest>=8",
+    "reportlab>=5.0.1",
     "ruff>=0.8",
     "textual>=8.2.8",
 ]

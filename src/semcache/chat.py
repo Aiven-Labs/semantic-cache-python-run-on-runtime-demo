@@ -25,7 +25,7 @@ from .embed import Embedder
 from .followups import build_suggestions, follow_the_answer
 from .github import list_dir, read_file, repo_info
 from .repocache import RepoCache
-from .routes import FALLBACK, route_match
+from .routes import FALLBACK, record_turn, vote_match
 from .seed import TEMPLATES
 
 _CID = re.compile(r"^[A-Za-z0-9_-]{8,64}$")
@@ -323,8 +323,7 @@ class ChatService:
         search_cached: Callable[[str], bool],
         answer_cache: SemanticCache,
         search: Callable[[str], dict],
-        route_max_distance: float,
-        route_limits: dict[str, float],
+        route_vote,
         history_turns: int,
         max_tool_steps: int,
         pricing: Pricing,
@@ -342,8 +341,8 @@ class ChatService:
         self.always_expensive, self.route_pins = set(always_expensive), route_pins
         self.search_cached = search_cached
         self.answer_cache, self.search = answer_cache, search
-        self.route_max_distance, self.history_turns = route_max_distance, history_turns
-        self.route_limits, self.max_tool_steps = route_limits, max_tool_steps
+        self.route_vote, self.history_turns = route_vote, history_turns
+        self.max_tool_steps = max_tool_steps
         self.pricing, self.stats, self.github_token = pricing, stats, github_token
         self.repo_cache = repo_cache
         self.followup_max_words, self.followup_model = followup_max_words, followup_model
@@ -564,6 +563,13 @@ class ChatService:
         seen.extend(repos)
         return templates_block() + "\n\n" + repos_block(repos), None
 
+    def apply_models(self, models, pins: dict[str, str], followup_model: str, prices: dict) -> None:
+        """Swap which model makes each decision, and the price table, while the app runs.
+        A turn already in flight keeps the model it started with."""
+        self.models, self.route_pins, self.followup_model = models, dict(pins), followup_model
+        self.baseline_model = models.miss  # "saved by routing" compares against the miss model
+        self.pricing.replace(prices)
+
     # ---- hit or miss ----------------------------------------------------------------------------
     @property
     def classifier_name(self) -> str:
@@ -590,6 +596,8 @@ class ChatService:
             out = self.jev.classify(history, message, usage)
             if out["kind"] == "repo":
                 out["repo"] = self._resolve_repo(message)
+            elif out["kind"] == "search":  # Jev cannot write the words; the cache check needs them
+                out["query"] = extract_query(message)
             return out
         recent = "\n".join(
             f"{'User' if m['role'] == 'user' else 'Assistant'}: {m['content'][:300]}"
@@ -633,9 +641,7 @@ class ChatService:
         )
 
     def _decide(self, history: list[dict], message: str, usage: dict) -> Decision:
-        route, distance = route_match(
-            self.catalog, self.embedder, message, self.route_max_distance, self.route_limits
-        )
+        route, distance = vote_match(self.catalog, self.embedder, message, self.route_vote)
         if route is None:
             inherited = inherit_route(history, message, FALLBACK, self.followup_max_words)
             if inherited and self.followup_model:
@@ -670,6 +676,8 @@ class ChatService:
         )
         if matched:
             reason += f" ({distance:.2f})"
+        elif classified:  # distance is the router's nearest example, and it missed
+            reason += f" (router missed at {distance:.2f})"
         model, tier = choose_model(hit, route, self.models, self.route_pins, self.always_expensive)
         return Decision(route, model, tier, reason, distance, query, classified, target)
 
@@ -789,9 +797,22 @@ class ChatService:
                 self.answer_cache.store(
                     "chat", message, answer, json.dumps({"usd": cost["usd"], "model": model})
                 )
+            self._remember(message, decision, answer)
         else:
             self._record_unanswered(model, usage, decision, classify_usage)
         yield {"type": "done"}
+
+    def _remember(self, message: str, decision: Decision, answer: str) -> None:
+        """Add this turn to the routing history. Follow-ups and the "classifier was down" fallback
+        are skipped: their route was inherited or a guess, and would teach the router noise."""
+        if decision.tier == "follow-up" or (
+            not decision.classifier_used and decision.route == FALLBACK
+        ):
+            return
+        try:
+            record_turn(self.catalog, self.embedder, message, decision.route, answer, decision.tier)
+        except Exception:  # history is an optimization; a Valkey hiccup must not fail the reply
+            pass
 
     def _record_unanswered(
         self, model: str, usage: dict, decision: Decision, classify: dict

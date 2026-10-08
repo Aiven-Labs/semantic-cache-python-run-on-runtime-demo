@@ -14,3 +14,15 @@ run = "uv run ruff check . && uv run ruff format --check ."
 # SCOUT_GH_USER so copied manifest entries point at your fork.
 [tasks.tui]
 run = "PYTHONPATH=src uv run --extra tui python -m semcache.tui"
+
+# Benchmarks. They need the secrets in fnox (TYPESAFE_API_KEY, SEMCACHE_LLM_*), and the routing one
+# also needs Valkey and the embeddings server up. Both write a report into benchmarks/.
+[tasks.bench-classifiers]
+run = "fnox exec -- env PYTHONPATH=src uv run python benchmarks/compare_classifiers.py"
+
+[tasks.bench-routing]
+run = "fnox exec -- env PYTHONPATH=src uv run python benchmarks/run_routing.py"
+
+# Render the Mermaid diagrams in docs/flow.md to docs/img/*.png. Needs node (npx).
+[tasks.diagrams]
+run = "uv run python -I docs/render_diagrams.py"

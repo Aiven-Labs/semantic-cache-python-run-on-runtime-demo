@@ -56,7 +56,7 @@
   <p class="sub">Search popular GitHub projects and see how they compare to what's already on
     <a href="https://templates.aiven.io">templates.aiven.io</a>.</p>
 
-  <nav><strong>Search</strong> <a href="/repos">Repos</a> <a href="/chat">Chat</a></nav>
+  <nav><strong>Search</strong> <a href="/repos">Repos</a> <a href="/chat">Chat</a> <a href="/settings">Settings</a></nav>
 
   <form method="get" action="/">
     <input type="search" name="q" value="{{ q }}" autofocus
@@ -112,6 +112,7 @@
           <span class="chip svc"><img src="/static/icons/{{ sv }}.svg" alt="" width="16" height="16"> {{ sv }}</span>
         {% elif sv != "unknown" %}<span class="chip">{{ sv }}</span>{% endif %}
       {% endfor %}
+      {% if r.source %}<span class="chip">{{ r.source }}</span>{% endif %}
       <span class="chip">match {{ "%.2f"|format(1 - r.distance) }}</span>
       <span class="chip">novelty {{ "%.2f"|format(r.novelty) }}</span>
       {% if r.compose == "ready" %}<span class="chip">Compose + build:</span>{% endif %}

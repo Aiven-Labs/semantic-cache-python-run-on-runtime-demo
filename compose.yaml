@@ -21,12 +21,33 @@ services:
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
       # Optional: turns on the Jev classifier (otherwise the gateway classifier runs).
       TYPESAFE_API_KEY: ${TYPESAFE_API_KEY:-}
+      # Optional: lets you change models and prices on /settings. Without it the page is read-only.
+      SEMCACHE_ADMIN_TOKEN: ${SEMCACHE_ADMIN_TOKEN:-}
+      # Seeds the SEED_OWNERS repos through the dev server below. Unset = no seeding.
+      SEMCACHE_TEMPORAL_ADDRESS: temporal:7233
     depends_on:
-      - valkey
+      valkey:
+        condition: service_started
+      temporal:
+        condition: service_healthy
   valkey:
     image: valkey/valkey-bundle:latest
     ports:
       - "6379:6379"
+  # Temporal dev server (in-memory, history is lost when it stops). Runs the seeding workflow;
+  # watch runs in the UI at http://localhost:8233 under the id seed-<owner>.
+  temporal:
+    image: temporalio/temporal:latest
+    command: server start-dev --ip 0.0.0.0
+    ports:
+      - "7233:7233"
+      - "8233:8233"
+    healthcheck:
+      test: ["CMD", "temporal", "operator", "cluster", "health", "--address", "127.0.0.1:7233"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 5s
   # Web UI for browsing keys and the vector index. Open http://localhost:8080.
   valkey-admin:
     image: valkey/valkey-admin:latest

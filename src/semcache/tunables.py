@@ -37,9 +37,17 @@ class CoverageCfg(_Strict):
     index_hit_min: int = Field(ge=1)  # ...and this many of them make it a hit
 
 
+class VoteCfg(_Strict):
+    """Distance-free routing: nearest earlier questions vote; each route's cutoff is learned."""
+
+    k: int = Field(ge=1)  # how many earlier questions vote
+    min_share: float = Field(ge=0, le=1)  # the winning route needs this share of the vote
+    min_samples: int = Field(ge=1)  # a route is trusted after this many question pairs
+    spread: float = Field(ge=0)  # standard deviations past a route's mean spacing still match
+
+
 class RoutingCfg(_Strict):
-    max_distance: float = Field(ge=0, le=2)
-    smalltalk_max_distance: float = Field(ge=0, le=2)
+    vote: VoteCfg
     models: ModelsCfg
     jev: JevCfg
     coverage: CoverageCfg

@@ -5,3 +5,4 @@ __pycache__/
 *.tfstate*
 *.tfvars
 fnox.toml
+.DS_Store

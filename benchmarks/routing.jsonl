@@ -1,0 +1,93 @@
+{"text": "what are some good otel options", "route": "find"}
+{"text": "any good opentelemetry collectors?", "route": "find"}
+{"text": "best observability tools", "route": "find"}
+{"text": "good observability options?", "route": "find"}
+{"text": "what are some good observability tools", "route": "find"}
+{"text": "got any self-hosted feature toggle projects?", "route": "find"}
+{"text": "diary apps", "route": "find"}
+{"text": "API-first content management systems", "route": "find"}
+{"text": "open source alternatives to Notion", "route": "find"}
+{"text": "something like dayone", "route": "find"}
+{"text": "ways to monitor Kafka clusters", "route": "find"}
+{"text": "tools for tracing microservices", "route": "find"}
+{"text": "what are good log aggregation projects", "route": "find"}
+{"text": "self-hosted web analytics", "route": "find"}
+{"text": "search GitHub for job queue dashboards", "route": "find"}
+{"text": "any open source CRM worth a look?", "route": "find"}
+{"text": "looking for a workflow engine", "route": "find"}
+{"text": "anything similar to Redash?", "route": "find"}
+{"text": "self-hosted password managers", "route": "find"}
+{"text": "good alternatives to Grafana", "route": "find"}
+{"text": "durable execution frameworks", "route": "find"}
+{"text": "vector database projects", "route": "find"}
+{"text": "what are some self-hosted wiki options", "route": "find"}
+{"text": "apps for monitoring uptime", "route": "find"}
+{"text": "open source scheduling tools", "route": "find"}
+{"text": "what's out there for error tracking?", "route": "find"}
+{"text": "what apps are built on Kafka?", "route": "find"}
+{"text": "what programming language is Flowise built with?", "route": "inspect"}
+{"text": "star count for prometheus/prometheus", "route": "inspect"}
+{"text": "list the top-level folders in getsentry/sentry", "route": "inspect"}
+{"text": "does langgenius/dify have a compose file?", "route": "inspect"}
+{"text": "what license does Kestra use", "route": "inspect"}
+{"text": "is featbit/featbit still maintained?", "route": "inspect"}
+{"text": "look at the Dockerfile of immich-app/immich", "route": "inspect"}
+{"text": "which services does plausible/analytics use", "route": "inspect"}
+{"text": "read the README of n8n-io/n8n", "route": "inspect"}
+{"text": "when was supabase/supabase last updated", "route": "inspect"}
+{"text": "what's in the docker folder of appsmithorg/appsmith", "route": "inspect"}
+{"text": "what database does Directus need?", "route": "inspect"}
+{"text": "open the compose file for outline/outline", "route": "inspect"}
+{"text": "how big is the SigNoz repo", "route": "inspect"}
+{"text": "who maintains Uptime Kuma", "route": "inspect"}
+{"text": "what does the Ghost repo's root folder look like", "route": "inspect"}
+{"text": "is Metabase's compose file runtime-ready?", "route": "inspect"}
+{"text": "compare the top two of those", "route": "analysis"}
+{"text": "which of these would make the best new template?", "route": "analysis"}
+{"text": "weigh the trade-offs between Grafana and Kibana", "route": "analysis"}
+{"text": "rank these candidates for me", "route": "analysis"}
+{"text": "which categories are we missing templates for?", "route": "analysis"}
+{"text": "should we add Dify or Flowise?", "route": "analysis"}
+{"text": "summarize the strengths and risks of these projects", "route": "analysis"}
+{"text": "which is the better fit for Aiven Runtime, Plausible or Umami?", "route": "analysis"}
+{"text": "what would it take to turn n8n into a template?", "route": "analysis"}
+{"text": "pick the best of the three and say why", "route": "analysis"}
+{"text": "recommend which one to build first", "route": "analysis"}
+{"text": "is SigNoz or Uptrace the stronger candidate?", "route": "analysis"}
+{"text": "compare Metabase and Redash as templates", "route": "analysis"}
+{"text": "where do the existing templates overlap?", "route": "analysis"}
+{"text": "hello!", "route": "smalltalk"}
+{"text": "yo", "route": "smalltalk"}
+{"text": "morning!", "route": "smalltalk"}
+{"text": "thank you", "route": "smalltalk"}
+{"text": "appreciate the help", "route": "smalltalk"}
+{"text": "alright, understood", "route": "smalltalk"}
+{"text": "cool", "route": "smalltalk"}
+{"text": "sweet", "route": "smalltalk"}
+{"text": "exactly what I needed", "route": "smalltalk"}
+{"text": "forget it", "route": "smalltalk"}
+{"text": "ha, funny", "route": "smalltalk"}
+{"text": "oh, that's interesting", "route": "smalltalk"}
+{"text": "that makes sense", "route": "smalltalk"}
+{"text": "excellent, many thanks", "route": "smalltalk"}
+{"text": "my bad, I read that wrong", "route": "smalltalk"}
+{"text": "nice work", "route": "smalltalk"}
+{"text": "can you explain that more simply?", "route": "smalltalk"}
+{"text": "what made you choose that one?", "route": "smalltalk"}
+{"text": "go on", "route": "smalltalk"}
+{"text": "is that definitely right?", "route": "smalltalk"}
+{"text": "say that again?", "route": "smalltalk"}
+{"text": "what are you able to help with?", "route": "smalltalk"}
+{"text": "what are you exactly?", "route": "smalltalk"}
+{"text": "what's the weather in Atlanta?", "route": "agent"}
+{"text": "write me a haiku about databases", "route": "agent"}
+{"text": "how do I write a Dockerfile for a Python app?", "route": "agent"}
+{"text": "what is the capital of France?", "route": "agent"}
+{"text": "explain how HNSW indexes work", "route": "agent"}
+{"text": "translate 'good morning' into French", "route": "agent"}
+{"text": "what's 15% of 240?", "route": "agent"}
+{"text": "what's the difference between TCP and UDP?", "route": "agent"}
+{"text": "give me a regex that matches an email address", "route": "agent"}
+{"text": "how do I undo my last git commit?", "route": "agent"}
+{"text": "tell me a joke about Kubernetes", "route": "agent"}
+{"text": "what year did the first iPhone come out?", "route": "agent"}
