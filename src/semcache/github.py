@@ -5,6 +5,7 @@ from urllib.parse import quote
 
 import httpx
 
+from . import durable
 from .compose import COMPOSE_PATHS, ComposeInfo, analyze
 
 
@@ -53,18 +54,44 @@ def _headers(token: str | None) -> dict:
     return h
 
 
-def _fetch_compose(client: httpx.Client, full_name: str, branch: str) -> ComposeInfo | None:
+def _fetch_compose(
+    client: httpx.Client, full_name: str, branch: str, *, strict: bool = False
+) -> ComposeInfo | None:
+    """The repo's Compose file, if any.
+
+    Default: a slow or failed file is skipped, so one bad path cannot fail a search. `strict`
+    (seeding) raises durable.RateLimited / Unavailable instead, for Temporal to retry,
+    because "could not check" must never be stored as "no Compose file".
+    """
     for path in COMPOSE_PATHS:
+        url = f"https://raw.githubusercontent.com/{full_name}/{branch}/{path}"
         try:
-            r = client.get(f"https://raw.githubusercontent.com/{full_name}/{branch}/{path}")
-        except httpx.HTTPError:  # one slow or failed file must not fail the whole search
+            r = durable.request(client, url) if strict else client.get(url)
+        except httpx.HTTPError:
             continue
         if r.status_code == 200:
             info = analyze(r.text)
             if info is not None:
                 info.path, info.raw = path, truncate_text(r.text)
             return info
+        if strict and r.status_code != 404:
+            raise durable.Unavailable(f"{url}: HTTP {r.status_code}")
     return None
+
+
+def _to_repo(client: httpx.Client, item: dict, *, strict: bool = False) -> Repo:
+    return Repo(
+        full_name=item["full_name"],
+        description=item.get("description") or "",
+        url=item["html_url"],
+        stars=item.get("stargazers_count", 0),
+        topics=item.get("topics", []),
+        compose=_fetch_compose(client, item["full_name"], item["default_branch"], strict=strict),
+        language=item.get("language") or "",
+        license=((item.get("license") or {}).get("spdx_id") or "").replace("NOASSERTION", ""),
+        pushed_at=(item.get("pushed_at") or "")[:10],
+        info=info_from_item(item),
+    )
 
 
 def discover(query: str, *, token: str | None, limit: int = 30) -> list[Repo]:
@@ -81,25 +108,68 @@ def discover(query: str, *, token: str | None, limit: int = 30) -> list[Repo]:
         )
         r.raise_for_status()
         items = r.json().get("items", [])
-
-        def one(item: dict) -> Repo:
-            return Repo(
-                full_name=item["full_name"],
-                description=item.get("description") or "",
-                url=item["html_url"],
-                stars=item.get("stargazers_count", 0),
-                topics=item.get("topics", []),
-                compose=_fetch_compose(client, item["full_name"], item["default_branch"]),
-                language=item.get("language") or "",
-                license=((item.get("license") or {}).get("spdx_id") or "").replace(
-                    "NOASSERTION", ""
-                ),
-                pushed_at=(item.get("pushed_at") or "")[:10],
-                info=info_from_item(item),
-            )
-
         with ThreadPoolExecutor(max_workers=12) as pool:
-            return list(pool.map(one, items))
+            return list(pool.map(lambda item: _to_repo(client, item), items))
+
+
+_OWNER = re.compile(r"^[A-Za-z0-9-]{1,39}$")
+
+
+def _list_repos(client: httpx.Client, kind: str, owner: str, max_repos: int) -> list[dict] | None:
+    """All public repos of an org (kind='orgs') or user (kind='users'); None if there is none.
+
+    Pages go through durable.request, so a rate limit raises durable.RateLimited rather than
+    returning a short list.
+    """
+    items: list[dict] = []
+    for page in range(1, max_repos // 100 + 2):
+        r = durable.request(
+            client,
+            f"https://api.github.com/{kind}/{owner}/repos",
+            params={"type": "public", "per_page": 100, "page": page},
+        )
+        if r.status_code == 404:
+            return None
+        r.raise_for_status()
+        batch = r.json()
+        items += batch
+        if len(batch) < 100:
+            break
+    return items[:max_repos]
+
+
+def list_owner_repos(owner: str, *, token: str | None, max_repos: int = 500) -> list[dict]:
+    """Raw GitHub repo objects for every public, non-archived, non-fork repo of an org or user
+    (no star floor). Cheap: pages of 100, no per-repo requests."""
+    if not _OWNER.match(owner):
+        raise ValueError(f"{owner!r} is not a valid GitHub org or user")
+    with httpx.Client(timeout=15, headers=_headers(token)) as client:
+        items = _list_repos(client, "orgs", owner, max_repos)
+        if items is None:
+            items = _list_repos(client, "users", owner, max_repos)
+    if items is None:
+        raise ValueError(f"no GitHub org or user named {owner!r}")
+    return [i for i in items if not i.get("archived") and not i.get("fork")]
+
+
+_KEEP = (
+    "full_name", "html_url", "default_branch", "description", "stargazers_count", "topics",
+    "language", "pushed_at", "archived",
+)  # fmt: skip
+
+
+def slim(item: dict) -> dict:
+    """The fields _to_repo needs, so a few hundred repos fit in a Temporal payload."""
+    out = {k: item.get(k) for k in _KEEP}
+    out["license"] = {"spdx_id": (item.get("license") or {}).get("spdx_id")}
+    return out
+
+
+def repo_from_item(item: dict) -> Repo:
+    """One repo, with its Compose file checked strictly (see _fetch_compose). Raises
+    durable.RateLimited or durable.Unavailable when the check could not be completed."""
+    with httpx.Client(timeout=15) as client:  # raw.githubusercontent.com needs no credentials
+        return _to_repo(client, item, strict=True)
 
 
 _REPO = re.compile(r"^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$")

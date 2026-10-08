@@ -26,14 +26,27 @@ class Settings(BaseSettings):
     embed_dim: int  # must match the embedding model's output size
 
     # Chat endpoint. Required, no defaults. Point these at an OpenAI-compatible gateway such as
-    # LiteLLM, which can route one model name to a hosted provider (your API key) and another to
-    # a local server. WHICH model answers is chosen in settings.toml by router distance.
+    # the Aiven AI gateway, which can route one model name to a hosted provider (your API key) and
+    # another to a local server. WHICH model answers is chosen in settings.toml by router distance.
     llm_base_url: str  # SEMCACHE_LLM_BASE_URL
     llm_api_key: str  # SEMCACHE_LLM_API_KEY
 
     # Jev classifier (TypeSafe AI). Optional: without it the settings.toml classifier runs.
     typesafe_api_key: str | None = Field(
         None, validation_alias=AliasChoices("TYPESAFE_API_KEY", "SEMCACHE_TYPESAFE_API_KEY")
+    )
+
+    # Seeding SEED_OWNERS runs as a Temporal workflow. Unset = no seeding. The api key is only
+    # for Temporal Cloud (it also turns TLS on); keep it in fnox and never log it.
+    temporal_address: str | None = Field(
+        None, validation_alias=AliasChoices("SEMCACHE_TEMPORAL_ADDRESS", "TEMPORAL_ADDRESS")
+    )
+    temporal_namespace: str = Field(
+        "default",
+        validation_alias=AliasChoices("SEMCACHE_TEMPORAL_NAMESPACE", "TEMPORAL_NAMESPACE"),
+    )
+    temporal_api_key: str | None = Field(
+        None, validation_alias=AliasChoices("SEMCACHE_TEMPORAL_API_KEY", "TEMPORAL_API_KEY")
     )
 
     # Editing models and prices on /settings is off unless this is set (the app has no logins).

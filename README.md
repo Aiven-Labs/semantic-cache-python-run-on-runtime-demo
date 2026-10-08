@@ -216,6 +216,20 @@ without them:
 | `SEMCACHE_LLM_BASE_URL` | the Aiven AI gateway (OpenAI-compatible LiteLLM router); serves every chat model |
 | `SEMCACHE_LLM_API_KEY` | (secret) key for that gateway |
 | `TYPESAFE_API_KEY` | (secret, optional) TypeSafe AI key; turns on the Jev classifier |
+| `SEMCACHE_TEMPORAL_ADDRESS` | (optional) `host:7233` of a Temporal server; turns on seeding |
+| `SEMCACHE_TEMPORAL_NAMESPACE` | (optional) default `default` |
+| `SEMCACHE_TEMPORAL_API_KEY` | (secret, optional) Temporal Cloud key; also turns TLS on |
+
+### Seeding
+
+Every public repo of the orgs and users in `SEED_OWNERS` (`src/semcache/seed.py`, currently
+`Aiven-Labs`) is put in the catalog by a Temporal workflow, `SeedOwnerWorkflow`
+(`seed_workflow.py`). The app runs the worker itself, so it needs a Temporal server but no
+separate process. Temporal does the waiting and retrying: a rate-limited call fails with the delay
+GitHub asked for and is re-run then, a server error backs off, and a restart resumes the run. One
+workflow per owner has a fixed id (`seed-<owner>`), so starting it twice joins the run in progress,
+and each start only adds repos the catalog doesn't have. Without `SEMCACHE_TEMPORAL_ADDRESS` the
+app logs a warning and doesn't seed. Watch runs in the Temporal UI under `seed-<owner>`.
 
 `GITHUB_TOKEN` is optional (raises rate limits). Embeddings are the one thing still local: the
 gateway has no embeddings endpoint, so `SEMCACHE_EMBED_*` points at OMLX, and in `compose.yaml`
