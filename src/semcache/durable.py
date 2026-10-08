@@ -1,13 +1,15 @@
 """Telling GitHub's "slow down" apart from real failures, so the caller (a Temporal activity,
 see seeding.py) can let Temporal do the waiting and retrying instead of sleeping in a loop."""
 
+import threading
 import time
 
 import httpx
 
 
-class RateLimited(Exception):
-    """GitHub asked us to wait `wait` seconds."""
+class RateLimited(RuntimeError):
+    """GitHub asked us to wait `wait` seconds. A RuntimeError so the callers that already treat a
+    rate limit as one (details, chat) keep working."""
 
     def __init__(self, wait: float):
         super().__init__(f"rate limited for {wait:.0f}s")
@@ -51,3 +53,37 @@ def request(client: httpx.Client, url: str, *, params: dict | None = None) -> ht
         raise Unavailable(f"{url}: HTTP {r.status_code}")
     return r
 
+
+# One cool-down shared by every thread in the process. Once GitHub says "slow down", calls to
+# api.github.com fail locally until the time it named has passed, so a search made meanwhile does
+# not spend requests (or extend the penalty) on a quota that is already gone.
+_lock = threading.Lock()
+_blocked_until = 0.0
+
+
+def blocked_for(now: float | None = None) -> float:
+    """Seconds left on the cool-down, or 0.0 when GitHub may be called."""
+    with _lock:
+        return max(_blocked_until - (time.time() if now is None else now), 0.0)
+
+
+def note_rate_limit(wait: float, now: float | None = None) -> None:
+    """Start (or extend, never shorten) the cool-down."""
+    global _blocked_until
+    with _lock:
+        _blocked_until = max(_blocked_until, (time.time() if now is None else now) + wait)
+
+
+def _gate_request(request: httpx.Request) -> None:
+    if request.url.host == "api.github.com" and (left := blocked_for()) > 0:
+        raise RateLimited(left)
+
+
+def _watch_response(response: httpx.Response) -> None:
+    if response.request.url.host == "api.github.com" and (wait := rate_limit_wait(response)):
+        note_rate_limit(wait)
+
+
+# Pass as httpx.Client(event_hooks=GATE) on any client that calls api.github.com. raw.github
+# usercontent is not rate limited the same way, so it is left alone.
+GATE = {"request": [_gate_request], "response": [_watch_response]}

@@ -96,7 +96,7 @@ def _to_repo(client: httpx.Client, item: dict, *, strict: bool = False) -> Repo:
 
 def discover(query: str, *, token: str | None, limit: int = 30) -> list[Repo]:
     """Most-starred GitHub repos matching `query`, each checked for a Compose file."""
-    with httpx.Client(timeout=15, headers=_headers(token)) as client:
+    with httpx.Client(timeout=15, headers=_headers(token), event_hooks=durable.GATE) as client:
         r = client.get(
             "https://api.github.com/search/repositories",
             params={
@@ -143,7 +143,7 @@ def list_owner_repos(owner: str, *, token: str | None, max_repos: int = 500) -> 
     (no star floor). Cheap: pages of 100, no per-repo requests."""
     if not _OWNER.match(owner):
         raise ValueError(f"{owner!r} is not a valid GitHub org or user")
-    with httpx.Client(timeout=15, headers=_headers(token)) as client:
+    with httpx.Client(timeout=15, headers=_headers(token), event_hooks=durable.GATE) as client:
         items = _list_repos(client, "orgs", owner, max_repos)
         if items is None:
             items = _list_repos(client, "users", owner, max_repos)
@@ -195,7 +195,7 @@ def list_dir(repo: str, path: str = "", *, token: str | None = None, client=None
     """Files and folders at `path` in a public repo's default branch (1 GitHub API call)."""
     path = _check(repo, path)
     own = client is None
-    client = client or httpx.Client(timeout=15, headers=_headers(token))
+    client = client or httpx.Client(timeout=15, headers=_headers(token), event_hooks=durable.GATE)
     try:
         r = client.get(f"https://api.github.com/repos/{repo}/contents/{quote(path)}")
         if r.status_code == 404:
@@ -258,7 +258,7 @@ def repo_info(repo: str, *, token: str | None = None, client=None) -> dict:
     """Language, license, stars, last push and topics for one repo (1 GitHub API call)."""
     _check(repo, "")
     own = client is None
-    client = client or httpx.Client(timeout=15, headers=_headers(token))
+    client = client or httpx.Client(timeout=15, headers=_headers(token), event_hooks=durable.GATE)
     try:
         r = client.get(f"https://api.github.com/repos/{repo}")
         if r.status_code == 404:

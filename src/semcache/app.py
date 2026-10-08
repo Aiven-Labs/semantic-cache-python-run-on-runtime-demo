@@ -16,6 +16,7 @@ from pydantic import BaseModel
 from temporalio.client import Client
 from typesafe_sdk import TypeSafeClient
 
+from . import durable
 from .cache import SemanticCache
 from .catalog import Catalog, embed_text
 from .chat import ChatService, ConversationStore, valid_cid
@@ -256,6 +257,11 @@ def run_search(q: str, services: list[str] | None = None, refresh: bool = False)
                 "crawled"
             ]:  # never cache an empty crawl, or similar searches skip GitHub for a day
                 cache.store("search", q, str(out["crawled"]))
+        except durable.RateLimited as e:  # cool-down: do not call GitHub again until it ends
+            out["notice"] = (
+                f"GitHub is rate limiting us; not searching it for another {e.wait:.0f}s. "
+                "Showing what is indexed."
+            )
         except httpx.HTTPError as e:
             out["notice"] = f"GitHub search failed ({type(e).__name__}); showing what is indexed."
 
